@@ -1,0 +1,255 @@
+.branch-modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(6, 4, 10, 0.72);
+    backdrop-filter: blur(6px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    z-index: 999;
+  }
+  
+  .branch-modal {
+    width: 100%;
+    max-width: 580px;
+    border-radius: 24px;
+    background: linear-gradient(
+      180deg,
+      rgba(22, 14, 36, 0.98) 0%,
+      rgba(13, 9, 21, 1) 100%
+    );
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.45);
+    overflow: hidden;
+    animation: branchModalFade 0.22s ease;
+  }
+  
+  .branch-delete-modal {
+    max-width: 480px;
+  }
+  
+  .branch-modal-header {
+    padding: 20px 22px 16px;
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 16px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  }
+  
+  .branch-modal-header h3 {
+    margin: 0;
+    color: #ffffff;
+    font-size: 22px;
+    font-weight: 700;
+  }
+  
+  .branch-modal-header p {
+    margin: 6px 0 0;
+    color: rgba(255, 255, 255, 0.45);
+    font-size: 13px;
+  }
+  
+  .branch-modal-close {
+    width: 36px;
+    height: 36px;
+    border: none;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.06);
+    color: rgba(255, 255, 255, 0.72);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: 0.2s ease;
+    flex-shrink: 0;
+  }
+  
+  .branch-modal-close:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: #ffffff;
+  }
+  
+  .branch-modal-form {
+    padding: 20px 22px 22px;
+  }
+  
+  .branch-form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+  }
+  
+  .branch-form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  
+  .branch-form-group-full {
+    grid-column: span 2;
+  }
+  
+  .branch-form-group label {
+    color: rgba(255, 255, 255, 0.74);
+    font-size: 13px;
+    font-weight: 600;
+  }
+  
+  .branch-form-group input {
+    width: 100%;
+    height: 44px;
+    border-radius: 14px;
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    background: rgba(255, 255, 255, 0.045);
+    padding: 0 14px;
+    color: #ffffff;
+    outline: none;
+    font-size: 14px;
+    transition: 0.2s ease;
+  }
+  
+  .branch-form-group select {
+    width: 100%;
+    height: 44px;
+    border-radius: 14px;
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    background-color: rgba(255, 255, 255, 0.045);
+    padding: 0 44px 0 14px;
+    color: #ffffff;
+    outline: none;
+    font-size: 14px;
+    font-weight: 500;
+    transition: 0.2s ease;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    cursor: pointer;
+  
+    background-image:
+      linear-gradient(45deg, transparent 50%, #b895ff 50%),
+      linear-gradient(135deg, #b895ff 50%, transparent 50%);
+    background-position:
+      calc(100% - 20px) calc(50% - 3px),
+      calc(100% - 14px) calc(50% - 3px);
+    background-size: 6px 6px, 6px 6px;
+    background-repeat: no-repeat;
+  }
+  
+  .branch-form-group input:focus,
+  .branch-form-group select:focus {
+    border-color: #a781ff;
+    box-shadow: 0 0 0 4px rgba(167, 129, 255, 0.08);
+  }
+  
+  .branch-form-group select:hover {
+    border-color: rgba(167, 129, 255, 0.28);
+    background-color: rgba(255, 255, 255, 0.06);
+  }
+  
+  .branch-form-group input:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+  
+  .branch-form-group select option {
+    background: #191224;
+    color: #ffffff;
+  }
+  
+  .branch-modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin: 22px 22px 15px 22px;
+  }
+  
+  .branch-primary-btn,
+  .branch-secondary-btn,
+  .branch-danger-btn {
+    height: 42px;
+    padding: 0 18px;
+    border-radius: 12px;
+    border: none;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 600;
+    transition: 0.2s ease;
+  }
+  
+  .branch-primary-btn {
+    background: #8d69ff;
+    color: #ffffff;
+  }
+  
+  .branch-primary-btn:hover {
+    background: #9a7bff;
+    transform: translateY(-1px);
+  }
+  
+  .branch-secondary-btn {
+    background: rgba(255, 255, 255, 0.07);
+    color: #ffffff;
+  }
+  
+  .branch-secondary-btn:hover {
+    background: rgba(255, 255, 255, 0.12);
+  }
+  
+  .branch-danger-btn {
+    background: rgba(255, 88, 111, 0.16);
+    color: #ff98a5;
+  }
+  
+  .branch-danger-btn:hover {
+    background: rgba(255, 88, 111, 0.24);
+    color: #ffb1bb;
+    transform: translateY(-1px);
+  }
+  
+  .branch-delete-content {
+    padding: 20px 22px 0;
+  }
+  
+  .branch-delete-content p {
+    margin: 0 0 12px;
+    color: rgba(255, 255, 255, 0.8);
+    line-height: 1.6;
+    font-size: 14px;
+  }
+  
+  .branch-delete-warning {
+    color: #ff9cab !important;
+  }
+  
+  @keyframes branchModalFade {
+    from {
+      opacity: 0;
+      transform: translateY(10px) scale(0.98);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+  }
+  
+  @media (max-width: 768px) {
+    .branch-form-grid {
+      grid-template-columns: 1fr;
+    }
+  
+    .branch-form-group-full {
+      grid-column: span 1;
+    }
+  
+    .branch-modal-actions {
+      flex-direction: column;
+    }
+  
+    .branch-primary-btn,
+    .branch-secondary-btn,
+    .branch-danger-btn {
+      width: 100%;
+    }
+  }

@@ -1,0 +1,171 @@
+.products-wrapper {
+  width: 100%;
+  margin-top: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+}
+
+/* search card */
+
+.search-card {
+  border: 1px solid #7E747D;
+  background: #121115;
+  border-radius: 10px;
+  padding: 28px 24px;
+}
+
+/* search */
+
+.product-search-box {
+  position: relative;
+  width: 100%;
+}
+
+.search {
+  width: 100%;
+  height: 44px;
+  padding: 0 16px 0 42px;
+  font-size: 14px;
+  border: 1px solid #79747E;
+  background: #2B2A2F;
+  border-radius: 10px;
+  color: white;
+}
+
+.search::placeholder {
+  color: #b3b3b3;
+}
+
+.search:focus {
+  outline: none;
+  border-color: #772EAB;
+}
+
+.search-icon {
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #b3b3b3;
+  font-size: 18px;
+}
+
+/* table card */
+
+.table-card {
+  border: 1px solid #7E747D;
+  border-radius: 10px;
+  overflow: hidden;
+  background: #0b0b14;
+}
+
+/* table */
+
+.products-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+/* header */
+
+.products-table th {
+  text-align: left;
+  padding: 14px 16px;
+  font-size: 14px;
+  color: #d6d6e6;
+  font-weight: 500;
+  border-bottom: 1px solid #333044;
+}
+
+/* body */
+
+.products-table td {
+  padding: 14px 16px;
+  font-size: 14px;
+  color: #e5e5f0;
+  border-bottom: 1px solid #2a2a3a;
+}
+
+/* hover */
+
+.products-table tbody tr:hover {
+  background: #11111c;
+}
+
+/* checkbox column */
+
+.checkbox-col {
+  width: 38px;
+  text-align: center;
+}
+
+/* image */
+
+.product-img {
+  width: 44px;
+  height: 44px;
+  border-radius: 10px;
+  object-fit: cover;
+  display: block;
+}
+
+/* status */
+
+.status {
+  padding: 4px 15px;
+  font-size: 11px;
+  border-radius: 8px;
+  border: 1px solid;
+  font-weight: 500;
+}
+
+.status.active {
+  color: rgba(45, 248, 5, 1);
+
+background: rgba(45, 248, 5, 0.25);
+border: 1px solid rgba(45, 248, 5, 1)
+}
+
+.status.inactive {
+background: rgba(248, 5, 9, 0.14);
+border: 1px solid rgba(255, 4, 4, 1);
+color: rgba(255, 4, 4, 1);
+}
+
+/* actions column */
+
+.products-table td.actions {
+  width: 120px;
+  text-align: center;
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 18px;
+}
+
+/* icons */
+
+.edit-icon {
+  color: #cfcfe6;
+  cursor: pointer;
+  font-size: 18px;
+}
+
+.delete-icon {
+  color: #ff2c2c;
+  cursor: pointer;
+  font-size: 18px;
+}
+
+.edit-icon:hover {
+  color: white;
+}
+
+.delete-icon:hover {
+  color: #ff4444;
+}
+

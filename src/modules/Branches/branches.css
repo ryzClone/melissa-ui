@@ -1,0 +1,11 @@
+.branches-page {
+    min-height: 100%;
+    padding: 8px 4px 24px;
+    overflow-y: auto;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  
+  .branches-page::-webkit-scrollbar {
+    display: none;
+  }

@@ -1,0 +1,49 @@
+.layout {
+  height: 100vh;
+  display: flex;
+  background: var(--bg-main);
+}
+
+/* BODY */
+.layout-body {
+  display: flex;
+  width: 100%;
+}
+
+/* SIDEBAR */
+.sidebar {
+  width: 240px;
+  background: var(--bg-sidebar);
+  border-right: 1px solid var(--border-light);
+  padding: 20px 15px;
+}
+
+/* RIGHT SIDE (header + content) */
+.layout-right {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+/* HEADER */
+.header {
+  height: 60px;
+  background: var(--bg-header);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 24px;
+  border-bottom: 1px solid var(--border-light);
+}
+
+/* CONTENT */
+.layout-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 24px;
+
+  background:
+    radial-gradient(circle at 10% 10%, rgba(142, 91, 255, 0.18), transparent 40%),
+    radial-gradient(circle at 90% 90%, rgba(142, 91, 255, 0.1), transparent 40%),
+    #070313;
+}

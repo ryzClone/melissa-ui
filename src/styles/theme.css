@@ -1,0 +1,49 @@
+:root {
+    --bg-page: #070313;
+    --bg-card: linear-gradient(180deg, rgba(28, 11, 52, 0.96), rgba(15, 7, 31, 0.98));
+    --bg-card-soft: rgba(255, 255, 255, 0.03);
+    --bg-card-hover: rgba(255, 255, 255, 0.06);
+    --bg-input: rgba(255, 255, 255, 0.08);
+  
+    --border-soft: rgba(255, 255, 255, 0.04);
+    --border-medium: rgba(255, 255, 255, 0.06);
+    --border-strong: rgba(142, 91, 255, 0.35);
+  
+    --text-main: #ffffff;
+    --text-soft: rgba(255, 255, 255, 0.85);
+    --text-muted: rgba(255, 255, 255, 0.65);
+    --text-faint: rgba(255, 255, 255, 0.42);
+    --text-placeholder: rgba(255, 255, 255, 0.26);
+  
+    --primary: #8e5bff;
+    --primary-hover: #a56bff;
+    --primary-soft: rgba(142, 91, 255, 0.08);
+    --primary-soft-2: rgba(142, 91, 255, 0.14);
+    --primary-border: rgba(142, 91, 255, 0.24);
+    --primary-shadow: rgba(142, 91, 255, 0.24);
+  
+    --success: #40d69e;
+    --success-soft: rgba(16, 185, 129, 0.14);
+    --success-border: rgba(16, 185, 129, 0.24);
+  
+    --warning: #f4bc57;
+    --warning-soft: rgba(245, 158, 11, 0.14);
+    --warning-border: rgba(245, 158, 11, 0.24);
+  
+    --info: #7cb6ff;
+    --info-soft: rgba(59, 130, 246, 0.14);
+    --info-border: rgba(59, 130, 246, 0.24);
+  
+    --danger: #ff7d7d;
+    --danger-soft: rgba(239, 68, 68, 0.12);
+  
+    --shadow-card: 0 18px 40px rgba(0, 0, 0, 0.28);
+    --shadow-modal: 0 30px 80px rgba(0, 0, 0, 0.45);
+  
+    --radius-sm: 12px;
+    --radius-md: 14px;
+    --radius-lg: 20px;
+    --radius-xl: 24px;
+  
+    --transition: 0.2s ease;
+  }

@@ -1,0 +1,128 @@
+.restaurants-card {
+  width: 100%;
+  background: #0a0912;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.restaurants-table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+
+.restaurants-table thead tr {
+  background: #0a0912;
+}
+
+.restaurants-table th {
+  color: #f4f4f6;
+  font-size: 16px;
+  font-weight: 500;
+  text-align: left;
+  padding: 12px 20px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.22);
+}
+
+.restaurants-table td {
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 400;
+  padding: 22px 20px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.16);
+  vertical-align: middle;
+}
+
+.restaurants-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.restaurants-table th:nth-child(1),
+.restaurants-table td:nth-child(1) {
+  width: 26%;
+}
+
+.restaurants-table th:nth-child(2),
+.restaurants-table td:nth-child(2) {
+  width: 18%;
+}
+
+.restaurants-table th:nth-child(3),
+.restaurants-table td:nth-child(3) {
+  width: 16%;
+}
+
+.restaurants-table th:nth-child(4),
+.restaurants-table td:nth-child(4) {
+  width: 22%;
+}
+
+.restaurants-table th:nth-child(5),
+.restaurants-table td:nth-child(5) {
+  width: 10%;
+}
+
+.restaurants-table th:nth-child(6),
+.restaurants-table td:nth-child(6) {
+  width: 18%;
+}
+
+.rating-box {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: #ffffff;
+}
+
+.star-icon {
+  color: #ffd21f;
+  font-size: 14px;
+  margin-top: -1px;
+}
+
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 32px;
+  height: 16px;
+  padding: 0 8px;
+  background: #158a00;
+  border: 1px solid #29d10b;
+  border-radius: 5px;
+  color: #eaffea;
+  font-size: 10px;
+  font-weight: 500;
+  line-height: 1;
+}
+
+.action-box {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+
+.action-btn {
+  background: transparent;
+  border: none;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.edit-btn {
+  color: #f2f2f2;
+  font-size: 18px;
+}
+
+.delete-btn {
+  color: #ff1e1e;
+  font-size: 18px;
+}
+
+.action-btn:hover {
+  opacity: 0.85;
+}

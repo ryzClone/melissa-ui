@@ -1,0 +1,327 @@
+.users-card {
+  padding: 18px;
+  background: linear-gradient(180deg, rgba(28, 11, 52, 0.96), rgba(15, 7, 31, 0.98));
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.03), 0 18px 40px rgba(0,0,0,0.28);
+  border-radius: 20px;
+}
+
+.users-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.users-card-header h3 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: #fff;
+}
+
+.users-card-tools {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.users-search-box {
+  width: 240px;
+  height: 40px;
+  border-radius: 12px;
+  padding: 0 12px;
+  background: rgba(255, 255, 255, 0.045);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: rgba(255, 255, 255, 0.34);
+  transition: 0.2s ease;
+}
+
+.users-search-box:focus-within {
+  border-color: rgba(139, 92, 246, 0.55);
+  background: rgba(255, 255, 255, 0.07);
+  box-shadow: 0 0 0 4px rgba(139, 92, 246, 0.10);
+}
+
+.users-search-box input {
+  width: 100%;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: #fff;
+  font-size: 13px;
+}
+
+.users-search-box input::placeholder {
+  color: rgba(255, 255, 255, 0.26);
+}
+
+.users-icon-btn {
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.045);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  color: rgba(255, 255, 255, 0.75);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.users-icon-btn:hover {
+  transform: translateY(-1px);
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(139, 92, 246, 0.25);
+  color: #fff;
+}
+
+.users-table-wrap {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.users-table {
+  width: 100%;
+  min-width: 980px;
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+.users-table thead th {
+  padding: 14px 12px;
+  text-align: left;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: rgba(255, 255, 255, 0.34);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.users-table tbody td {
+  padding: 16px 12px;
+  font-size: 13px;
+  color: #f5f0ff;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+  transition: 0.2s ease;
+}
+
+.users-table tbody tr {
+  transition: 0.2s ease;
+}
+
+.users-table tbody tr:hover td {
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.users-table tbody tr:hover .users-avatar {
+  transform: scale(1.05);
+  box-shadow: 0 0 0 6px rgba(142, 91, 255, 0.08);
+}
+
+.users-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.users-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: rgba(142, 91, 255, 0.22);
+  color: #d9c2ff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-weight: 700;
+  transition: 0.2s ease;
+}
+
+.users-muted {
+  color: rgba(255, 255, 255, 0.65);
+}
+
+.users-role-badge,
+.users-status-badge {
+  height: 24px;
+  padding: 0 10px;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.users-role-badge {
+  border: 1px solid transparent;
+}
+
+.role-admin {
+  background: rgba(142, 91, 255, 0.14);
+  border-color: rgba(142, 91, 255, 0.24);
+  color: #bf98ff;
+}
+
+.role-moderator {
+  background: rgba(245, 158, 11, 0.14);
+  border-color: rgba(245, 158, 11, 0.24);
+  color: #f4bc57;
+}
+
+.role-operator {
+  background: rgba(59, 130, 246, 0.14);
+  border-color: rgba(59, 130, 246, 0.24);
+  color: #7cb6ff;
+}
+
+.role-analyst {
+  background: rgba(16, 185, 129, 0.14);
+  border-color: rgba(16, 185, 129, 0.24);
+  color: #48d8a2;
+}
+
+.users-status-badge {
+  background: rgba(16, 185, 129, 0.14);
+  border: 1px solid rgba(16, 185, 129, 0.24);
+  color: #40d69e;
+}
+
+.users-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.users-action-btn {
+  width: 30px;
+  height: 30px;
+  border-radius: 10px;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.7);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.users-action-btn:hover {
+  transform: translateY(-1px) scale(1.04);
+}
+
+.users-action-btn.edit:hover {
+  background: rgba(59, 130, 246, 0.12);
+  border-color: rgba(59, 130, 246, 0.22);
+  color: #7cb6ff;
+}
+
+.users-action-btn.danger:hover {
+  background: rgba(239, 68, 68, 0.12);
+  border-color: rgba(239, 68, 68, 0.22);
+  color: #ff7d7d;
+}
+
+.users-action-btn.success:hover {
+  background: rgba(16, 185, 129, 0.14);
+  border-color: rgba(16, 185, 129, 0.24);
+  color: #48d8a2;
+}
+
+.users-action-btn.cancel:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.12);
+  color: #fff;
+}
+
+.users-inline-input,
+.users-inline-select {
+  width: 100%;
+  height: 36px;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.05);
+  padding: 0 10px;
+  color: #fff;
+  outline: none;
+  font-size: 12px;
+  transition: 0.2s ease;
+}
+
+.users-inline-input:focus,
+.users-inline-select:focus {
+  border-color: rgba(139, 92, 246, 0.55);
+  box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.10);
+}
+
+.users-inline-select option {
+  background: #1b1230;
+  color: #fff;
+}
+
+.users-empty {
+  text-align: center;
+  padding: 24px !important;
+  color: rgba(255, 255, 255, 0.45);
+}
+
+.users-table-footer {
+  margin-top: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.42);
+}
+
+.users-pagination {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.users-pagination button {
+  min-width: 30px;
+  height: 30px;
+  padding: 0 10px;
+  border-radius: 10px;
+  border: none;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.55);
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.users-pagination button:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.06);
+  color: #fff;
+}
+
+.users-pagination button.active {
+  background: linear-gradient(135deg, #8e5bff, #a56bff);
+  color: #fff;
+}
+
+.users-pagination button:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+@media (max-width: 768px) {
+  .users-card-header,
+  .users-table-footer {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .users-search-box {
+    width: 100%;
+  }
+}

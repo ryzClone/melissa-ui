@@ -1,0 +1,222 @@
+/* ===================================
+   PAGE
+=================================== */
+.reservations-page {
+  min-height: 100%;
+  color: white;
+}
+
+/* ===================================
+   HEADER
+=================================== */
+.reservations-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 50px;
+}
+
+.reservations-header h1 {
+  font-size: 26px;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.reservations-header p {
+  font-size: 14px;
+  color: #FFFFFF;
+  opacity: 0.75;
+}
+
+/* ===================================
+   BUTTON (Orders style)
+=================================== */
+.primary-button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  padding: 11px 14px;
+  border-radius: 10px;
+  border: none;
+
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  background: #772EAB;
+  color: #fff;
+}
+
+.primary-button:hover {
+  background: #8e44d3;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 14px rgba(119, 46, 171, 0.4);
+}
+
+.primary-button:active {
+  transform: translateY(0);
+  box-shadow: none;
+}
+
+/* ===================================
+   TABS
+=================================== */
+.reservations-tabs {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.tab-button {
+  padding: 9px 16px;
+  border-radius: 20px;
+  border: 1px solid rgba(255,255,255,0.15);
+
+  background: #121115;
+  color: #cfd7e5;
+
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.tab-button:hover {
+  border-color: #772EAB;
+  background: rgba(119, 46, 171, 0.12);
+}
+
+.tab-button.active {
+  background: #772EAB;
+  border-color: #772EAB;
+  color: #fff;
+}
+
+/* ===================================
+   TABLE WRAPPER  (Orders style)
+=================================== */
+.reservations-table-container {
+  background: #121115;
+  border-radius: 18px;
+  border: 1px solid #79747E;
+  overflow: hidden;
+}
+
+/* ===================================
+   TABLE
+=================================== */
+.reservations-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.reservations-table th {
+  text-align: left;
+  padding: 14px;
+  font-size: 13px;
+  color: #9ca3af;
+  background: #121115;
+}
+
+.reservations-table td {
+  padding: 14px;
+  font-size: 14px;
+}
+
+.reservations-table tbody tr {
+  border-top: 1px solid rgba(255,255,255,0.05);
+}
+
+.reservations-table tbody tr:hover {
+  background: rgba(100, 96, 104, 0.18);
+}
+
+/* ===================================
+   STATUS BADGES  (Orders palette)
+=================================== */
+.status-badge {
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+/* Confirmed */
+.status-badge.success {
+  background: rgba(16,185,129,0.2);
+  color: #34d399;
+}
+
+/* Pending */
+.status-badge.warning {
+  background: rgba(234,179,8,0.2);
+  color: #facc15;
+}
+
+/* Cancelled */
+.status-badge.danger {
+  background: rgba(239,68,68,0.2);
+  color: #f87171;
+}
+
+/* ===================================
+   CALENDAR SECTION
+=================================== */
+.reservations-calendar {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.calendar-section {
+  background: #121115;
+  border-radius: 18px;
+  border: 1px solid #79747E;
+  padding: 20px;
+}
+
+.calendar-date {
+  font-size: 15px;
+  font-weight: 600;
+  margin-bottom: 12px;
+  color: #cfd7e5;
+}
+
+/* CARD */
+.reservation-card {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+
+  background: #1a1822;
+  border-radius: 14px;
+  padding: 14px 16px;
+
+  border: 1px solid rgba(255,255,255,0.05);
+  margin-top: 10px;
+
+  transition: 0.2s ease;
+}
+
+.reservation-card:hover {
+  background: rgba(119, 46, 171, 0.12);
+  border-color: #772EAB;
+}
+
+.reservation-time {
+  font-weight: 600;
+  font-size: 14px;
+  min-width: 70px;
+  color: #a78bfa;
+}
+
+.reservation-info p {
+  margin: 0;
+  font-size: 14px;
+  color: #fff;
+}
+
+.reservation-info span {
+  font-size: 12px;
+  color: #9ca3af;
+}

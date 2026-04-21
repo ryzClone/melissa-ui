@@ -1,0 +1,70 @@
+@import "./styles/theme.css";
+:root {
+  /* ===== MAIN BACKGROUND ===== */
+  --bg-main: linear-gradient(135deg, #14051F 0%, #1C0730 100%);
+  --bg-sidebar: #0F0A1A;
+  --bg-header: #12071D;
+  --bg-card: #1A0B26;
+
+  /* ===== PRIMARY ===== */
+  --primary: #8B3DFF; 
+  --primary-soft: rgba(139, 61, 255, 0.18);
+  --primary-hover: #7A2CF0;
+
+  /* ===== TEXT ===== */
+  --text-main: #FFFFFF;
+  --text-muted: #A78BFA;
+
+  /* ===== BORDER ===== */
+  --border-light: rgba(255, 255, 255, 0.08);
+}
+
+body {
+  margin: 0;
+  background: var(--bg-main);
+  color: var(--text-main);
+  font-family: Inter, sans-serif;
+}
+
+* {
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE */
+}
+
+*::-webkit-scrollbar {
+  display: none; /* Chrome */
+}
+
+html,
+body,
+#root,
+#root *:not(input):not(textarea) {
+  cursor: default;
+}
+
+input,
+textarea {
+  cursor: text;
+}
+
+button,
+a,
+[role="button"],
+input[type="button"],
+input[type="submit"],
+input[type="reset"] {
+  cursor: pointer;
+}
+
+body *:not(input):not(textarea) {
+  user-select: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
+}
+
+input,
+textarea {
+  user-select: text;
+  -webkit-user-select: text;
+  -ms-user-select: text;
+}

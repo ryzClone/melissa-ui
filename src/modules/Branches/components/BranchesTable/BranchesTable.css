@@ -1,0 +1,312 @@
+.branches-table-card {
+  border-radius: 24px;
+  padding: 20px 0 0;
+  background: linear-gradient(
+    180deg,
+    rgba(18, 11, 30, 0.98) 0%,
+    rgba(14, 9, 20, 1) 100%
+  );
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  margin-bottom: 22px;
+  overflow: hidden;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.22);
+}
+
+.branches-table-top {
+  padding: 0 16px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.branches-table-top h3 {
+  margin: 0;
+  color: #ffffff;
+  font-size: 28px;
+  font-weight: 700;
+}
+
+.branches-table-tools {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.branches-search {
+  width: 210px;
+  height: 38px;
+  border-radius: 12px;
+  padding: 0 12px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: rgba(255, 255, 255, 0.35);
+  transition: 0.25s ease;
+}
+
+.branches-search:hover {
+  border-color: rgba(167, 129, 255, 0.3);
+  background: rgba(255, 255, 255, 0.065);
+}
+
+.branches-search:focus-within {
+  border-color: #a781ff;
+  background: rgba(167, 129, 255, 0.08);
+  box-shadow: 0 0 0 4px rgba(167, 129, 255, 0.08);
+}
+
+.branches-search input {
+  width: 100%;
+  height: 100%;
+  border: none;
+  outline: none;
+  background: transparent;
+  color: #ffffff;
+  font-size: 13px;
+}
+
+.branches-search input::placeholder {
+  color: rgba(255, 255, 255, 0.28);
+}
+
+.branches-download-btn {
+  width: 38px;
+  height: 38px;
+  border-radius: 12px;
+  border: none;
+  background: rgba(255, 255, 255, 0.06);
+  color: #a781ff;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: 0.25s ease;
+}
+
+.branches-download-btn:hover {
+  background: rgba(167, 129, 255, 0.18);
+  color: #d5c1ff;
+  transform: translateY(-1px);
+}
+
+.branches-table-wrap {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.branches-table-wrap::-webkit-scrollbar {
+  display: none;
+}
+
+.branches-table {
+  width: 100%;
+  min-width: 980px;
+  border-collapse: collapse;
+}
+
+.branches-table thead th {
+  text-align: left;
+  padding: 18px 16px;
+  font-size: 11px;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.3);
+  letter-spacing: 0.08em;
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.branches-table tbody tr {
+  transition: 0.25s ease;
+}
+
+.branches-table tbody tr:hover {
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.branches-table tbody td {
+  padding: 16px;
+  color: rgba(255, 255, 255, 0.68);
+  font-size: 14px;
+  border-top: 1px solid rgba(255, 255, 255, 0.03);
+  vertical-align: middle;
+}
+
+.branch-id {
+  color: #8d69ff;
+  font-weight: 600;
+}
+
+.branch-name-cell {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.branch-icon-box {
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.08);
+  color: rgba(255, 255, 255, 0.72);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: 0.25s ease;
+}
+
+.branches-table tbody tr:hover .branch-icon-box {
+  background: rgba(167, 129, 255, 0.18);
+  color: #d6beff;
+  transform: scale(1.05);
+}
+
+.branch-name-cell span {
+  color: #ffffff;
+  font-weight: 600;
+  transition: 0.25s ease;
+}
+
+.branches-table tbody tr:hover .branch-name-cell span {
+  color: #cfb8ff;
+}
+
+.branch-status {
+  height: 28px;
+  padding: 0 12px;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 12px;
+  font-weight: 600;
+  transition: 0.25s ease;
+}
+
+.branch-status.active {
+  background: rgba(13, 195, 136, 0.12);
+  color: #0ed89a;
+}
+
+.branch-status.inactive {
+  background: rgba(255, 124, 124, 0.12);
+  color: #ff9f9f;
+}
+
+.branches-table tbody tr:hover .branch-status {
+  filter: brightness(1.12);
+}
+
+.branch-status-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+.branch-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.branch-action-btn {
+  width: 32px;
+  height: 32px;
+  border: none;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.04);
+  color: #caaeff;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: 0.2s ease;
+}
+
+.branch-action-btn:hover {
+  transform: translateY(-1px);
+  background: rgba(167, 129, 255, 0.14);
+  color: #ffffff;
+}
+
+.branch-action-btn.danger {
+  color: #ffb0b8;
+}
+
+.branch-action-btn.danger:hover {
+  background: rgba(255, 90, 110, 0.14);
+  color: #ff7f8f;
+}
+
+.branches-empty {
+  text-align: center;
+  color: rgba(255, 255, 255, 0.4);
+  padding: 28px 16px !important;
+}
+
+.branches-table-footer {
+  padding: 18px 16px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.branches-table-footer p {
+  margin: 0;
+  color: rgba(255, 255, 255, 0.38);
+  font-size: 13px;
+}
+
+.branches-pagination {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.branches-pagination button {
+  height: 38px;
+  padding: 0 14px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  background: transparent;
+  color: #ffffff;
+  font-size: 13px;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.branches-pagination button:hover:not(:disabled) {
+  border-color: rgba(154, 99, 255, 0.34);
+  background: rgba(167, 129, 255, 0.12);
+  color: #b895ff;
+  transform: translateY(-1px);
+}
+
+.branches-pagination button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+@media (max-width: 768px) {
+  .branches-table-top {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .branches-table-tools {
+    width: 100%;
+  }
+
+  .branches-search {
+    width: 100%;
+  }
+
+  .branches-table-footer {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}

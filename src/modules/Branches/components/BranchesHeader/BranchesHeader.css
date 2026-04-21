@@ -1,0 +1,59 @@
+.branches-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 22px;
+}
+
+.branches-header-left h1 {
+  margin: 0;
+  color: #ffffff;
+  font-size: 42px;
+  line-height: 1.05;
+  font-weight: 700;
+}
+
+.branches-header-left p {
+  margin: 10px 0 0;
+  color: rgba(255, 255, 255, 0.46);
+  font-size: 14px;
+}
+
+.branches-add-btn {
+  height: 46px;
+  border: none;
+  border-radius: 14px;
+  padding: 0 18px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: linear-gradient(180deg, #b785ff 0%, #9a63ff 100%);
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  box-shadow: 0 8px 24px rgba(154, 99, 255, 0.28);
+  transition: 0.22s ease;
+}
+
+.branches-add-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 12px 28px rgba(154, 99, 255, 0.36);
+  filter: brightness(1.04);
+}
+
+.branches-add-btn:active {
+  transform: translateY(0);
+  box-shadow: 0 6px 18px rgba(154, 99, 255, 0.24);
+}
+
+.branches-add-btn:focus {
+  outline: none;
+}
+
+.branches-add-btn:focus-visible {
+  box-shadow:
+    0 0 0 3px rgba(183, 133, 255, 0.16),
+    0 10px 24px rgba(154, 99, 255, 0.3);
+}

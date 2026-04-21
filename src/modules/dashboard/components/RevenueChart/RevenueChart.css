@@ -1,0 +1,92 @@
+.sales-chart-card {
+  min-height: 420px;
+  border-radius: 24px;
+  padding: 22px 22px 18px;
+  background: linear-gradient(
+    180deg,
+    rgba(17, 10, 27, 0.98) 0%,
+    rgba(14, 9, 20, 1) 100%
+  );
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  outline: none;
+}
+
+/* ===== HEADER ===== */
+
+.sales-chart-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 14px;
+  margin-bottom: 20px;
+}
+
+.sales-chart-header h3 {
+  margin: 0;
+  color: #ffffff;
+  font-size: 30px;
+  font-weight: 700;
+  outline: none;
+}
+
+.sales-chart-header p {
+  margin: 8px 0 0;
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 14px;
+  outline: none;
+}
+
+/* ===== SWITCH ===== */
+
+.sales-chart-switch {
+  padding: 4px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.05);
+  display: flex;
+  gap: 4px;
+}
+
+.sales-chart-switch button {
+  height: 32px;
+  padding: 0 14px;
+  border: none;
+  border-radius: 9px;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.48);
+  font-size: 12px;
+  cursor: pointer;
+  transition: 0.2s ease;
+  outline: none;
+  box-shadow: none;
+}
+
+/* hover */
+.sales-chart-switch button:hover {
+  color: #ffffff;
+}
+
+/* active */
+.sales-chart-switch button.active {
+  background: #9b6bff;
+  color: #ffffff;
+}
+
+/* focus o‘chirish */
+.sales-chart-switch button:focus {
+  outline: none;
+  box-shadow: none;
+}
+
+/* ===== CHART ===== */
+
+.sales-chart-wrapper {
+  width: 100%;
+  height: 300px;
+  outline: none;
+}
+
+/* recharts focus fix */
+.recharts-wrapper,
+.recharts-wrapper * {
+  outline: none !important;
+}

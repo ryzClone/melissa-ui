@@ -1,0 +1,482 @@
+.orders-page {
+  min-height: 100%;
+  color: white;
+}
+
+/* HEADER */
+.orders-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 50px;
+}
+
+.orders-header h1 {
+  font-size: 26px;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.orders-header p {
+  font-size: 14px;
+  color: #FFFFFF;
+  opacity: 0.75;
+}
+
+.orders-actions {
+  display: flex;
+  gap: 12px;
+}
+
+.btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 11px 12px;
+  border-radius: 10px;
+  font-size: 14px;
+  cursor: pointer;
+  border: none;
+  transition: all 0.2s ease;
+}
+
+/* PRIMARY */
+.btn.primary {
+  background: #772EAB;
+  color: white;
+}
+
+.btn.primary:hover {
+  background: #8e44d3;           /* biroz yorqinroq */
+  transform: translateY(-1px);
+  box-shadow: 0 4px 14px rgba(119, 46, 171, 0.4);
+}
+
+/* SECONDARY */
+.btn.secondary {
+  background: #FFFFFF78;
+  color: #fff;
+  border: 1px solid #fff;
+}
+
+.btn.secondary:hover {
+  background: rgba(255,255,255,0.25);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 14px rgba(255,255,255,0.15);
+}
+
+/* CLICK EFFECT */
+.btn:active {
+  transform: translateY(0);
+  box-shadow: none;
+}
+
+/* ===============================
+   FILTER WRAPPER
+=================================*/
+.orders-filters {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr;
+  gap: 16px;
+
+  background: #121115;
+  padding: 22px;
+  border-radius: 18px;
+  border: 1px solid #79747E;
+
+  margin-bottom: 20px;
+}
+
+/* ===============================
+   GROUP
+=================================*/
+.filter-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.filter-group label {
+  font-size: 14px;
+  color: #d1d5db;
+  font-weight: 500;
+}
+
+/* ===============================
+   INPUT
+=================================*/
+.filter-group input {
+  height: 42px;
+  padding: 0 14px;
+
+  background: #2a2a30;
+  border-radius: 10px;
+  border: 1px solid #79747E;
+
+  color: #fff;
+  font-size: 14px;
+  outline: none;
+  transition: 0.2s ease;
+}
+
+.filter-group input:hover {
+  border-color: #772EAB;
+}
+
+.filter-group input:focus {
+  border-color: #772EAB;
+  box-shadow: 0 0 0 2px rgba(119, 46, 171, 0.25);
+}
+
+/* DATE ICON DARK */
+.filter-group input[type="date"]::-webkit-calendar-picker-indicator {
+  filter: invert(1);
+  opacity: 0.7;
+  cursor: pointer;
+}
+
+/* ===============================
+   NATIVE SELECT (DARK IMPROVED)
+=================================*/
+.filter-group select {
+  appearance: none;
+  -webkit-appearance: none;
+
+  height: 42px;
+  padding: 0 38px 0 14px;
+
+  background-color: #2a2a30;
+  border-radius: 10px;
+  border: 1px solid #79747E;
+
+  color: #fff;
+  font-size: 14px;
+  cursor: pointer;
+  outline: none;
+  transition: 0.2s ease;
+
+  /* custom arrow */
+  background-image: url("data:image/svg+xml,%3Csvg width='14' height='14' viewBox='0 0 20 20' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M5 7L10 12L15 7' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+}
+
+.filter-group select:hover {
+  border-color: #772EAB;
+}
+
+.filter-group select:focus {
+  border-color: #772EAB;
+  box-shadow: 0 0 0 2px rgba(119, 46, 171, 0.25);
+}
+
+/* OPTION (cheklangan darajada ishlaydi) */
+.filter-group select option {
+  background-color: #1a1822;
+  color: #fff;
+}
+
+/* ===============================
+   CUSTOM SELECT (AGAR ISHLATSANGIZ)
+=================================*/
+.custom-select-wrapper {
+  position: relative;
+}
+
+.custom-select {
+  height: 42px;
+  display: flex;
+  align-items: center;
+  padding: 0 14px;
+
+  background: #2a2a30;
+  border-radius: 10px;
+  border: 1px solid #79747E;
+
+  color: #fff;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.custom-select:hover {
+  border-color: #772EAB;
+}
+
+.custom-select.open {
+  border-color: #772EAB;
+  box-shadow: 0 0 0 2px rgba(119, 46, 171, 0.25);
+}
+
+/* DROPDOWN PANEL */
+.custom-dropdown {
+  position: absolute;
+  top: 48px;
+  left: 0;
+  right: 0;
+
+  background: #1a1822;
+  border-radius: 12px;
+  border: 1px solid #2e2e35;
+
+  padding: 6px;
+  z-index: 100;
+}
+
+/* OPTION */
+.custom-option {
+  padding: 10px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  color: #cfd7e5;
+  transition: 0.15s ease;
+}
+
+.custom-option:hover {
+  background: rgba(119, 46, 171, 0.15);
+}
+
+.custom-option.active {
+  background: #772EAB;
+  color: #fff;
+}
+
+/* WRAPPER */
+.custom-select-wrapper {
+  position: relative;
+}
+
+/* SELECT BOX */
+.custom-select {
+  height: 42px;
+  display: flex;
+  align-items: center;
+  padding: 0 14px;
+
+  background: #2a2a30;
+  border-radius: 12px;
+  border: 1px solid #79747E;
+
+  color: #fff;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.custom-select:hover {
+  border-color: #772EAB;
+}
+
+.custom-select.open {
+  border-color: #772EAB;
+  box-shadow: 0 0 0 2px rgba(119,46,171,0.25);
+}
+
+/* DROPDOWN PANEL */
+.custom-dropdown {
+  position: absolute;
+  top: 48px;
+  left: 0;
+  right: 0;
+
+  background: #16141d;
+  border-radius: 14px;
+  border: 1px solid rgba(255,255,255,0.06);
+
+  padding: 6px;
+  z-index: 200;
+
+  box-shadow: 0 12px 30px rgba(0,0,0,0.5);
+  animation: fadeIn 0.15s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-5px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* OPTION */
+.custom-option {
+  padding: 10px 12px;
+  border-radius: 10px;
+  cursor: pointer;
+  color: #cfd7e5;
+  transition: 0.15s ease;
+}
+
+.custom-option:hover {
+  background: rgba(119,46,171,0.18);
+  color: #fff;
+}
+
+/* ACTIVE */
+.custom-option.active {
+  background: #772EAB;
+  color: #fff;
+}
+
+
+
+
+/* TABLE */
+.orders-table-wrapper {
+  background: #121115;
+  border-radius: 18px;
+  border: 1px solid #79747E;
+  overflow: hidden;
+}
+
+.orders-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.orders-table th {
+  text-align: left;
+  padding: 14px;
+  font-size: 13px;
+  color: #9ca3af;
+  background: #121115;
+}
+
+.orders-table td {
+  padding: 14px;
+  font-size: 14px;
+}
+
+.orders-table tbody tr {
+  border-top: 1px solid rgba(255,255,255,0.05);
+}
+
+.orders-table tbody tr:hover {
+  background: rgba(100, 96, 104, 0.18);
+}
+
+/* CHECKBOX RESET */
+.orders-table input[type="checkbox"] {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 18px;
+  height: 18px;
+  border-radius: 6px;
+  border: 1.5px solid #79747E;
+  background: transparent;
+  cursor: pointer;
+  position: relative;
+  transition: all 0.2s ease;
+}
+
+/* HOVER */
+.orders-table input[type="checkbox"]:hover {
+  border-color: #9f7aea;
+  box-shadow: 0 0 0 2px rgba(119, 46, 171, 0.25);
+}
+
+/* CHECKED */
+.orders-table input[type="checkbox"]:checked {
+  background: #772EAB;
+  border-color: #772EAB;
+}
+
+/* CHECK ICON */
+.orders-table input[type="checkbox"]:checked::after {
+  content: "";
+  position: absolute;
+  top: 3px;
+  left: 6px;
+  width: 4px;
+  height: 8px;
+  border: solid white;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+
+/* ACTIVE CLICK */
+.orders-table input[type="checkbox"]:active {
+  transform: scale(0.95);
+}
+
+/* BADGES */
+.badge {
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+/* Dynamic Colors */
+.badge.purple {
+  background: rgba(124,58,237,0.2);
+  color: #a78bfa;
+}
+
+.badge.blue {
+  background: rgba(37,99,235,0.2);
+  color: #60a5fa;
+}
+
+.badge.yellow {
+  background: rgba(234,179,8,0.2);
+  color: #facc15;
+}
+
+.badge.green {
+  background: rgba(16,185,129,0.2);
+  color: #34d399;
+}
+
+.badge.gray {
+  background: rgba(107,114,128,0.2);
+  color: #9ca3af;
+}
+
+
+
+
+/* PAGINATION WRAPPER */
+.pagination {
+  display: flex;
+  justify-content: flex-end;   /* O‘ng tarafga */
+  align-items: center;
+  gap: 6px;
+  margin-top: 18px;
+}
+
+/* BASE BUTTON */
+.page-btn {
+  min-width: 32px;
+  height: 32px;
+  padding: 0 10px;
+
+  border-radius: 8px;
+  border: 1px solid rgba(255,255,255,0.12);
+
+  background: transparent;
+  color: #cfd7e5;
+  font-size: 13px;
+  cursor: pointer;
+
+  transition: all 0.15s ease;
+}
+
+/* HOVER */
+.page-btn:hover:not(:disabled) {
+  border-color: #772EAB;
+  background: rgba(119, 46, 171, 0.12);
+}
+
+/* ACTIVE PAGE */
+.page-btn.active {
+  background: #772EAB;
+  border-color: #772EAB;
+  color: #fff;
+}
+
+/* NAV BUTTONS */
+.page-btn.nav {
+  min-width: 70px;
+}
+
+/* DISABLED */
+.page-btn:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}

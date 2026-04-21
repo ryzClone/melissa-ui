@@ -1,0 +1,12 @@
+body {
+  background: #1a0028;
+  color: white;
+  font-family: sans-serif;
+}
+
+.status {
+  background: #16a34a;
+  padding: 4px 10px;
+  border-radius: 8px;
+  font-size: 12px;
+}

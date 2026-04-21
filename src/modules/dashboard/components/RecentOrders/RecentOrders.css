@@ -1,0 +1,121 @@
+.recent-orders-card {
+  border-radius: 24px;
+  padding: 22px 22px 10px;
+  background: linear-gradient(
+    180deg,
+    rgba(17, 10, 27, 0.98) 0%,
+    rgba(14, 9, 20, 1) 100%
+  );
+  border: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+.recent-orders-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.recent-orders-header h3 {
+  margin: 0;
+  color: #ffffff;
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.recent-orders-header p {
+  margin: 7px 0 0;
+  color: rgba(255, 255, 255, 0.44);
+  font-size: 13px;
+}
+
+.recent-orders-header button {
+  border: none;
+  background: transparent;
+  color: #9b6bff;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.recent-orders-table-wrap {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.recent-orders-table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 760px;
+}
+
+.recent-orders-table thead th {
+  text-align: left;
+  padding: 16px 0 14px;
+  color: rgba(255, 255, 255, 0.32);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+.recent-orders-table tbody td {
+  padding: 18px 0;
+  color: rgba(255, 255, 255, 0.72);
+  font-size: 14px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+.order-id {
+  color: #9b6bff !important;
+  font-weight: 600;
+}
+
+.customer-cell {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.customer-avatar {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.14);
+  color: #ffffff;
+  font-size: 11px;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.order-status {
+  height: 24px;
+  padding: 0 10px;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.order-status.ready {
+  color: #56e39f;
+  background: rgba(46, 204, 113, 0.12);
+}
+
+.order-status.waiting {
+  color: #ffbe55;
+  background: rgba(255, 190, 85, 0.12);
+}
+
+.order-status.cancelled {
+  color: #ff6c83;
+  background: rgba(255, 76, 112, 0.12);
+}
+
+.order-amount {
+  color: #ffffff !important;
+  font-weight: 700;
+}

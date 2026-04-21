@@ -1,0 +1,108 @@
+.users-page {
+    min-height: 100%;
+    color: #fff;
+  }
+  
+  .users-page-top {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 22px;
+  }
+  
+  .users-page-top h1 {
+    margin: 0;
+    color: #fff;
+    font-size: 40px;
+    line-height: 1.08;
+    font-weight: 700;
+  }
+  
+  .users-page-top p {
+    margin: 8px 0 0;
+    color: rgba(255, 255, 255, 0.42);
+    font-size: 13px;
+  }
+  
+  .users-page-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  
+  .users-primary-btn,
+  .users-ghost-btn,
+  .users-page-tabs button {
+    border: none;
+    outline: none;
+    cursor: pointer;
+    transition: 0.2s ease;
+    font-family: inherit;
+  }
+  
+  .users-primary-btn {
+    height: 40px;
+    padding: 0 16px;
+    border-radius: 14px;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: linear-gradient(135deg, #8e5bff, #a56bff);
+    color: #fff;
+    box-shadow: 0 10px 24px rgba(142, 91, 255, 0.24);
+  }
+  
+  .users-primary-btn:hover {
+    transform: translateY(-1px);
+  }
+  
+  .users-ghost-btn {
+    height: 40px;
+    padding: 0 16px;
+    border-radius: 14px;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    color: #fff;
+  }
+  
+  .users-page-tabs {
+    display: flex;
+    gap: 24px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    margin-bottom: 22px;
+  }
+  
+  .users-page-tabs button {
+    position: relative;
+    background: transparent;
+    color: rgba(255, 255, 255, 0.48);
+    font-size: 13px;
+    font-weight: 500;
+    padding: 0 0 14px;
+  }
+  
+  .users-page-tabs button.active {
+    color: #fff;
+  }
+  
+  .users-page-tabs button.active::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: -1px;
+    width: 100%;
+    height: 2px;
+    border-radius: 99px;
+    background: #8e5bff;
+  }
+  
+  @media (max-width: 768px) {
+    .users-page-top {
+      flex-direction: column;
+      align-items: stretch;
+    }
+  }

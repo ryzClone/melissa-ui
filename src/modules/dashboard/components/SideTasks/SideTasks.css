@@ -1,0 +1,68 @@
+.dashboard-tasks-card {
+  background: #0B0B12;
+  border-radius: 22px;
+  padding: 24px;
+  border: 1px solid rgba(255,255,255,0.15);
+}
+
+.dashboard-tasks-title {
+  color: #FFFFFF;
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 20px;
+}
+
+.dashboard-tasks-list {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+/* TASK ITEM */
+
+.dashboard-task-item {
+  background: rgba(255,255,255,0.08);
+  border-radius: 14px;
+  padding: 14px 16px;
+  border: 1px solid rgba(255,255,255,0.15);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.dashboard-task-text {
+  color: #FFFFFF;
+  font-size: 14px;
+  max-width: 75%;
+}
+
+/* BADGE */
+
+.task-badge {
+  padding: 4px 12px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 500;
+  border: 1px solid transparent;
+}
+
+/* HIGH */
+.task-badge.high {
+  background: rgba(239,68,68,0.15);
+  color: #FF4D4F;
+  border-color: #FF4D4F;
+}
+
+/* MEDIUM */
+.task-badge.medium {
+  background: rgba(234,179,8,0.15);
+  color: #FACC15;
+  border-color: #EAB308;
+}
+
+/* LOW */
+.task-badge.low {
+  background: rgba(59,130,246,0.15);
+  color: #3B82F6;
+  border-color: #2563EB;
+}
