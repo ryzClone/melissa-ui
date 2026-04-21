@@ -3,14 +3,21 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #190926; /* rasmga yaqin to‘q binafsha */
+
+  /* GLOBAL BACKGROUND bilan bir xil */
+  background: linear-gradient(0deg, #130C1C, #130C1C),
+              radial-gradient(203.54% 103.16% at 50% 0%, rgba(139, 92, 246, 0.15) 0%, rgba(139, 92, 246, 0) 70%);
 }
 
 .login-card {
   width: 700px;
-  background: #D9D9D912;
+  background: rgba(255, 255, 255, 0.04);
   padding: 76px 97px;
-  border-radius: 16px;
+  border-radius: 20px;
+
+  /* glass effekt */
+  backdrop-filter: blur(14px);
+  border: 1px solid rgba(255, 255, 255, 0.06);
 }
 
 .login-title {
@@ -21,8 +28,8 @@
 }
 
 .login-subtitle {
-  color: #79747E;
-  font-size: 20px;
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 18px;
   margin-bottom: 35px;
 }
 
@@ -33,46 +40,49 @@
 .input-group label {
   display: block;
   margin-bottom: 7px;
-  color: #FFFFFF;
-  font-size: 24px;
+  color: #ffffff;
+  font-size: 18px;
   font-weight: 600;
-  font-family: "Semi Bold";
 }
 
 .input-group input {
   width: 100%;
-  padding: 19px 21px;
-  border-radius: 15px;
-  border: 3px solid #5e2d91;
-  background: #772EAB69;
-  color: white;
+  padding: 16px 18px;
+  border-radius: 14px;
+
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.045);
+  color: #ffffff;
+
   outline: none;
   transition: all 0.2s ease;
 }
 
 .input-group input::placeholder {
-  color: #79747E;
+  color: rgba(255, 255, 255, 0.4);
 }
 
 .input-group input:focus {
-  border-color: #772EAB69;
-  box-shadow: 0 0 0 2px rgba(139, 92, 246, 0.2);
+  border-color: #8B3DFF;
+  box-shadow: 0 0 0 4px rgba(139, 61, 255, 0.15);
 }
 
 .login-btn {
   width: 100%;
-  margin-top: 57px;
-  padding: 13px;
+  margin-top: 50px;
+  padding: 14px;
   border: none;
-  border-radius: 15px;
-  background: #772EAB;
+  border-radius: 14px;
+
+  background: #8B3DFF;
   color: #fff;
-  font-size: 24px;
+
+  font-size: 20px;
   font-weight: 600;
   cursor: pointer;
   transition: 0.2s ease;
 }
 
 .login-btn:hover {
-  background: #5e2d91;
+  background: #7A2CF0;
 }
