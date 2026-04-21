@@ -7,9 +7,9 @@ import AuthLayout from "@/layout/AuthLayout";
 import OrdersPage from "../modules/order/OrdersPage";
 import ReservationsPage from "../modules/ReservationsPage/page/ReservationsPage";
 import CatalogPage from "../modules/catalog/page/CatalogPage";
-import BranchesPage from "../modules/branches/pages/BranchesPage";
 import UsersPage from "../modules/Users/pages/UsersPage";
 import PromotionsPage from "../modules/Promotions/page/PromotionsPage";
+import BranchesPages from "../modules/Branches/pages/BranchesPage"
 
 function ProtectedRoute({ children }) {
   const { user, loading } = useAuth();
@@ -61,7 +61,7 @@ export const routes = [
       },
       {
         path: "branches",
-        element: <BranchesPage />,
+        element: <BranchesPages />,
       },
       {
         path: "users",
