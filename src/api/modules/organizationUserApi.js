@@ -1,0 +1,31 @@
+import apiClient from "../apiClient";
+
+const BASE_URL = "/api/v1/merchant-user";
+
+export const organizationUserApi = {
+  getById: (id) => apiClient.get(`${BASE_URL}/${id}`),
+
+  getList: (params) => apiClient.get(BASE_URL, { params }),
+
+  create: (payload) => apiClient.post(BASE_URL, payload),
+
+  update: (id, payload) => apiClient.put(`${BASE_URL}/${id}`, payload),
+
+  delete: (id) => apiClient.delete(`${BASE_URL}/${id}`),
+
+  uploadAttachment: (payload) => {
+    return apiClient.post("/api/attachments/upload", payload, {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+  },
+
+  getAttachment: (id) => {
+    return apiClient.get(`/api/attachments/${id}`);
+  },
+
+  deleteAttachment: (id) => {
+    return apiClient.delete(`/api/attachments/${id}`);
+  },
+};

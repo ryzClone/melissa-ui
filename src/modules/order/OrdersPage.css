@@ -480,3 +480,45 @@
   opacity: 0.35;
   cursor: not-allowed;
 }
+
+/* GlobalTable integration */
+.orders-table-wrapper .orders-global-table {
+  border: none;
+  background: transparent;
+  border-radius: 0;
+}
+
+.orders-table-wrapper .orders-global-table input[type="checkbox"] {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 18px;
+  height: 18px;
+  border-radius: 6px;
+  border: 1.5px solid #79747E;
+  background: transparent;
+  cursor: pointer;
+  position: relative;
+  transition: all 0.2s ease;
+}
+
+.orders-table-wrapper .orders-global-table input[type="checkbox"]:hover {
+  border-color: #9f7aea;
+  box-shadow: 0 0 0 2px rgba(119, 46, 171, 0.25);
+}
+
+.orders-table-wrapper .orders-global-table input[type="checkbox"]:checked {
+  background: #772EAB;
+  border-color: #772EAB;
+}
+
+.orders-table-wrapper .orders-global-table input[type="checkbox"]:checked::after {
+  content: "";
+  position: absolute;
+  top: 3px;
+  left: 6px;
+  width: 4px;
+  height: 8px;
+  border: solid white;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}

@@ -8,9 +8,11 @@ const apiClient = axios.create({
 });
 
 apiClient.interceptors.request.use((config) => {
-  const token = localStorage.getItem("token");
+  const token =
+    localStorage.getItem("accessToken") || localStorage.getItem("token");
 
   if (token && config.url !== "/api/v1/auth/login") {
+    config.headers = config.headers || {};
     config.headers.Authorization = `Bearer ${token}`;
   }
 

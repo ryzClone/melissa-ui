@@ -1,106 +1,125 @@
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect, useCallback } from "react";
 import { Search, Pencil, Trash2, Download, Check, X } from "lucide-react";
+import GlobalTable from "@/components/GlobalTable/GlobalTable";
 import "./UsersTableSection.css";
-
-const initialUsers = [
-  {
-    id: 1,
-    initials: "AR",
-    firstName: "Aziz",
-    lastName: "Raimov",
-    username: "@aziz_admin",
-    phone: "+998 90 123 45 67",
-    role: "Admin",
-    status: "Faol",
-  },
-  {
-    id: 2,
-    initials: "NK",
-    firstName: "Nilufar",
-    lastName: "Karimova",
-    username: "@nilu_mod",
-    phone: "+998 97 765 43 21",
-    role: "Moderator",
-    status: "Faol",
-  },
-  {
-    id: 3,
-    initials: "JT",
-    firstName: "Jasur",
-    lastName: "To‘rayev",
-    username: "@jasur_op",
-    phone: "+998 93 111 22 33",
-    role: "Operator",
-    status: "Faol",
-  },
-  {
-    id: 4,
-    initials: "MS",
-    firstName: "Malika",
-    lastName: "Saidova",
-    username: "@malika_t",
-    phone: "+998 94 444 55 66",
-    role: "Tahlilchi",
-    status: "Faol",
-  },
-  {
-    id: 5,
-    initials: "SB",
-    firstName: "Sardor",
-    lastName: "Bekmurodov",
-    username: "@sardor_op",
-    phone: "+998 90 999 88 77",
-    role: "Operator",
-    status: "Faol",
-  },
-];
+import { organizationUserApi } from "../../../api/modules/organizationUserApi";
+import { organizationRoleApi } from "../../../api/modules/organizationRoleApi";
 
 function RoleBadge({ role }) {
   const classMap = {
-    Admin: "role-admin",
-    Moderator: "role-moderator",
-    Operator: "role-operator",
-    Tahlilchi: "role-analyst",
+    ROLE_ADMIN: "role-admin",
+    ROLE_MODERATOR: "role-moderator",
+    ROLE_OPERATOR: "role-operator",
+    ROLE_ANALYST: "role-analyst",
+    ROLE_USER: "role-user",
   };
 
-  return <span className={`users-role-badge ${classMap[role] || ""}`}>{role}</span>;
+  const displayName = role?.replace(/^ROLE_/, "") || role || "";
+
+  return (
+    <span className={`users-role-badge ${classMap[role] || ""}`}>
+      {displayName}
+    </span>
+  );
 }
 
-function StatusBadge({ status }) {
-  return <span className="users-status-badge">{status}</span>;
-}
+const pageSize = 5;
 
 export default function UsersTableSection() {
-  const [users, setUsers] = useState(initialUsers);
+  const [users, setUsers] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [totalElements, setTotalElements] = useState(0);
+
+  const [allRoles, setAllRoles] = useState([]);
+  const [rolesLoading, setRolesLoading] = useState(false);
+
   const [editingId, setEditingId] = useState(null);
   const [editForm, setEditForm] = useState({
-    firstName: "",
-    lastName: "",
     username: "",
-    phone: "",
-    role: "",
-    status: "",
+    password: "",
+    name: "",
+    surname: "",
+    phoneNumber: "",
+    roleIds: [],
+    profileId: "",
   });
 
-  const pageSize = 5;
-  const roles = ["Admin", "Moderator", "Operator", "Tahlilchi"];
-  const statuses = ["Faol", "Nofaol"];
+  const fetchRoles = useCallback(async () => {
+    try {
+      setRolesLoading(true);
+      const res = await organizationRoleApi.getAll();
+      const payload = res?.data;
+      const list = Array.isArray(payload)
+        ? payload
+        : Array.isArray(payload?.content)
+          ? payload.content
+          : [];
+
+      setAllRoles(
+        list.map((role) => ({
+          id: role.id,
+          roleId: role.roleId,
+          name: role.roleName || role.name || `Role #${role.id}`,
+        }))
+      );
+    } catch (error) {
+      console.error(error);
+      setAllRoles([]);
+    } finally {
+      setRolesLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchRoles();
+  }, [fetchRoles]);
+
+  const fetchUsers = useCallback(async () => {
+    setLoading(true);
+    try {
+      const raw = await organizationUserApi.getList({
+        page: page - 1,
+        size: pageSize,
+        sort: ["id,desc"],
+      });
+      const payload = raw?.data?.data || raw?.data || raw;
+      setUsers(payload?.content || []);
+      setTotalElements(payload?.page?.totalElements || 0);
+      setTotalPages(payload?.page?.totalPages || 1);
+      if (
+        payload?.page?.totalPages &&
+        payload.page.totalPages > 0 &&
+        page > payload.page.totalPages
+      ) {
+        setPage(payload.page.totalPages);
+      }
+    } catch {
+      setUsers([]);
+      setTotalPages(1);
+      setTotalElements(0);
+    } finally {
+      setLoading(false);
+    }
+  }, [page]);
+
+  useEffect(() => {
+    fetchUsers();
+  }, [fetchUsers]);
 
   const filteredUsers = useMemo(() => {
     const q = search.trim().toLowerCase();
-
     if (!q) return users;
-
     return users.filter((item) =>
       [
-        item.firstName,
-        item.lastName,
+        item.name,
+        item.surname,
         item.username,
-        item.phone,
-        item.role,
-        item.status,
+        item.phoneNumber,
+        item.profileId?.toString(),
+        ...(item.roles?.map((role) => role.name) || []),
       ]
         .join(" ")
         .toLowerCase()
@@ -108,68 +127,214 @@ export default function UsersTableSection() {
     );
   }, [search, users]);
 
-  const totalPages = Math.max(1, Math.ceil(filteredUsers.length / pageSize));
-
-  const paginatedUsers = filteredUsers.slice(
-    (page - 1) * pageSize,
-    page * pageSize
-  );
-
-  const handleEdit = (user) => {
-    setEditingId(user.id);
+  const handleEdit = (userEntry) => {
+    setEditingId(userEntry.id);
     setEditForm({
-      firstName: user.firstName,
-      lastName: user.lastName,
-      username: user.username,
-      phone: user.phone,
-      role: user.role,
-      status: user.status,
+      username: userEntry.username || "",
+      password: "",
+      name: userEntry.name || "",
+      surname: userEntry.surname || "",
+      phoneNumber: userEntry.phoneNumber || "",
+      roleIds: userEntry.roles?.map((role) => role.id) || [],
+      profileId: userEntry.profileId || "",
     });
   };
 
-  const handleSave = () => {
-    setUsers((prev) =>
-      prev.map((item) =>
-        item.id === editingId
-          ? {
-              ...item,
-              ...editForm,
-              initials: `${editForm.firstName?.[0] || ""}${editForm.lastName?.[0] || ""}`.toUpperCase(),
-            }
-          : item
-      )
-    );
-    setEditingId(null);
+  const handleSave = async () => {
+    if (!editingId) return;
+    if (!editForm.username.trim() || !editForm.name.trim() || !editForm.phoneNumber.trim() || !editForm.roleIds.length) {
+      alert("Barcha majburiy maydonlarni to'ldiring");
+      return;
+    }
+    try {
+      await organizationUserApi.update(editingId, {
+        username: editForm.username.trim(),
+        password: editForm.password || "",
+        name: editForm.name.trim(),
+        surname: editForm.surname.trim(),
+        phoneNumber: editForm.phoneNumber.trim(),
+        roleIds: editForm.roleIds.map(Number),
+        attachmentId: 0,
+      });
+      setEditingId(null);
+      await fetchUsers();
+    } catch (error) {
+      console.error(error);
+      alert("Foydalanuvchini yangilashda xatolik yuz berdi");
+    }
   };
 
   const handleCancel = () => {
     setEditingId(null);
     setEditForm({
-      firstName: "",
-      lastName: "",
       username: "",
-      phone: "",
-      role: "",
-      status: "",
+      password: "",
+      name: "",
+      surname: "",
+      phoneNumber: "",
+      roleIds: [],
+      profileId: "",
     });
   };
 
-  const handleDelete = (id) => {
-    const confirmDelete = window.confirm("Foydalanuvchini o‘chirmoqchimisiz?");
-    if (!confirmDelete) return;
-
-    setUsers((prev) => prev.filter((item) => item.id !== id));
-
-    if (editingId === id) {
-      handleCancel();
+  const handleDelete = async (id) => {
+    if (!window.confirm("Foydalanuvchini o'chirmoqchimisiz?")) return;
+    try {
+      await organizationUserApi.delete(id);
+      if (editingId === id) handleCancel();
+      await fetchUsers();
+    } catch (error) {
+      console.error(error);
+      alert("Foydalanuvchini o'chirishda xatolik yuz berdi");
     }
   };
+
+  const columns = useMemo(
+    () => [
+      {
+        key: "avatar",
+        title: "Rasmi",
+        render: (row) => {
+          const initials = `${row.name?.[0] || ""}${row.surname?.[0] || ""}`.toUpperCase();
+          return <div className="users-avatar">{initials || "U"}</div>;
+        },
+      },
+      {
+        key: "name",
+        title: "Ism",
+        render: (row) =>
+          editingId === row.id ? (
+            <input
+              className="users-inline-input"
+              value={editForm.name}
+              onChange={(e) => setEditForm((p) => ({ ...p, name: e.target.value }))}
+            />
+          ) : (
+            row.name || "-"
+          ),
+      },
+      {
+        key: "surname",
+        title: "Familiya",
+        render: (row) =>
+          editingId === row.id ? (
+            <input
+              className="users-inline-input"
+              value={editForm.surname}
+              onChange={(e) => setEditForm((p) => ({ ...p, surname: e.target.value }))}
+            />
+          ) : (
+            row.surname || "-"
+          ),
+      },
+      {
+        key: "username",
+        title: "Username",
+        render: (row) =>
+          editingId === row.id ? (
+            <input
+              className="users-inline-input"
+              value={editForm.username}
+              onChange={(e) => setEditForm((p) => ({ ...p, username: e.target.value }))}
+            />
+          ) : (
+            row.username || "-"
+          ),
+      },
+      {
+        key: "phoneNumber",
+        title: "Telefon raqam",
+        render: (row) =>
+          editingId === row.id ? (
+            <input
+              className="users-inline-input"
+              value={editForm.phoneNumber}
+              onChange={(e) => setEditForm((p) => ({ ...p, phoneNumber: e.target.value }))}
+            />
+          ) : (
+            row.phoneNumber || "-"
+          ),
+      },
+      {
+        key: "roles",
+        title: "Rollari",
+        render: (row) =>
+          editingId === row.id ? (
+            <select
+              className="users-inline-select"
+              value={editForm.roleIds[0] || ""}
+              onChange={(e) =>
+                setEditForm((p) => ({
+                  ...p,
+                  roleIds: e.target.value ? [Number(e.target.value)] : [],
+                }))
+              }
+              disabled={rolesLoading}
+            >
+              <option value="">
+                {rolesLoading
+                  ? "Loading..."
+                  : allRoles.length === 0
+                    ? "Roles not found"
+                    : "Rol tanlang"}
+              </option>
+              {allRoles.map((role) => (
+                <option key={role.id} value={role.id}>
+                  {role.name}
+                </option>
+              ))}
+            </select>
+          ) : row.roles?.length ? (
+            <div className="users-role-list">
+              {row.roles.map((role) => (
+                <RoleBadge key={role.id} role={role.name} />
+              ))}
+            </div>
+          ) : (
+            "-"
+          ),
+      },
+      {
+        key: "profileId",
+        title: "Profile ID",
+        render: (row) => row.profileId || "-",
+      },
+    ],
+    [editingId, editForm, allRoles, rolesLoading]
+  );
+
+  const renderActions = useCallback(
+    (row) => {
+      if (editingId === row.id) {
+        return (
+          <>
+            <button type="button" className="global-table-action-btn success" onClick={handleSave} title="Saqlash">
+              <Check size={15} />
+            </button>
+            <button type="button" className="global-table-action-btn cancel" onClick={handleCancel} title="Bekor qilish">
+              <X size={15} />
+            </button>
+          </>
+        );
+      }
+      return (
+        <>
+          <button type="button" className="global-table-action-btn edit" onClick={() => handleEdit(row)} title="Tahrirlash">
+            <Pencil size={15} />
+          </button>
+          <button type="button" className="global-table-action-btn delete" onClick={() => handleDelete(row.id)} title="O'chirish">
+            <Trash2 size={15} />
+          </button>
+        </>
+      );
+    },
+    [editingId, handleCancel, handleDelete, handleEdit, handleSave]
+  );
 
   return (
     <div className="users-card">
       <div className="users-card-header">
-        <h3>Foydalanuvchilar ro‘yxati</h3>
-
+        <h3>Foydalanuvchilar ro&apos;yxati</h3>
         <div className="users-card-tools">
           <div className="users-search-box">
             <Search size={16} />
@@ -183,252 +348,26 @@ export default function UsersTableSection() {
               }}
             />
           </div>
-
           <button className="users-icon-btn" type="button">
             <Download size={16} />
           </button>
         </div>
       </div>
 
-      <div className="users-table-wrap">
-        <table className="users-table">
-          <thead>
-            <tr>
-              <th>Rasmi</th>
-              <th>Ism</th>
-              <th>Familiya</th>
-              <th>Username</th>
-              <th>Telefon raqam</th>
-              <th>Rollari</th>
-              <th>Holat</th>
-              <th>Harakatlar</th>
-            </tr>
-          </thead>
-
-          <tbody>
-            {paginatedUsers.map((user) => {
-              const isEditing = editingId === user.id;
-
-              return (
-                <tr key={user.id}>
-                  <td>
-                    <div className="users-avatar">{user.initials}</div>
-                  </td>
-
-                  <td>
-                    {isEditing ? (
-                      <input
-                        className="users-inline-input"
-                        value={editForm.firstName}
-                        onChange={(e) =>
-                          setEditForm((prev) => ({
-                            ...prev,
-                            firstName: e.target.value,
-                          }))
-                        }
-                      />
-                    ) : (
-                      user.firstName
-                    )}
-                  </td>
-
-                  <td>
-                    {isEditing ? (
-                      <input
-                        className="users-inline-input"
-                        value={editForm.lastName}
-                        onChange={(e) =>
-                          setEditForm((prev) => ({
-                            ...prev,
-                            lastName: e.target.value,
-                          }))
-                        }
-                      />
-                    ) : (
-                      user.lastName
-                    )}
-                  </td>
-
-                  <td className="users-muted">
-                    {isEditing ? (
-                      <input
-                        className="users-inline-input"
-                        value={editForm.username}
-                        onChange={(e) =>
-                          setEditForm((prev) => ({
-                            ...prev,
-                            username: e.target.value,
-                          }))
-                        }
-                      />
-                    ) : (
-                      user.username
-                    )}
-                  </td>
-
-                  <td className="users-muted">
-                    {isEditing ? (
-                      <input
-                        className="users-inline-input"
-                        value={editForm.phone}
-                        onChange={(e) =>
-                          setEditForm((prev) => ({
-                            ...prev,
-                            phone: e.target.value,
-                          }))
-                        }
-                      />
-                    ) : (
-                      user.phone
-                    )}
-                  </td>
-
-                  <td>
-                    {isEditing ? (
-                      <select
-                        className="users-inline-select"
-                        value={editForm.role}
-                        onChange={(e) =>
-                          setEditForm((prev) => ({
-                            ...prev,
-                            role: e.target.value,
-                          }))
-                        }
-                      >
-                        {roles.map((role) => (
-                          <option key={role} value={role}>
-                            {role}
-                          </option>
-                        ))}
-                      </select>
-                    ) : (
-                      <RoleBadge role={user.role} />
-                    )}
-                  </td>
-
-                  <td>
-                    {isEditing ? (
-                      <select
-                        className="users-inline-select"
-                        value={editForm.status}
-                        onChange={(e) =>
-                          setEditForm((prev) => ({
-                            ...prev,
-                            status: e.target.value,
-                          }))
-                        }
-                      >
-                        {statuses.map((status) => (
-                          <option key={status} value={status}>
-                            {status}
-                          </option>
-                        ))}
-                      </select>
-                    ) : (
-                      <StatusBadge status={user.status} />
-                    )}
-                  </td>
-
-                  <td>
-                    <div className="users-actions">
-                      {isEditing ? (
-                        <>
-                          <button
-                            type="button"
-                            className="users-action-btn success"
-                            onClick={handleSave}
-                            title="Saqlash"
-                          >
-                            <Check size={15} />
-                          </button>
-                          <button
-                            type="button"
-                            className="users-action-btn cancel"
-                            onClick={handleCancel}
-                            title="Bekor qilish"
-                          >
-                            <X size={15} />
-                          </button>
-                        </>
-                      ) : (
-                        <>
-                          <button
-                            type="button"
-                            className="users-action-btn edit"
-                            onClick={() => handleEdit(user)}
-                            title="Tahrirlash"
-                          >
-                            <Pencil size={15} />
-                          </button>
-                          <button
-                            type="button"
-                            className="users-action-btn danger"
-                            onClick={() => handleDelete(user.id)}
-                            title="O‘chirish"
-                          >
-                            <Trash2 size={15} />
-                          </button>
-                        </>
-                      )}
-                    </div>
-                  </td>
-                </tr>
-              );
-            })}
-
-            {paginatedUsers.length === 0 && (
-              <tr>
-                <td colSpan="8" className="users-empty">
-                  Hech narsa topilmadi
-                </td>
-              </tr>
-            )}
-          </tbody>
-        </table>
-      </div>
-
-      <div className="users-table-footer">
-        <span>
-          {filteredUsers.length > 0
-            ? `${(page - 1) * pageSize + 1} tadan ${Math.min(
-                page * pageSize,
-                filteredUsers.length
-              )} gacha foydalanuvchi ko‘rsatilmoqda`
-            : "0 ta foydalanuvchi"}
-        </span>
-
-        <div className="users-pagination">
-          <button
-            type="button"
-            disabled={page === 1}
-            onClick={() => setPage((prev) => Math.max(1, prev - 1))}
-          >
-            Oldingi
-          </button>
-
-          {Array.from({ length: totalPages }).map((_, index) => {
-            const current = index + 1;
-            return (
-              <button
-                key={current}
-                type="button"
-                className={page === current ? "active" : ""}
-                onClick={() => setPage(current)}
-              >
-                {current}
-              </button>
-            );
-          })}
-
-          <button
-            type="button"
-            disabled={page === totalPages}
-            onClick={() => setPage((prev) => Math.min(totalPages, prev + 1))}
-          >
-            Keyingi
-          </button>
-        </div>
-      </div>
+      <GlobalTable
+        columns={columns}
+        data={filteredUsers}
+        loading={loading}
+        emptyText="Hech narsa topilmadi"
+        rowKey="id"
+        renderActions={renderActions}
+        pagination={{
+          page,
+          pageSize,
+          total: totalElements,
+        }}
+        onPageChange={setPage}
+      />
     </div>
   );
 }

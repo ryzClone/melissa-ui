@@ -1,0 +1,175 @@
+.promo-table-card {
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 20px;
+    overflow: hidden;
+    margin-bottom: 22px;
+  }
+  
+  .promo-table-header {
+    padding: 18px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  }
+  
+  .promo-table-header h3 {
+    margin: 0;
+    font-size: 18px;
+    color: #fff;
+  }
+  
+  .promo-table-tools {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  
+  .promo-search-box {
+    width: 220px;
+    height: 40px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 0 12px;
+    background: rgba(255, 255, 255, 0.045);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+  }
+  
+  .promo-search-box input {
+    flex: 1;
+    background: transparent;
+    border: none;
+    outline: none;
+    color: #fff;
+  }
+  
+  .promo-search-box input::placeholder {
+    color: rgba(255, 255, 255, 0.4);
+  }
+  
+  .promo-icon-btn,
+  .promo-action-btn,
+  .promo-pagination button {
+    border: none;
+    cursor: pointer;
+    transition: 0.2s ease;
+  }
+  
+  .promo-icon-btn {
+    width: 40px;
+    height: 40px;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.05);
+    color: #fff;
+  }
+  
+  .promo-icon-btn:hover,
+  .promo-action-btn:hover,
+  .promo-pagination button:hover {
+    background: rgba(255, 255, 255, 0.1);
+  }
+  
+  .promo-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  .promo-table thead th {
+    text-align: left;
+    padding: 16px 20px;
+    font-size: 13px;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.58);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  }
+  
+  .promo-table tbody td {
+    padding: 16px 20px;
+    font-size: 14px;
+    color: #fff;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+    vertical-align: middle;
+  }
+  
+  .promo-table tbody tr:hover {
+    background: rgba(255, 255, 255, 0.025);
+  }
+  
+  .promo-strong {
+    font-weight: 600;
+  }
+  
+  .promo-value {
+    font-weight: 700;
+    color: #c4b5fd;
+  }
+  
+  .promo-muted {
+    color: rgba(255, 255, 255, 0.62);
+  }
+  
+  .promo-code-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 7px 12px;
+    border-radius: 10px;
+    background: rgba(139, 92, 246, 0.16);
+    color: #c4b5fd;
+    font-weight: 700;
+    letter-spacing: 0.3px;
+  }
+  
+  .promo-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  
+  .promo-action-btn {
+    width: 34px;
+    height: 34px;
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.05);
+    color: #fff;
+  }
+  
+  .promo-action-btn.danger {
+    color: #f87171;
+  }
+  
+  .promo-table-footer {
+    padding: 18px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+  }
+  
+  .promo-table-footer span {
+    color: rgba(255, 255, 255, 0.56);
+    font-size: 13px;
+  }
+  
+  .promo-pagination {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  
+  .promo-pagination button {
+    min-width: 34px;
+    height: 34px;
+    padding: 0 10px;
+    border-radius: 10px;
+    color: #fff;
+    background: rgba(255, 255, 255, 0.05);
+  }
+  
+  .promo-pagination button.active {
+    background: #7c3aed;
+  }

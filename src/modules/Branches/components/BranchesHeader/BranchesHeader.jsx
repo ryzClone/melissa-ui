@@ -1,9 +1,9 @@
 import { useState } from "react";
 import "./BranchesHeader.css";
 import { Plus } from "lucide-react";
-import AddBranchModal from "./components/AddBranchModal/";
+import AddBranchModal from "./components/AddBranchModal";
 
-export default function BranchesHeader() {
+export default function BranchesHeader({ onRefresh }) {
   const [openModal, setOpenModal] = useState(false);
 
   return (
@@ -27,6 +27,7 @@ export default function BranchesHeader() {
       <AddBranchModal
         open={openModal}
         onClose={() => setOpenModal(false)}
+        onRefresh={onRefresh}
       />
     </>
   );

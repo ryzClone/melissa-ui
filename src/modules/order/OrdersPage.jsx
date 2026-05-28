@@ -1,6 +1,7 @@
 import "./OrdersPage.css";
 import { FiDownload, FiPrinter } from "react-icons/fi";
-import { useMemo, useState, useEffect, useRef } from "react";
+import { useMemo, useState, useEffect, useRef, useCallback } from "react";
+import GlobalTable from "@/components/ui/GlobalTable/GlobalTable";
 
 const ordersData = [
   {
@@ -51,30 +52,26 @@ const ordersData = [
 ];
 
 const STATUS_MAP = {
-  DELIVERING: { label: "Yetkazilmoqda", className: "purple" },
-  ACCEPTED: { label: "Qabul qilindi", className: "blue" },
-  PENDING: { label: "Kutilmoqda", className: "yellow" },
-  COMPLETED: { label: "Yopildi", className: "green" },
-  CANCELLED: { label: "Bekor qilindi", className: "gray" },
+  DELIVERING: { label: "Yetkazilmoqda", className: "status-pending" },
+  ACCEPTED: { label: "Qabul qilindi", className: "status-active" },
+  PENDING: { label: "Kutilmoqda", className: "status-pending" },
+  COMPLETED: { label: "Yopildi", className: "status-active" },
+  CANCELLED: { label: "Bekor qilindi", className: "status-inactive" },
 };
 
 const ITEMS_PER_PAGE = 6;
 
 export default function OrdersPage() {
-
-    
-  // id takror bo‘lsa ham ishlashi uchun rowId qo‘shamiz
   const orders = useMemo(
     () => ordersData.map((o, idx) => ({ ...o, rowId: `${o.id}-${idx}` })),
     []
   );
 
-  const [selected, setSelected] = useState([]); // rowId lar saqlanadi
+  const [selected, setSelected] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
 
   const totalPages = Math.max(1, Math.ceil(orders.length / ITEMS_PER_PAGE));
 
-  // page change bo‘lsa range’dan chiqib ketmasin
   useEffect(() => {
     if (currentPage > totalPages) setCurrentPage(totalPages);
   }, [currentPage, totalPages]);
@@ -84,8 +81,10 @@ export default function OrdersPage() {
     return orders.slice(start, start + ITEMS_PER_PAGE);
   }, [orders, currentPage]);
 
-  // current page idlar
-  const pageIds = useMemo(() => paginatedOrders.map((o) => o.rowId), [paginatedOrders]);
+  const pageIds = useMemo(
+    () => paginatedOrders.map((o) => o.rowId),
+    [paginatedOrders]
+  );
 
   const allSelectedOnPage =
     pageIds.length > 0 && pageIds.every((id) => selected.includes(id));
@@ -93,34 +92,98 @@ export default function OrdersPage() {
   const someSelectedOnPage =
     pageIds.length > 0 && pageIds.some((id) => selected.includes(id));
 
-  // indeterminate (yarim tanlangan) ko‘rinishi
   const headerCheckboxRef = useRef(null);
+
   useEffect(() => {
     if (!headerCheckboxRef.current) return;
-    headerCheckboxRef.current.indeterminate = !allSelectedOnPage && someSelectedOnPage;
+    headerCheckboxRef.current.indeterminate =
+      !allSelectedOnPage && someSelectedOnPage;
   }, [allSelectedOnPage, someSelectedOnPage]);
 
-  const toggleSelect = (rowId) => {
+  const toggleSelect = useCallback((rowId) => {
     setSelected((prev) =>
       prev.includes(rowId) ? prev.filter((x) => x !== rowId) : [...prev, rowId]
     );
-  };
+  }, []);
 
-  // SELECT ALL - faqat current page bo‘yicha
-  const toggleSelectAll = () => {
+  const toggleSelectAll = useCallback(() => {
     if (allSelectedOnPage) {
       setSelected((prev) => prev.filter((id) => !pageIds.includes(id)));
     } else {
       setSelected((prev) => Array.from(new Set([...prev, ...pageIds])));
     }
-  };
+  }, [allSelectedOnPage, pageIds]);
 
-  const goPrev = () => setCurrentPage((p) => Math.max(1, p - 1));
-  const goNext = () => setCurrentPage((p) => Math.min(totalPages, p + 1));
+  const columns = useMemo(
+    () => [
+      {
+        key: "select",
+        title: (
+          <input
+            ref={headerCheckboxRef}
+            type="checkbox"
+            onChange={toggleSelectAll}
+            checked={allSelectedOnPage}
+          />
+        ),
+        width: "48px",
+        render: (row) => (
+          <input
+            type="checkbox"
+            checked={selected.includes(row.rowId)}
+            onChange={() => toggleSelect(row.rowId)}
+          />
+        ),
+      },
+      {
+        key: "id",
+        title: "#",
+        render: (row) => row.id || "—",
+      },
+      {
+        key: "customer",
+        title: "Mijoz",
+        render: (row) => row.customer || "—",
+      },
+      {
+        key: "status",
+        title: "Holat",
+        render: (row) => {
+          const statusConfig = STATUS_MAP[row.status] || {
+            label: row.status,
+            className: "status-inactive",
+          };
+          return (
+            <span className={statusConfig.className}>{statusConfig.label}</span>
+          );
+        },
+      },
+      {
+        key: "payment",
+        title: "To‘lov",
+        render: (row) => row.payment || "—",
+      },
+      {
+        key: "amount",
+        title: "Summa",
+        render: (row) => row.amount || "—",
+      },
+      {
+        key: "address",
+        title: "Manzil",
+        render: (row) => row.address || "—",
+      },
+      {
+        key: "time",
+        title: "Vaqt",
+        render: (row) => row.time || "—",
+      },
+    ],
+    [allSelectedOnPage, selected, toggleSelect, toggleSelectAll]
+  );
 
   return (
     <div className="orders-page">
-      {/* HEADER */}
       <div className="orders-header">
         <div>
           <h1>Buyurtmalar</h1>
@@ -128,16 +191,15 @@ export default function OrdersPage() {
         </div>
 
         <div className="orders-actions">
-          <button className="btn secondary">
+          <button className="btn secondary" type="button">
             <FiPrinter /> Chop etish
           </button>
-          <button className="btn primary">
+          <button className="btn primary" type="button">
             <FiDownload /> CVS yuklab olish
           </button>
         </div>
       </div>
 
-      {/* FILTERS */}
       <div className="orders-filters">
         <div className="filter-group">
           <label>Qidiruv</label>
@@ -171,94 +233,21 @@ export default function OrdersPage() {
         </div>
       </div>
 
-      {/* TABLE */}
       <div className="orders-table-wrapper">
-        <table className="orders-table">
-          <thead>
-            <tr>
-              <th>
-                <input
-                  ref={headerCheckboxRef}
-                  type="checkbox"
-                  onChange={toggleSelectAll}
-                  checked={allSelectedOnPage}
-                />
-              </th>
-              <th>#</th>
-              <th>Mijoz</th>
-              <th>Holat</th>
-              <th>To‘lov</th>
-              <th>Summa</th>
-              <th>Manzil</th>
-              <th>Vaqt</th>
-            </tr>
-          </thead>
-
-          <tbody>
-            {paginatedOrders.map((order) => {
-              const statusConfig = STATUS_MAP[order.status] || {
-                label: order.status,
-                className: "gray",
-              };
-
-              return (
-                <tr key={order.rowId}>
-                  <td>
-                    <input
-                      type="checkbox"
-                      checked={selected.includes(order.rowId)}
-                      onChange={() => toggleSelect(order.rowId)}
-                    />
-                  </td>
-                  <td>{order.id}</td>
-                  <td>{order.customer}</td>
-                  <td>
-                    <span className={`badge ${statusConfig.className}`}>
-                      {statusConfig.label}
-                    </span>
-                  </td>
-                  <td>{order.payment}</td>
-                  <td>{order.amount}</td>
-                  <td>{order.address}</td>
-                  <td>{order.time}</td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
+        <GlobalTable
+          className="orders-global-table"
+          columns={columns}
+          data={paginatedOrders}
+          emptyText="Ma'lumot topilmadi"
+          rowKey="rowId"
+          pagination={{
+            page: currentPage,
+            pageSize: ITEMS_PER_PAGE,
+            total: orders.length,
+          }}
+          onPageChange={setCurrentPage}
+        />
       </div>
-
-      {/* PAGINATION */}
-<div className="pagination">
-  <button
-    className="page-btn nav"
-    disabled={currentPage === 1}
-    onClick={goPrev}
-  >
-    Oldingi
-  </button>
-
-  {Array.from({ length: totalPages }, (_, i) => {
-    const page = i + 1;
-    return (
-      <button
-        key={page}
-        className={`page-btn ${currentPage === page ? "active" : ""}`}
-        onClick={() => setCurrentPage(page)}
-      >
-        {page}
-      </button>
-    );
-  })}
-
-  <button
-    className="page-btn nav"
-    disabled={currentPage === totalPages}
-    onClick={goNext}
-  >
-    Keyingi
-  </button>
-</div>
     </div>
   );
 }

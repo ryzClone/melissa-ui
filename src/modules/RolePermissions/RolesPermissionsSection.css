@@ -1,0 +1,130 @@
+.roles-permissions-section {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.roles-permissions-error {
+  padding: 12px 16px;
+  border-radius: 12px;
+  background: rgba(248, 113, 113, 0.1);
+  border: 1px solid rgba(248, 113, 113, 0.3);
+  color: #fca5a5;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.role-detail-card {
+  border-radius: 20px;
+  background: linear-gradient(
+    180deg,
+    rgba(28, 11, 52, 0.96),
+    rgba(15, 7, 31, 0.98)
+  );
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.28);
+  overflow: hidden;
+}
+
+.role-detail-header {
+  padding: 18px 20px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: center;
+  gap: 16px;
+}
+
+.role-detail-back-btn {
+  height: 38px;
+  padding: 0 14px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.04);
+  color: rgba(255, 255, 255, 0.85);
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.role-detail-back-btn:hover {
+  background: rgba(142, 91, 255, 0.18);
+  border-color: rgba(142, 91, 255, 0.4);
+  color: #fff;
+  transform: translateX(-2px);
+}
+
+.role-detail-title {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: #d6c2ff;
+  min-width: 0;
+}
+
+.role-detail-title h3 {
+  margin: 0;
+  color: #fff;
+  font-size: 18px;
+  font-weight: 700;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.role-detail-title p {
+  margin: 4px 0 0;
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 12px;
+}
+
+.role-detail-body {
+  padding: 18px 20px;
+}
+
+.role-detail-body .global-table {
+  border-radius: 16px;
+}
+
+.permission-code-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 10px;
+  border-radius: 8px;
+  background: rgba(142, 91, 255, 0.16);
+  border: 1px solid rgba(142, 91, 255, 0.32);
+  color: #d6c2ff;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+}
+
+.role-permissions-page {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.role-permissions-page-top h1 {
+  margin: 0;
+  color: #fff;
+  font-size: 28px;
+  font-weight: 700;
+}
+
+.role-permissions-page-top p {
+  margin: 6px 0 0;
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 13px;
+}
+
+@media (max-width: 900px) {
+  .role-detail-header {
+    grid-template-columns: 1fr;
+  }
+}

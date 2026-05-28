@@ -9,7 +9,9 @@ import ReservationsPage from "../modules/ReservationsPage/page/ReservationsPage"
 import CatalogPage from "../modules/catalog/page/CatalogPage";
 import UsersPage from "../modules/Users/pages/UsersPage";
 import PromotionsPage from "../modules/Promotions/page/PromotionsPage";
-import BranchesPages from "../modules/Branches/pages/BranchesPage"
+import BranchesPages from "../modules/Branches/pages/BranchesPage";
+import FinancePage from "../modules/Finance/page/FinancePage";
+import RolesPermissionsPage from "@/modules/RolePermissions/pages/RolesPermissionsPage";
 
 function ProtectedRoute({ children }) {
   const { user, loading } = useAuth();
@@ -20,7 +22,10 @@ function ProtectedRoute({ children }) {
 }
 
 function PublicRoute({ children }) {
-  const { user } = useAuth();
+  const { user, loading } = useAuth();
+
+  if (loading) return null;
+
   return user ? <Navigate to="/" replace /> : children;
 }
 
@@ -51,11 +56,11 @@ export const routes = [
         path: "orders",
         element: <OrdersPage />,
       },
-            {
+      {
         path: "brands",
         element: <ReservationsPage />,
       },
-       {
+      {
         path: "catalog",
         element: <CatalogPage />,
       },
@@ -70,7 +75,15 @@ export const routes = [
       {
         path: "sales",
         element: <PromotionsPage />,
-      }
+      },
+      {
+        path: "finance",
+        element: <FinancePage />,
+      },
+      {
+        path: "roles",
+        element: <RolesPermissionsPage />,
+      },
     ],
   },
 ];

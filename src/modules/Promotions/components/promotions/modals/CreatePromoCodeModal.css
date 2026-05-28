@@ -1,0 +1,349 @@
+.promo-code-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  background: rgba(3, 1, 10, 0.72);
+  backdrop-filter: blur(14px);
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 20px;
+  overflow-y: auto;
+}
+
+.promo-code-modal {
+  position: relative;
+  width: 40%;
+  min-height: 100vh;
+  border-radius: 0;
+  padding: 22px;
+  color: #ffffff;
+  background:
+    radial-gradient(circle at 50% 0%, rgba(146, 84, 255, 0.2), transparent 34%),
+    linear-gradient(180deg, #170922 0%, #100718 48%, #09050f 100%);
+  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.45);
+}
+
+.promo-code-close {
+  position: absolute;
+  right: 20px;
+  top: 20px;
+  width: 32px;
+  height: 32px;
+  border: none;
+  border-radius: 12px;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.58);
+  cursor: pointer;
+}
+
+.promo-code-head span {
+  display: block;
+  font-size: 9px;
+  letter-spacing: 2px;
+  color: rgba(255, 255, 255, 0.38);
+  font-weight: 800;
+  margin-bottom: 8px;
+}
+
+.promo-code-head h2 {
+  margin: 0;
+  font-size: 22px;
+  font-weight: 900;
+}
+
+.promo-code-head p {
+  margin: 5px 0 0;
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.52);
+}
+
+.promo-preview-card {
+  margin-top: 28px;
+  padding: 18px;
+  border-radius: 15px;
+  border: 1px solid rgba(158, 91, 255, 0.28);
+  background: rgba(255, 255, 255, 0.035);
+  box-shadow: 0 20px 50px rgba(127, 74, 255, 0.14);
+}
+
+.promo-preview-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.promo-preview-top span {
+  font-size: 9px;
+  letter-spacing: 1.6px;
+  color: rgba(255, 255, 255, 0.38);
+  font-weight: 800;
+}
+
+.promo-preview-top button {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  border: 1px dashed rgba(168, 107, 255, 0.6);
+  background: rgba(118, 70, 255, 0.09);
+  color: #a66bff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.promo-preview-code {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 8px;
+  font-size: 20px;
+  font-weight: 950;
+  letter-spacing: 3px;
+}
+
+.promo-preview-code span {
+  width: 24px;
+  height: 6px;
+  border-radius: 99px;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.promo-preview-card p {
+  margin: 8px 0 0;
+  font-size: 12px;
+  color: #a66bff;
+  font-weight: 800;
+}
+
+.promo-section {
+  margin-top: 26px;
+}
+
+.promo-section-title {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin-bottom: 13px;
+  color: #b486ff;
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+}
+
+.promo-field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.promo-field label,
+.promo-label-row label {
+  font-size: 10px;
+  font-weight: 800;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.45);
+}
+
+.promo-field input {
+  width: 100%;
+  height: 47px;
+  border: 1px solid rgba(255, 255, 255, 0.055);
+  border-radius: 11px;
+  background: rgba(255, 255, 255, 0.055);
+  color: #ffffff;
+  padding: 0 13px;
+  outline: none;
+  font-weight: 750;
+}
+
+.promo-field input::placeholder {
+  color: rgba(255, 255, 255, 0.25);
+}
+
+.promo-field input:focus {
+  border-color: rgba(158, 91, 255, 0.55);
+  box-shadow: 0 0 0 3px rgba(158, 91, 255, 0.11);
+}
+
+.promo-code-row {
+  display: grid;
+  grid-template-columns: 1fr 98px;
+  gap: 8px;
+  align-items: end;
+}
+
+.promo-code-row button {
+  height: 47px;
+  border: none;
+  border-radius: 11px;
+  background: rgba(149, 89, 255, 0.16);
+  color: #b98cff;
+  font-size: 12px;
+  font-weight: 900;
+  cursor: pointer;
+}
+
+.promo-type-tabs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  background: rgba(255, 255, 255, 0.045);
+  border-radius: 11px;
+  padding: 4px;
+  margin-bottom: 15px;
+}
+
+.promo-type-tabs button {
+  height: 38px;
+  border: none;
+  border-radius: 9px;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.52);
+  font-size: 12px;
+  font-weight: 850;
+  cursor: pointer;
+}
+
+.promo-type-tabs button.active {
+  background: linear-gradient(135deg, #8d4cff, #b070ff);
+  color: white;
+}
+
+.promo-label-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.promo-label-row b {
+  color: #a66bff;
+  font-size: 16px;
+}
+
+.promo-field input[type="range"] {
+  padding: 0;
+  height: 4px;
+  accent-color: #9b5cff;
+}
+
+.promo-two-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.promo-field.inline {
+  position: relative;
+}
+
+.promo-field.inline input {
+  text-align: right;
+  color: #a66bff;
+}
+
+.promo-status-row {
+  margin-top: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.promo-status-row h4 {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 900;
+}
+
+.promo-status-row p {
+  margin: 4px 0 0;
+  font-size: 10px;
+  color: rgba(255, 255, 255, 0.45);
+}
+
+.promo-switch {
+  position: relative;
+  width: 38px;
+  height: 22px;
+  flex: 0 0 auto;
+}
+
+.promo-switch input {
+  display: none;
+}
+
+.promo-switch span {
+  position: absolute;
+  inset: 0;
+  border-radius: 99px;
+  background: rgba(255, 255, 255, 0.16);
+  cursor: pointer;
+}
+
+.promo-switch span::before {
+  content: "";
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  left: 3px;
+  top: 3px;
+  border-radius: 50%;
+  background: #fff;
+  transition: 0.2s ease;
+}
+
+.promo-switch input:checked + span {
+  background: linear-gradient(135deg, #8d4cff, #b070ff);
+}
+
+.promo-switch input:checked + span::before {
+  transform: translateX(16px);
+}
+
+.promo-footer {
+  position: sticky;
+  bottom: 0;
+  display: grid;
+  grid-template-columns: 1fr 1.45fr;
+  gap: 10px;
+  padding-top: 18px;
+  margin-top: 22px;
+  background: linear-gradient(180deg, rgba(9, 5, 15, 0), #09050f 28%);
+}
+
+.promo-footer button {
+  height: 50px;
+  border-radius: 12px;
+  font-weight: 950;
+  cursor: pointer;
+}
+
+.promo-cancel {
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.025);
+  color: #ffffff;
+}
+
+.promo-submit {
+  border: none;
+  color: white;
+  background: linear-gradient(135deg, #8e52ff, #b275ff);
+  box-shadow: 0 14px 35px rgba(143, 82, 255, 0.34);
+}
+
+@media (max-width: 560px) {
+  .promo-code-overlay {
+    padding: 0;
+  }
+
+  .promo-code-modal {
+    width: 100%;
+  }
+
+  .promo-two-grid,
+  .promo-code-row {
+    grid-template-columns: 1fr;
+  }
+}

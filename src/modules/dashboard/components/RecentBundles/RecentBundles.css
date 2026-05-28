@@ -60,3 +60,10 @@
   color: #EF4444;
   border-color: #EF4444;
 }
+
+/* GlobalTable integration */
+.dashboard-bundles-card .dashboard-bundles-global-table {
+  border: none;
+  background: transparent;
+  border-radius: 0;
+}

@@ -1,4 +1,5 @@
 import { useMemo, useState } from "react";
+import GlobalTable from "@/components/ui/GlobalTable/GlobalTable";
 import "./RecentOrders.css";
 
 const orders = [
@@ -61,10 +62,10 @@ const orders = [
 ];
 
 function getStatusClass(status) {
-  if (status === "Tayyor") return "ready";
-  if (status === "Kutilmoqda") return "waiting";
-  if (status === "Bekor qilindi") return "cancelled";
-  return "";
+  if (status === "Tayyor") return "status-active";
+  if (status === "Kutilmoqda") return "status-pending";
+  if (status === "Bekor qilindi") return "status-inactive";
+  return "status-pending";
 }
 
 export default function RecentOrders() {
@@ -73,6 +74,46 @@ export default function RecentOrders() {
   const visibleOrders = useMemo(() => {
     return showAll ? orders : orders.slice(0, 5);
   }, [showAll]);
+
+  const columns = useMemo(
+    () => [
+      {
+        key: "id",
+        title: "ID",
+        className: "order-id",
+        render: (row) => row.id || "—",
+      },
+      {
+        key: "customer",
+        title: "MIJOZ",
+        render: (row) => (
+          <div className="customer-cell">
+            <div className="customer-avatar">{row.initials || "—"}</div>
+            <span>{row.customer || "—"}</span>
+          </div>
+        ),
+      },
+      {
+        key: "date",
+        title: "SANA",
+        render: (row) => row.date || "—",
+      },
+      {
+        key: "status",
+        title: "HOLAT",
+        render: (row) => (
+          <span className={getStatusClass(row.status)}>{row.status || "—"}</span>
+        ),
+      },
+      {
+        key: "amount",
+        title: "SUMMA",
+        className: "order-amount",
+        render: (row) => row.amount || "—",
+      },
+    ],
+    []
+  );
 
   return (
     <div className="recent-orders-card">
@@ -94,38 +135,13 @@ export default function RecentOrders() {
       </div>
 
       <div className="recent-orders-table-wrap">
-        <table className="recent-orders-table">
-          <thead>
-            <tr>
-              <th>ID</th>
-              <th>MIJOZ</th>
-              <th>SANA</th>
-              <th>HOLAT</th>
-              <th>SUMMA</th>
-            </tr>
-          </thead>
-
-          <tbody>
-            {visibleOrders.map((item) => (
-              <tr key={item.id}>
-                <td className="order-id">{item.id}</td>
-                <td>
-                  <div className="customer-cell">
-                    <div className="customer-avatar">{item.initials}</div>
-                    <span>{item.customer}</span>
-                  </div>
-                </td>
-                <td>{item.date}</td>
-                <td>
-                  <span className={`order-status ${getStatusClass(item.status)}`}>
-                    {item.status}
-                  </span>
-                </td>
-                <td className="order-amount">{item.amount}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+        <GlobalTable
+          className="recent-orders-global-table"
+          columns={columns}
+          data={visibleOrders}
+          emptyText="Ma'lumot topilmadi"
+          rowKey="id"
+        />
       </div>
     </div>
   );

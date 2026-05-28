@@ -1,304 +1,223 @@
-import { useEffect, useMemo, useState } from "react";
-import { Search, Download, Pencil, Trash2, Building2 } from "lucide-react";
+import { useMemo, useState } from "react";
+import { Download } from "lucide-react";
+import { api } from "@/api";
+import GlobalTable from "@/components/GlobalTable/GlobalTable";
+
 import "./BranchesTable.css";
-import EditBranchModal from "./components/EditBranchModal/";
-import DeleteBranchModal from "./components/DeleteBranchModal/";
+import EditBranchModal from "./components/EditBranchModal";
+import DeleteBranchModal from "./components/DeleteBranchModal";
+import ViewBranchModal from "./components/ViewBranchModal";
 
-const initialBranches = [
-  {
-    id: "#FL-001",
-    name: "Chilonzor Filiali",
-    phone: "+998 90 123 45 67",
-    address: "Bunyodkor ko‘chasi, 12-uy",
-    status: "Aktiv",
-  },
-  {
-    id: "#FL-002",
-    name: "Yunusobod Filiali",
-    phone: "+998 90 987 65 43",
-    address: "A. Temur ko‘chasi, 102-uy",
-    status: "Aktiv",
-  },
-  {
-    id: "#FL-003",
-    name: "Sergeli Filiali",
-    phone: "+998 93 456 12 34",
-    address: "Lutfiy ko‘chasi, 45-uy",
-    status: "No aktiv",
-  },
-  {
-    id: "#FL-004",
-    name: "Mirobod Filiali",
-    phone: "+998 97 111 22 33",
-    address: "Shaxrisabz ko‘chasi, 2-uy",
-    status: "Aktiv",
-  },
-  {
-    id: "#FL-005",
-    name: "Olmazor Filiali",
-    phone: "+998 90 555 44 22",
-    address: "Kichik xalqa yo‘li, 1-uy",
-    status: "Aktiv",
-  },
-  {
-    id: "#FL-006",
-    name: "Uchtepa Filiali",
-    phone: "+998 94 333 99 00",
-    address: "Farxod ko‘chasi, 19-uy",
-    status: "No aktiv",
-  },
-  {
-    id: "#FL-007",
-    name: "Yakkasaroy Filiali",
-    phone: "+998 90 222 00 11",
-    address: "Bobur ko‘chasi, 40-uy",
-    status: "Aktiv",
-  },
-  {
-    id: "#FL-008",
-    name: "Shayxontohur Filiali",
-    phone: "+998 91 678 22 11",
-    address: "Beruniy ko‘chasi, 8-uy",
-    status: "Aktiv",
-  },
-  {
-    id: "#FL-009",
-    name: "Bektemir Filiali",
-    phone: "+998 95 440 11 55",
-    address: "Bektemir tumani, 14-uy",
-    status: "No aktiv",
-  },
-];
+function pickAddress(branch) {
+  const address = branch?.address;
 
-const PAGE_SIZE = 7;
+  if (typeof address === "string" && address.trim()) {
+    return address;
+  }
 
-function getStatusClass(status) {
-  return status === "Aktiv" ? "active" : "inactive";
+  return (
+    address?.formattedAddress ||
+    address?.title ||
+    branch?.formattedAddress ||
+    "-"
+  );
 }
 
-export default function BranchesTable() {
-  const [branches, setBranches] = useState(initialBranches);
+function BranchesTable({
+  data = [],
+  loading = false,
+  onRefresh,
+}) {
   const [search, setSearch] = useState("");
-  const [page, setPage] = useState(1);
+
+  const [isViewOpen, setIsViewOpen] = useState(false);
+  const [viewLoading, setViewLoading] = useState(false);
+  const [viewedBranch, setViewedBranch] = useState(null);
 
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
   const [selectedBranch, setSelectedBranch] = useState(null);
+  const [actionLoading, setActionLoading] = useState(false);
 
-  const filteredBranches = useMemo(() => {
+  const tableData = useMemo(() => {
+    const normalized = data.map((item) => ({
+      ...item,
+      phone: item?.phone || item?.phoneNumber || "-",
+      formattedAddress: pickAddress(item),
+    }));
+
     const q = search.trim().toLowerCase();
+    if (!q) return normalized;
 
-    return branches.filter((item) => {
-      return (
-        item.id.toLowerCase().includes(q) ||
-        item.name.toLowerCase().includes(q) ||
-        item.phone.toLowerCase().includes(q) ||
-        item.address.toLowerCase().includes(q) ||
-        item.status.toLowerCase().includes(q)
-      );
-    });
-  }, [branches, search]);
+    return normalized.filter((item) =>
+      [item.id, item.name, item.phone, item.formattedAddress]
+        .map((v) => String(v ?? "").toLowerCase())
+        .some((v) => v.includes(q))
+    );
+  }, [data, search]);
 
-  const totalPages = Math.max(1, Math.ceil(filteredBranches.length / PAGE_SIZE));
+  const handleView = async (branch) => {
+    if (!branch?.id) return;
 
-  const pagedBranches = useMemo(() => {
-    const start = (page - 1) * PAGE_SIZE;
-    return filteredBranches.slice(start, start + PAGE_SIZE);
-  }, [filteredBranches, page]);
+    setViewedBranch(branch);
+    setIsViewOpen(true);
+    setViewLoading(true);
 
-  useEffect(() => {
-    if (page > totalPages) {
-      setPage(totalPages);
+    try {
+      const res = await api.organizationBranch.getById(branch.id);
+      const full = res?.data || branch;
+      setViewedBranch(full);
+    } catch (error) {
+      console.error(error?.message || "Filial ma'lumotini olishda xatolik");
+    } finally {
+      setViewLoading(false);
     }
-  }, [page, totalPages]);
-
-  const handlePrev = () => {
-    setPage((prev) => Math.max(1, prev - 1));
   };
 
-  const handleNext = () => {
-    setPage((prev) => Math.min(totalPages, prev + 1));
+  const closeView = () => {
+    if (viewLoading) return;
+    setIsViewOpen(false);
+    setViewedBranch(null);
   };
 
-  const handleSearch = (value) => {
-    setSearch(value);
-    setPage(1);
-  };
+  const handleEdit = async (branch) => {
+    if (!branch?.id || actionLoading) return;
 
-  const openEditModal = (branch) => {
-    setSelectedBranch(branch);
-    setIsEditOpen(true);
+    try {
+      setActionLoading(true);
+      const res = await api.organizationBranch.getById(branch.id);
+      const full = res?.data || branch;
+      setSelectedBranch(full);
+      setIsEditOpen(true);
+    } catch (error) {
+      console.error(error?.message || "Filial ma'lumotini olishda xatolik");
+      setSelectedBranch(branch);
+      setIsEditOpen(true);
+    } finally {
+      setActionLoading(false);
+    }
   };
 
   const closeEditModal = () => {
+    if (actionLoading) return;
     setSelectedBranch(null);
     setIsEditOpen(false);
   };
 
-  const openDeleteModal = (branch) => {
+  const handleDelete = (branch) => {
+    if (!branch?.id || actionLoading) return;
     setSelectedBranch(branch);
     setIsDeleteOpen(true);
   };
 
   const closeDeleteModal = () => {
+    if (actionLoading) return;
     setSelectedBranch(null);
     setIsDeleteOpen(false);
   };
 
-  const handleSaveEdit = (updatedBranch) => {
-    setBranches((prev) =>
-      prev.map((item) =>
-        item.id === updatedBranch.id
-          ? {
-              ...item,
-              ...updatedBranch,
-            }
-          : item
-      )
-    );
+  const handleSaveEdit = async (payload) => {
+    if (!selectedBranch?.id || !payload) return;
 
-    closeEditModal();
+    try {
+      setActionLoading(true);
+      await api.organizationBranch.update(selectedBranch.id, payload);
+      setIsEditOpen(false);
+      setSelectedBranch(null);
+      if (onRefresh) await onRefresh();
+    } catch (error) {
+      console.error(error?.message || "Filialni tahrirlashda xatolik");
+    } finally {
+      setActionLoading(false);
+    }
   };
 
-  const handleDeleteBranch = () => {
-    if (!selectedBranch) return;
+  const handleDeleteBranch = async () => {
+    if (!selectedBranch?.id) return;
 
-    setBranches((prev) =>
-      prev.filter((item) => item.id !== selectedBranch.id)
-    );
-
-    closeDeleteModal();
+    try {
+      setActionLoading(true);
+      await api.organizationBranch.delete(selectedBranch.id);
+      setIsDeleteOpen(false);
+      setSelectedBranch(null);
+      if (onRefresh) await onRefresh();
+    } catch (error) {
+      console.error(error?.message || "Filialni o'chirishda xatolik");
+    } finally {
+      setActionLoading(false);
+    }
   };
 
-  const handleExport = () => {
-    console.log("Export logic shu yerga yoziladi");
-  };
+  const columns = useMemo(
+    () => [
+      { key: "id", label: "ID" },
+      { key: "name", label: "Branch name" },
+      { key: "phone", label: "Phone" },
+      { key: "formattedAddress", label: "Address" },
+      { key: "active", label: "Status" },
+      { key: "actions", label: "Actions" },
+    ],
+    []
+  );
+
+  const actions = useMemo(
+    () => [
+      {
+        label: "View",
+        type: "view",
+        onClick: (row) => handleView(row),
+      },
+      {
+        label: "Edit",
+        type: "edit",
+        onClick: (row) => handleEdit(row),
+      },
+      {
+        label: "Delete",
+        type: "delete",
+        onClick: (row) => handleDelete(row),
+      },
+    ],
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [actionLoading]
+  );
 
   return (
     <>
-      <div className="branches-table-card">
-        <div className="branches-table-top">
-          <h3>Filial ro‘yxati</h3>
+      <GlobalTable
+        title="Filial ro'yxati"
+        columns={columns}
+        data={tableData}
+        actions={actions}
+        loading={loading}
+        emptyText="Branches not found"
+        rowKey="id"
+        searchValue={search}
+        onSearchChange={setSearch}
+        searchPlaceholder="Qidiruv..."
+        headerExtra={
+          <button
+            className="branches-download-btn"
+            type="button"
+            onClick={() => console.log("Export")}
+            title="Yuklab olish"
+          >
+            <Download size={16} />
+          </button>
+        }
+      />
 
-          <div className="branches-table-tools">
-            <div className="branches-search">
-              <Search size={16} />
-              <input
-                type="text"
-                placeholder="Qidiruv..."
-                value={search}
-                onChange={(e) => handleSearch(e.target.value)}
-              />
-            </div>
-
-            <button
-              className="branches-download-btn"
-              type="button"
-              onClick={handleExport}
-              title="Yuklab olish"
-            >
-              <Download size={16} />
-            </button>
-          </div>
-        </div>
-
-        <div className="branches-table-wrap">
-          <table className="branches-table">
-            <thead>
-              <tr>
-                <th>ID</th>
-                <th>FILIAL NOMI</th>
-                <th>TEL RAQAM</th>
-                <th>MANZIL</th>
-                <th>HOLAT</th>
-                <th>HARAKATLAR</th>
-              </tr>
-            </thead>
-
-            <tbody>
-              {pagedBranches.map((item) => (
-                <tr key={item.id}>
-                  <td className="branch-id">{item.id}</td>
-
-                  <td>
-                    <div className="branch-name-cell">
-                      <div className="branch-icon-box">
-                        <Building2 size={15} />
-                      </div>
-                      <span>{item.name}</span>
-                    </div>
-                  </td>
-
-                  <td>{item.phone}</td>
-                  <td>{item.address}</td>
-
-                  <td>
-                    <span
-                      className={`branch-status ${getStatusClass(item.status)}`}
-                    >
-                      <span className="branch-status-dot" />
-                      {item.status}
-                    </span>
-                  </td>
-
-                  <td>
-                    <div className="branch-actions">
-                      <button
-                        type="button"
-                        className="branch-action-btn"
-                        onClick={() => openEditModal(item)}
-                        title="Tahrirlash"
-                      >
-                        <Pencil size={15} />
-                      </button>
-
-                      <button
-                        type="button"
-                        className="branch-action-btn danger"
-                        onClick={() => openDeleteModal(item)}
-                        title="O‘chirish"
-                      >
-                        <Trash2 size={15} />
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-              ))}
-
-              {pagedBranches.length === 0 && (
-                <tr>
-                  <td colSpan="6" className="branches-empty">
-                    Hech narsa topilmadi
-                  </td>
-                </tr>
-              )}
-            </tbody>
-          </table>
-        </div>
-
-        <div className="branches-table-footer">
-          <p>
-            {pagedBranches.length} ta band ko‘rsatilmoqda (jami {filteredBranches.length})
-          </p>
-
-          <div className="branches-pagination">
-            <button type="button" onClick={handlePrev} disabled={page === 1}>
-              Oldingi
-            </button>
-            <button
-              type="button"
-              onClick={handleNext}
-              disabled={page === totalPages}
-            >
-              Keyingi
-            </button>
-          </div>
-        </div>
-      </div>
+      <ViewBranchModal
+        isOpen={isViewOpen}
+        branch={viewedBranch}
+        loading={viewLoading}
+        onClose={closeView}
+      />
 
       <EditBranchModal
         isOpen={isEditOpen}
         branch={selectedBranch}
+        loading={actionLoading}
         onClose={closeEditModal}
         onSave={handleSaveEdit}
       />
@@ -306,9 +225,14 @@ export default function BranchesTable() {
       <DeleteBranchModal
         isOpen={isDeleteOpen}
         branch={selectedBranch}
+        loading={actionLoading}
         onClose={closeDeleteModal}
         onConfirm={handleDeleteBranch}
       />
     </>
   );
 }
+
+export { BranchesTable };
+export default BranchesTable;
+

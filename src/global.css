@@ -26,13 +26,26 @@ body {
   font-family: Inter, sans-serif;
 }
 
-* {
-  scrollbar-width: none; /* Firefox */
-  -ms-overflow-style: none; /* IE */
+/* ===== HIDE ALL SCROLLBARS GLOBALLY (scroll still works) ===== */
+html,
+body,
+*,
+*::before,
+*::after {
+  scrollbar-width: none !important;        /* Firefox */
+  -ms-overflow-style: none !important;     /* IE / old Edge */
 }
 
-*::-webkit-scrollbar {
-  display: none; /* Chrome */
+html::-webkit-scrollbar,
+body::-webkit-scrollbar,
+*::-webkit-scrollbar,
+*::-webkit-scrollbar-track,
+*::-webkit-scrollbar-thumb,
+*::-webkit-scrollbar-corner {
+  width: 0 !important;
+  height: 0 !important;
+  display: none !important;                /* Chrome / Edge / Safari */
+  background: transparent !important;
 }
 
 

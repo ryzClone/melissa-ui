@@ -1,24 +1,186 @@
-.catalog-page {
-  width: 100%;
-  height: calc(100vh - 64px); /* header balandligi */
-  
+/* Prevent double scroll on layout when catalog is open */
+.layout-content:has(.catalog-page) {
+  overflow: hidden;
   display: flex;
   flex-direction: column;
-  gap: 20px;
+}
 
-  padding: 0px 0px 40px 0px;
+.catalog-page {
+  --catalog-layout-header: 60px;
+  --catalog-layout-padding: 48px;
 
-  overflow-y: auto;
+  width: 100%;
+  height: calc(100vh - var(--catalog-layout-header) - var(--catalog-layout-padding));
+  max-height: calc(100vh - var(--catalog-layout-header) - var(--catalog-layout-padding));
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  color: #ffffff;
   box-sizing: border-box;
 }
 
-/* scrollbar hide */
-
-.catalog-page::-webkit-scrollbar {
-  display: none;
+.catalog-page-header {
+  flex-shrink: 0;
+  margin-bottom: 20px;
 }
 
-.catalog-page {
-  scrollbar-width: none;
-  -ms-overflow-style: none;
+.catalog-page-top {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.catalog-page-top h1 {
+  margin: 0;
+  font-size: 22px;
+  font-weight: 800;
+  color: #ffffff;
+}
+
+.catalog-page-top p {
+  margin: 4px 0 0;
+  color: rgba(255, 255, 255, 0.55);
+  font-size: 13px;
+}
+
+.catalog-primary-btn {
+  height: 42px;
+  padding: 0 18px;
+  border: 0;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #9b63ff, #7c3aed);
+  color: #ffffff;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 10px 24px rgba(124, 58, 237, 0.35);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.catalog-primary-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 14px 28px rgba(124, 58, 237, 0.45);
+}
+
+.catalog-error {
+  flex-shrink: 0;
+  margin-bottom: 12px;
+  padding: 10px 14px;
+  border-radius: 10px;
+  background: rgba(239, 68, 68, 0.12);
+  border: 1px solid rgba(239, 68, 68, 0.32);
+  color: #fecaca;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.catalog-product-img {
+  width: 46px;
+  height: 46px;
+  border-radius: 14px;
+  object-fit: cover;
+  display: block;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.catalog-product-placeholder {
+  width: 46px;
+  height: 46px;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.055);
+  border: 1px dashed rgba(255, 255, 255, 0.14);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 9px;
+  color: rgba(255, 255, 255, 0.42);
+}
+
+.catalog-content {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.catalog-card {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  border-radius: 10px;
+  overflow: hidden;
+  background: #17101f;
+  border: 1px solid rgba(255, 255, 255, 0.035);
+  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.45);
+}
+
+.catalog-card-top {
+  flex-shrink: 0;
+}
+
+.catalog-table-scroll {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(139, 92, 246, 0.45) rgba(255, 255, 255, 0.04);
+}
+
+.catalog-table-scroll::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+.catalog-table-scroll::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.04);
+  border-radius: 999px;
+}
+
+.catalog-table-scroll::-webkit-scrollbar-thumb {
+  background: rgba(139, 92, 246, 0.45);
+  border-radius: 999px;
+}
+
+.catalog-table-scroll::-webkit-scrollbar-thumb:hover {
+  background: rgba(139, 92, 246, 0.65);
+}
+
+.catalog-card .catalog-footer {
+  flex-shrink: 0;
+}
+
+.catalog-table-scroll .catalog-table-wrap {
+  min-height: min-content;
+}
+
+@media (max-width: 900px) {
+  .catalog-page {
+    height: calc(100vh - var(--catalog-layout-header) - 32px);
+    max-height: calc(100vh - var(--catalog-layout-header) - 32px);
+  }
+
+  .catalog-page-header {
+    margin-bottom: 14px;
+  }
+
+  .catalog-table-scroll {
+    -webkit-overflow-scrolling: touch;
+  }
+}
+
+@media (max-width: 640px) {
+  .layout-content:has(.catalog-page) {
+    padding: 16px;
+  }
+
+  .catalog-page {
+    --catalog-layout-padding: 32px;
+  }
 }

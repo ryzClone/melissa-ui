@@ -9,10 +9,13 @@
     padding: 20px;
     z-index: 999;
   }
-  
+
   .branch-modal {
     width: 100%;
     max-width: 580px;
+    max-height: calc(100vh - 40px);
+    display: flex;
+    flex-direction: column;
     border-radius: 24px;
     background: linear-gradient(
       180deg,
@@ -24,12 +27,13 @@
     overflow: hidden;
     animation: branchModalFade 0.22s ease;
   }
-  
+
   .branch-delete-modal {
     max-width: 480px;
   }
-  
+
   .branch-modal-header {
+    flex-shrink: 0;
     padding: 20px 22px 16px;
     display: flex;
     align-items: flex-start;
@@ -37,20 +41,20 @@
     gap: 16px;
     border-bottom: 1px solid rgba(255, 255, 255, 0.05);
   }
-  
+
   .branch-modal-header h3 {
     margin: 0;
     color: #ffffff;
     font-size: 22px;
     font-weight: 700;
   }
-  
+
   .branch-modal-header p {
     margin: 6px 0 0;
     color: rgba(255, 255, 255, 0.45);
     font-size: 13px;
   }
-  
+
   .branch-modal-close {
     width: 36px;
     height: 36px;
@@ -65,41 +69,79 @@
     transition: 0.2s ease;
     flex-shrink: 0;
   }
-  
+
   .branch-modal-close:hover {
     background: rgba(255, 255, 255, 0.1);
     color: #ffffff;
   }
-  
-  .branch-modal-form {
-    padding: 20px 22px 22px;
+
+  .branch-modal-body {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-height: 0;
   }
-  
+
+  .branch-modal-form {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: 20px 22px 8px;
+
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+
+  .branch-modal-form::-webkit-scrollbar {
+    display: none;
+  }
+
+  .branch-modal input[type="number"]::-webkit-outer-spin-button,
+  .branch-modal input[type="number"]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
+  .branch-modal input[type="number"] {
+    -moz-appearance: textfield;
+  }
+
   .branch-form-grid {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 16px;
   }
-  
+
   .branch-form-group {
     display: flex;
     flex-direction: column;
     gap: 8px;
   }
-  
+
   .branch-form-group-full {
     grid-column: span 2;
   }
-  
+
   .branch-form-group label {
     color: rgba(255, 255, 255, 0.74);
     font-size: 13px;
     font-weight: 600;
   }
-  
-  .branch-form-group input {
+
+  .branch-form-section-title {
+    grid-column: span 2;
+    margin: 8px 0 4px;
+    color: rgba(255, 255, 255, 0.55);
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .branch-form-group input,
+  .branch-form-group textarea {
     width: 100%;
-    height: 44px;
     border-radius: 14px;
     border: 1px solid rgba(255, 255, 255, 0.06);
     background: rgba(255, 255, 255, 0.045);
@@ -107,9 +149,22 @@
     color: #ffffff;
     outline: none;
     font-size: 14px;
+    font-family: inherit;
+    box-sizing: border-box;
     transition: 0.2s ease;
   }
-  
+
+  .branch-form-group input {
+    height: 44px;
+    transition: 0.2s ease;
+  }
+
+  .branch-form-group textarea {
+    min-height: 88px;
+    padding: 12px 14px;
+    resize: vertical;
+  }
+
   .branch-form-group select {
     width: 100%;
     height: 44px;
@@ -126,7 +181,7 @@
     -webkit-appearance: none;
     -moz-appearance: none;
     cursor: pointer;
-  
+
     background-image:
       linear-gradient(45deg, transparent 50%, #b895ff 50%),
       linear-gradient(135deg, #b895ff 50%, transparent 50%);
@@ -136,35 +191,126 @@
     background-size: 6px 6px, 6px 6px;
     background-repeat: no-repeat;
   }
-  
+
   .branch-form-group input:focus,
+  .branch-form-group textarea:focus,
   .branch-form-group select:focus {
     border-color: #a781ff;
     box-shadow: 0 0 0 4px rgba(167, 129, 255, 0.08);
   }
-  
+
   .branch-form-group select:hover {
     border-color: rgba(167, 129, 255, 0.28);
     background-color: rgba(255, 255, 255, 0.06);
   }
-  
-  .branch-form-group input:disabled {
+
+  .branch-form-group input:disabled,
+  .branch-form-group textarea:disabled {
     opacity: 0.6;
     cursor: not-allowed;
   }
-  
+
+  .branch-address-label-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 8px;
+  }
+
+  .branch-address-label-row label {
+    margin-bottom: 0;
+  }
+
+  .branch-map-link {
+    border: none;
+    background: transparent;
+    color: #c4a7ff;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    padding: 0;
+    margin-left: auto;
+    transition: color 0.2s ease;
+  }
+
+  .branch-map-link:hover {
+    color: #ffffff;
+  }
+
+  .branch-map-link svg {
+    color: #9a63ff;
+  }
+
+  .branch-map-link:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+
+  .branch-status-card {
+    grid-column: 1 / -1;
+    min-height: 58px;
+    padding: 14px 16px;
+    border: 1px solid rgba(154, 99, 255, 0.25);
+    border-radius: 14px;
+    background: rgba(19, 12, 28, 0.88);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .branch-status-card span {
+    color: #ffffff;
+    font-size: 15px;
+    font-weight: 600;
+  }
+
+  .branch-status-switch {
+    width: 50px;
+    height: 28px;
+    border: none;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.18);
+    padding: 3px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .branch-status-switch span {
+    display: block;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: #ffffff;
+    font-size: 0;
+    transform: translateX(0);
+    transition: all 0.2s ease;
+  }
+
+  .branch-status-switch.active {
+    background: #9a63ff;
+  }
+
+  .branch-status-switch.active span {
+    transform: translateX(22px);
+  }
+
   .branch-form-group select option {
     background: #191224;
     color: #ffffff;
   }
-  
+
   .branch-modal-actions {
+    flex-shrink: 0;
     display: flex;
     justify-content: flex-end;
     gap: 10px;
-    margin: 22px 22px 15px 22px;
+    padding: 16px 22px 20px;
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
   }
-  
+
   .branch-primary-btn,
   .branch-secondary-btn,
   .branch-danger-btn {
@@ -177,52 +323,115 @@
     font-weight: 600;
     transition: 0.2s ease;
   }
-  
+
   .branch-primary-btn {
     background: #8d69ff;
     color: #ffffff;
   }
-  
+
   .branch-primary-btn:hover {
     background: #9a7bff;
     transform: translateY(-1px);
   }
-  
+
   .branch-secondary-btn {
     background: rgba(255, 255, 255, 0.07);
     color: #ffffff;
   }
-  
+
   .branch-secondary-btn:hover {
     background: rgba(255, 255, 255, 0.12);
   }
-  
+
   .branch-danger-btn {
     background: rgba(255, 88, 111, 0.16);
     color: #ff98a5;
   }
-  
+
   .branch-danger-btn:hover {
     background: rgba(255, 88, 111, 0.24);
     color: #ffb1bb;
     transform: translateY(-1px);
   }
-  
+
   .branch-delete-content {
     padding: 20px 22px 0;
   }
-  
+
   .branch-delete-content p {
     margin: 0 0 12px;
     color: rgba(255, 255, 255, 0.8);
     line-height: 1.6;
     font-size: 14px;
   }
-  
+
   .branch-delete-warning {
     color: #ff9cab !important;
   }
-  
+
+  /* ----------- MAP LINK STYLES FOR EDIT MODAL ----------- */
+  .branch-edit-map-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    background: none;
+    border: none;
+    color: #a783ff;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    padding: 0;
+    margin: 0;
+    text-decoration: none;
+    transition: color 0.18s;
+  }
+  .branch-edit-map-link svg {
+    display: inline-block;
+    vertical-align: middle;
+    font-size: 18px;
+    color: #a783ff;
+    transition: color 0.18s;
+    margin-right: 4px;
+  }
+  .branch-edit-map-link:hover,
+  .branch-edit-map-link:focus {
+    color: #8d69ff;
+    text-decoration: underline;
+    outline: none;
+  }
+  .branch-edit-map-link:hover svg,
+  .branch-edit-map-link:focus svg {
+    color: #8d69ff;
+  }
+
+  /* ----------- INLINE MAP CONTAINER FOR EDIT MODAL ----------- */
+  .branch-edit-inline-map-container {
+    margin-top: 12px;
+    width: 100%;
+  }
+
+  /* ----------- VIEW MODAL ----------- */
+  .branch-view-value {
+    width: 100%;
+    min-height: 38px;
+    padding: 8px 12px;
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    color: rgba(255, 255, 255, 0.85);
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    word-break: break-word;
+  }
+
+  .branch-view-loading {
+    padding: 32px 22px;
+    text-align: center;
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 14px;
+  }
+
   @keyframes branchModalFade {
     from {
       opacity: 0;
@@ -233,20 +442,20 @@
       transform: translateY(0) scale(1);
     }
   }
-  
+
   @media (max-width: 768px) {
     .branch-form-grid {
       grid-template-columns: 1fr;
     }
-  
+
     .branch-form-group-full {
       grid-column: span 1;
     }
-  
+
     .branch-modal-actions {
       flex-direction: column;
     }
-  
+
     .branch-primary-btn,
     .branch-secondary-btn,
     .branch-danger-btn {

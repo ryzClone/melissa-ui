@@ -220,3 +220,10 @@
   font-size: 12px;
   color: #9ca3af;
 }
+
+/* GlobalTable integration */
+.reservations-table-container .global-table {
+  border: none;
+  background: transparent;
+  border-radius: 0;
+}

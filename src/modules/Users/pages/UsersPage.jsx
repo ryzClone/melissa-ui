@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Plus, Download } from "lucide-react";
 import UsersTableSection from "../components/UsersTableSection";
-import RolesPermissionsSection from "../components/RolesPermissionsSection";
+import RolesPermissionsSection from "@/modules/RolePermissions/components/RolesPermissionsSection";
 import AddUserModal from "../components/AddUserModal";
 import "../UsersPage.css";
 

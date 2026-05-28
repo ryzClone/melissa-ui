@@ -1,0 +1,432 @@
+.gt-wrapper,
+.global-table {
+  width: 100%;
+  border-radius: 24px;
+  background: linear-gradient(
+    180deg,
+    rgba(18, 11, 30, 0.98) 0%,
+    rgba(14, 9, 20, 1) 100%
+  );
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.22);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.gt-header,
+.global-table-header {
+  flex-shrink: 0;
+  padding: 20px 22px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.gt-title,
+.global-table-title {
+  margin: 0;
+  color: #ffffff;
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+.gt-header-tools,
+.global-table-header-tools {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.gt-search,
+.global-table-search {
+  width: 240px;
+  height: 38px;
+  border-radius: 12px;
+  padding: 0 12px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: rgba(255, 255, 255, 0.4);
+  transition: 0.25s ease;
+}
+
+.gt-search:hover,
+.global-table-search:hover {
+  border-color: rgba(167, 129, 255, 0.3);
+  background: rgba(255, 255, 255, 0.065);
+}
+
+.gt-search:focus-within,
+.global-table-search:focus-within {
+  border-color: #a781ff;
+  background: rgba(167, 129, 255, 0.08);
+  box-shadow: 0 0 0 4px rgba(167, 129, 255, 0.08);
+}
+
+.gt-search input,
+.global-table-search input {
+  width: 100%;
+  height: 100%;
+  border: none;
+  outline: none;
+  background: transparent;
+  color: #ffffff;
+  font-size: 13px;
+}
+
+.gt-search input::placeholder,
+.global-table-search input::placeholder {
+  color: rgba(255, 255, 255, 0.3);
+}
+
+.gt-scroll,
+.global-table-scroll {
+  width: 100%;
+  overflow-x: auto;
+  overflow-y: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.gt-scroll::-webkit-scrollbar,
+.global-table-scroll::-webkit-scrollbar {
+  display: none;
+}
+
+.gt-table,
+.global-table-element {
+  width: 100%;
+  min-width: 720px;
+  border-collapse: collapse;
+}
+
+.gt-table thead tr,
+.global-table-element thead tr {
+  background: rgba(255, 255, 255, 0.035);
+}
+
+.gt-table th,
+.global-table-element th {
+  padding: 14px 22px;
+  text-align: left;
+  color: rgba(255, 255, 255, 0.45);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.gt-table td,
+.global-table-element td {
+  padding: 16px 22px;
+  border-top: 1px solid rgba(255, 255, 255, 0.04);
+  color: rgba(255, 255, 255, 0.82);
+  font-size: 13.5px;
+  vertical-align: middle;
+}
+
+.gt-table tbody tr,
+.global-table-element tbody tr {
+  transition: background 0.2s ease;
+}
+
+.gt-table tbody tr:hover,
+.global-table-element tbody tr:hover {
+  background: rgba(139, 92, 246, 0.06);
+}
+
+.gt-table tbody tr.gt-row-clickable,
+.global-table-element tbody tr.gt-row-clickable {
+  cursor: pointer;
+  user-select: none;
+}
+
+.gt-state,
+.global-table-state {
+  text-align: center !important;
+  padding: 56px 18px !important;
+  border-top: none !important;
+}
+
+.gt-loading,
+.gt-empty,
+.global-table-loading,
+.global-table-empty {
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+/* ===== Status badges ===== */
+.gt-badge,
+.status-active,
+.status-inactive,
+.status-pending,
+.global-table .status-active,
+.global-table .status-inactive,
+.global-table .status-pending {
+  display: inline-flex;
+  align-items: center;
+  height: 26px;
+  padding: 0 12px;
+  border-radius: 999px;
+  font-size: 11.5px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+}
+
+.gt-badge-active,
+.status-active,
+.global-table .status-active {
+  background: rgba(34, 197, 94, 0.14);
+  color: #4ade80;
+  border: 1px solid rgba(34, 197, 94, 0.3);
+}
+
+.gt-badge-inactive,
+.status-inactive,
+.global-table .status-inactive {
+  background: rgba(239, 68, 68, 0.12);
+  color: #f87171;
+  border: 1px solid rgba(239, 68, 68, 0.28);
+}
+
+.gt-badge-pending,
+.status-pending,
+.global-table .status-pending {
+  background: rgba(251, 191, 36, 0.14);
+  color: #fbbf24;
+  border: 1px solid rgba(251, 191, 36, 0.3);
+}
+
+/* ===== Actions ===== */
+.gt-actions-col,
+.global-table-actions-cell {
+  text-align: right !important;
+  width: 140px;
+}
+
+.gt-actions,
+.global-table-actions {
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.gt-action-btn,
+.global-table-action-btn {
+  width: 34px;
+  height: 34px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.04);
+  color: rgba(255, 255, 255, 0.78);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.gt-action-btn:hover,
+.global-table-action-btn:hover {
+  transform: translateY(-1px);
+}
+
+.gt-action-view,
+.global-table-action-btn.view {
+  color: #93c5fd;
+  border-color: rgba(59, 130, 246, 0.35);
+  background: rgba(59, 130, 246, 0.12);
+}
+
+.gt-action-view:hover,
+.global-table-action-btn.view:hover {
+  background: rgba(59, 130, 246, 0.22);
+  color: #bfdbfe;
+}
+
+.gt-action-edit,
+.global-table-action-btn.edit {
+  color: #c4b5fd;
+  border-color: rgba(139, 92, 246, 0.35);
+  background: rgba(139, 92, 246, 0.12);
+}
+
+.gt-action-edit:hover,
+.global-table-action-btn.edit:hover {
+  background: rgba(139, 92, 246, 0.24);
+  color: #ddd6fe;
+}
+
+.gt-action-delete,
+.global-table-action-btn.delete {
+  color: #f87171;
+  border-color: rgba(248, 113, 113, 0.35);
+  background: rgba(248, 113, 113, 0.1);
+}
+
+.gt-action-delete:hover,
+.global-table-action-btn.delete:hover {
+  background: rgba(248, 113, 113, 0.2);
+  color: #fca5a5;
+}
+
+.global-table-action-btn.success,
+.gt-action-success {
+  color: #4ade80;
+  border-color: rgba(74, 222, 128, 0.35);
+  background: rgba(74, 222, 128, 0.1);
+}
+
+.global-table-action-btn.cancel,
+.gt-action-cancel {
+  color: #fbbf24;
+  border-color: rgba(251, 191, 36, 0.35);
+  background: rgba(251, 191, 36, 0.1);
+}
+
+/* ===== Pagination ===== */
+.gt-footer,
+.global-table-footer {
+  flex-shrink: 0;
+  padding: 14px 22px;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  background: rgba(0, 0, 0, 0.16);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.gt-footer-info,
+.global-table-footer-info {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+  color: rgba(255, 255, 255, 0.45);
+  font-size: 12px;
+}
+
+.gt-page-size select,
+.global-table-page-size select {
+  height: 32px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.06);
+  color: #fff;
+  padding: 0 10px;
+  outline: none;
+  font-size: 12px;
+}
+
+.gt-pagination,
+.global-table-pagination {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.gt-page-nav,
+.global-table-page-nav {
+  height: 34px;
+  padding: 0 12px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.04);
+  color: rgba(255, 255, 255, 0.8);
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 700;
+  transition: 0.2s ease;
+}
+
+.gt-page-nav:disabled,
+.global-table-page-nav:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.gt-page-nav:not(:disabled):hover,
+.global-table-page-nav:not(:disabled):hover {
+  border-color: rgba(139, 92, 246, 0.45);
+  background: rgba(139, 92, 246, 0.12);
+}
+
+.gt-page-list,
+.global-table-page-list {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.gt-page-btn,
+.global-table-page-btn {
+  min-width: 34px;
+  height: 34px;
+  border: 0;
+  border-radius: 10px;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.65);
+  font-size: 12px;
+  font-weight: 800;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.gt-page-btn:hover,
+.global-table-page-btn:hover {
+  background: rgba(139, 92, 246, 0.16);
+  color: #fff;
+}
+
+.gt-page-btn.active,
+.global-table-page-btn.active {
+  background: linear-gradient(135deg, #9b63ff, #7c3aed);
+  color: #fff;
+  box-shadow: 0 6px 16px rgba(139, 92, 246, 0.35);
+}
+
+@media (max-width: 768px) {
+  .gt-header,
+  .global-table-header {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .gt-header-tools,
+  .global-table-header-tools {
+    width: 100%;
+  }
+
+  .gt-search,
+  .global-table-search {
+    width: 100%;
+  }
+
+  .gt-footer,
+  .global-table-footer {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .gt-pagination,
+  .global-table-pagination {
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+}

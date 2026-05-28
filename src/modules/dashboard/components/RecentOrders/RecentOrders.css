@@ -119,3 +119,10 @@
   color: #ffffff !important;
   font-weight: 700;
 }
+
+/* GlobalTable integration */
+.recent-orders-table-wrap .recent-orders-global-table {
+  border: none;
+  background: transparent;
+  border-radius: 0;
+}

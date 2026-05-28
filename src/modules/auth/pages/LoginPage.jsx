@@ -14,6 +14,7 @@ export default function LoginPage() {
     password: "",
   });
   const [error, setError] = useState("");
+  const [submitting, setSubmitting] = useState(false);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -22,18 +23,43 @@ export default function LoginPage() {
       ...prev,
       [name]: value,
     }));
+
+    if (error) {
+      setError("");
+    }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (submitting) return;
+
     setError("");
 
-    const result = await login(form.username, form.password);
+    const username = form.username.trim();
+    const password = form.password.trim();
 
-    if (result.success) {
-      navigate("/");
-    } else {
-      setError(result.message);
+    if (!username || !password) {
+      setError(t("login.required", "Username va parol kiritilishi shart"));
+      return;
+    }
+
+    try {
+      setSubmitting(true);
+
+      const result = await login(username, password);
+
+      if (result.success) {
+        navigate("/", { replace: true });
+      } else {
+        setError(
+          result.message || t("login.error", "Login qilishda xatolik yuz berdi")
+        );
+      }
+    } catch (err) {
+      setError(t("login.error", "Login qilishda xatolik yuz berdi"));
+    } finally {
+      setSubmitting(false);
     }
   };
 
@@ -47,31 +73,43 @@ export default function LoginPage() {
 
         <form onSubmit={handleSubmit}>
           <div className="input-group">
-            <label>{t("login.username", "Username")}</label>
+            <label htmlFor="username">
+              {t("login.username", "Username")}
+            </label>
             <input
+              id="username"
               type="text"
               name="username"
               value={form.username}
               onChange={handleChange}
               placeholder={t("login.usernamePlaceholder", "Enter username")}
+              autoComplete="username"
+              disabled={submitting}
             />
           </div>
 
           <div className="input-group">
-            <label>{t("login.password", "Password")}</label>
+            <label htmlFor="password">
+              {t("login.password", "Password")}
+            </label>
             <input
+              id="password"
               type="password"
               name="password"
               value={form.password}
               onChange={handleChange}
               placeholder={t("login.passwordPlaceholder", "Enter password")}
+              autoComplete="current-password"
+              disabled={submitting}
             />
           </div>
 
           {error && <p className="login-error">{error}</p>}
 
-          <button className="login-btn" type="submit">
-            {t("login.button", "Login")}
+          <button className="login-btn" type="submit" disabled={submitting}>
+            {submitting
+              ? t("login.loading", "Kirish...")
+              : t("login.button", "Login")}
           </button>
         </form>
       </div>
