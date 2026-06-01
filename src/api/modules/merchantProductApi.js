@@ -1,6 +1,6 @@
 import apiClient from "../apiClient";
 
-const BASE_URL = "/api/v1/merchant-product";
+const BASE_URL = "/catalog/api/v1/merchant-product";
 
 export const merchantProductApi = {
   getList: (params) => apiClient.get(BASE_URL, { params }),
