@@ -134,6 +134,9 @@ export default function ProductModal({
   const [categories, setCategories] = useState([]);
   const [categoriesLoading, setCategoriesLoading] = useState(false);
 
+  const [branches, setBranches] = useState([]);
+  const [branchesLoading, setBranchesLoading] = useState(false);
+
   const fileInputRef = useRef(null);
 
   const isViewMode = mode === "view";
@@ -172,6 +175,33 @@ export default function ProductModal({
     if (!isOpen) return;
     fetchCategories();
   }, [isOpen, fetchCategories]);
+
+  /* ----- Branches: load once when modal opens ----- */
+  const fetchBranches = useCallback(async () => {
+    try {
+      setBranchesLoading(true);
+      const res = await merchantProductApi.getBranchList();
+      const payload = res?.data;
+
+      const list =
+        (Array.isArray(payload?.data) && payload.data) ||
+        (Array.isArray(payload?.content) && payload.content) ||
+        (Array.isArray(payload) && payload) ||
+        [];
+
+      setBranches(list);
+    } catch (err) {
+      console.error(err);
+      setBranches([]);
+    } finally {
+      setBranchesLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (!isOpen) return;
+    fetchBranches();
+  }, [isOpen, fetchBranches]);
 
   /* ----- Create reset: only when modal opens in create mode ----- */
   useEffect(() => {
@@ -837,6 +867,71 @@ export default function ProductModal({
                   <span>Deactivated</span>
                 </label>
               </div>
+            </section>
+
+            {/* ===== Filiallar ===== */}
+            <section className="product-form-section">
+              <div className="product-section-header">
+                <h3>Filiallar</h3>
+                <p>Product qaysi filiallarda ishlashini tanlang</p>
+              </div>
+
+              {branchesLoading ? (
+                <div className="product-branch-empty">
+                  Filiallar yuklanmoqda...
+                </div>
+              ) : branches.length === 0 ? (
+                <div className="product-branch-empty">
+                  Filiallar topilmadi
+                </div>
+              ) : (
+                <div className="product-branch-grid">
+                  {branches.map((branch) => {
+                    const branchId = Number(branch.id);
+                    const checked = form.branchIds
+                      .map(Number)
+                      .includes(branchId);
+
+                    const branchName =
+                      branch.name ||
+                      branch.title ||
+                      branch.nameUz ||
+                      `Branch #${branch.id}`;
+
+                    return (
+                      <label
+                        key={branch.id}
+                        className={`product-branch-card ${
+                          checked ? "active" : ""
+                        } ${isViewMode ? "disabled" : ""}`}
+                      >
+                        <input
+                          type="checkbox"
+                          checked={checked}
+                          disabled={isViewMode || isBusy}
+                          onChange={() => {
+                            setForm((prev) => {
+                              const current = prev.branchIds.map(Number);
+                              const exists = current.includes(branchId);
+                              return {
+                                ...prev,
+                                branchIds: exists
+                                  ? current.filter((id) => id !== branchId)
+                                  : [...current, branchId],
+                              };
+                            });
+                          }}
+                        />
+
+                        <div className="product-branch-info">
+                          <strong>{branchName}</strong>
+                          <span>ID: {branch.id}</span>
+                        </div>
+                      </label>
+                    );
+                  })}
+                </div>
+              )}
             </section>
 
             {error && <div className="product-form-error">{error}</div>}
