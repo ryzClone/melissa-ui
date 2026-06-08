@@ -141,8 +141,39 @@
 
 /* BOTTOM */
 .sidebar-bottom {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
   padding-top: 18px;
   border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+/* BADGE: "Tez orada" / coming soon pill */
+.sidebar-badge {
+  margin-left: auto;
+  flex-shrink: 0;
+  padding: 3px 8px;
+  border-radius: 999px;
+  background: rgba(255, 193, 7, 0.15);
+  color: #f5b65a;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.2px;
+  line-height: 1;
+  white-space: nowrap;
+  border: 1px solid rgba(255, 193, 7, 0.2);
+  transition: all 0.2s ease;
+}
+
+.sidebar-item:hover .sidebar-badge {
+  background: rgba(255, 193, 7, 0.22);
+  border-color: rgba(255, 193, 7, 0.32);
+}
+
+.sidebar-item.active .sidebar-badge {
+  background: rgba(255, 193, 7, 0.18);
+  border-color: rgba(255, 193, 7, 0.28);
+  color: #ffd27a;
 }
 
 /* scrollbar yo‘q */

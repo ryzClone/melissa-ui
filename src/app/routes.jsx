@@ -4,7 +4,7 @@ import LoginPage from "@/modules/auth/pages/LoginPage";
 import DashboardPage from "@/modules/dashboard/pages/DashboardPage";
 import MainLayout from "@/layout/MainLayout";
 import AuthLayout from "@/layout/AuthLayout";
-import OrdersPage from "../modules/order/OrdersPage";
+import OrdersPage from "../modules/Orders/OrdersPage";
 import ReservationsPage from "../modules/ReservationsPage/page/ReservationsPage";
 import CatalogPage from "../modules/catalog/page/CatalogPage";
 import UsersPage from "../modules/Users/pages/UsersPage";
@@ -12,6 +12,9 @@ import PromotionsPage from "../modules/Promotions/page/PromotionsPage";
 import BranchesPages from "../modules/Branches/pages/BranchesPage";
 import FinancePage from "../modules/Finance/page/FinancePage";
 import RolesPermissionsPage from "@/modules/RolePermissions/pages/RolesPermissionsPage";
+import ChatControlPage from "@/modules/ChatControl/pages/ChatControlPage";
+import HelpCenterPage from "@/modules/Help/pages/HelpCenterPage";
+import SettingsPage from "@/modules/Settings/pages/SettingsPage";
 
 function ProtectedRoute({ children }) {
   const { user, loading } = useAuth();
@@ -83,6 +86,18 @@ export const routes = [
       {
         path: "roles",
         element: <RolesPermissionsPage />,
+      },
+      {
+        path: "chat",
+        element: <ChatControlPage />,
+      },
+      {
+        path: "help",
+        element: <HelpCenterPage />,
+      },
+      {
+        path: "settings",
+        element: <SettingsPage />,
       },
     ],
   },

@@ -50,16 +50,21 @@ export default function UsersTableSection() {
   const fetchRoles = useCallback(async () => {
     try {
       setRolesLoading(true);
-      const res = await organizationRoleApi.getAll();
-      const payload = res?.data;
-      const list = Array.isArray(payload)
-        ? payload
-        : Array.isArray(payload?.content)
-          ? payload.content
-          : [];
+      const res = await organizationRoleApi.getList({
+        page: 0,
+        size: 100,
+        sort: ["id,desc"],
+      });
+      const payload = res?.data || res;
+      const list =
+        payload?.data?.content ||
+        payload?.content ||
+        payload?.data ||
+        payload ||
+        [];
 
       setAllRoles(
-        list.map((role) => ({
+        (Array.isArray(list) ? list : []).map((role) => ({
           id: role.id,
           roleId: role.roleId,
           name: role.roleName || role.name || `Role #${role.id}`,

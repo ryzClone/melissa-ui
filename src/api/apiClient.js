@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const apiClient = axios.create({
-  baseURL: "https://api.mtechdynamics.uz",
+  baseURL: "https://dev-api.mtechdynamics.uz",
   timeout: 30000,
   headers: {
     "Content-Type": "application/json",
