@@ -80,7 +80,7 @@
   flex: 1;
   min-height: 0;
   overflow-y: auto;
-  padding: 20px 24px 8px;
+  padding: 20px 24px 24px;
   display: flex;
   flex-direction: column;
   gap: 20px;
@@ -124,26 +124,42 @@
 }
 
 /* ---------- Checkbox group ---------- */
+.product-checkbox-grid {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
 .product-form-checkbox {
-  display: inline-flex;
+  display: flex;
   align-items: center;
   gap: 10px;
-  padding: 10px 14px;
-  border-radius: 12px;
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(255, 255, 255, 0.05);
-  color: rgba(255, 255, 255, 0.85);
-  font-size: 12.5px;
+  height: 48px;
+  padding: 0 16px;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: rgba(255, 255, 255, 0.92);
+  font-size: 13px;
   font-weight: 600;
   cursor: pointer;
   user-select: none;
   min-width: 0;
+  transition: border-color 0.2s ease, background 0.2s ease;
+}
+
+.product-form-checkbox:hover:not(:has(input:disabled)) {
+  border-color: rgba(139, 61, 255, 0.35);
 }
 
 .product-form-checkbox input[type="checkbox"] {
   width: 18px;
   height: 18px;
-  accent-color: #8b5cf6;
+  margin: 0;
+  flex-shrink: 0;
+  accent-color: #8b3dff;
+  border-radius: 5px;
   cursor: pointer;
 }
 
@@ -366,6 +382,11 @@
 .pm-custom-select {
   position: relative;
   width: 100%;
+  z-index: 50;
+}
+
+.pm-custom-select.open {
+  z-index: 9999;
 }
 
 .pm-custom-select-trigger {
@@ -416,7 +437,7 @@
   border-radius: 14px;
   background: #1a1028;
   border: 1px solid rgba(139, 92, 246, 0.28);
-  z-index: 30;
+  z-index: 10000;
   box-shadow: 0 14px 40px rgba(0, 0, 0, 0.45);
 }
 
@@ -457,55 +478,67 @@
 
 /* ---------- Footer ---------- */
 .product-modal-footer {
+  position: sticky;
+  bottom: 0;
+  z-index: 3;
+  flex-shrink: 0;
   padding: 16px 24px 20px;
-  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  background:
+    linear-gradient(180deg, rgba(14, 6, 22, 0.72) 0%, rgba(14, 6, 22, 0.96) 100%);
+  backdrop-filter: blur(12px);
   display: flex;
-  gap: 12px;
   justify-content: flex-end;
+  gap: 14px;
 }
 
 .product-cancel-btn,
 .product-submit-btn {
-  height: 44px;
-  padding: 0 22px;
+  height: 56px;
+  padding: 0 24px;
   border: 0;
-  border-radius: 12px;
-  font-size: 13px;
+  border-radius: 16px;
+  font-size: 14px;
   font-weight: 800;
   cursor: pointer;
   transition: 0.2s ease;
 }
 
 .product-cancel-btn {
-  background: rgba(255, 255, 255, 0.06);
+  min-width: 160px;
+  background: rgba(255, 255, 255, 0.08);
   color: #fff;
 }
 
 .product-cancel-btn:hover {
-  background: rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.14);
 }
 
 .product-submit-btn {
-  background: linear-gradient(135deg, #9b63ff, #7c3aed);
+  min-width: 200px;
+  background: linear-gradient(135deg, #8b3dff, #a855f7);
   color: #fff;
-  min-width: 160px;
+  box-shadow: 0 14px 32px rgba(139, 61, 255, 0.32);
 }
 
 .product-submit-btn:hover:not(:disabled) {
-  filter: brightness(1.1);
+  filter: brightness(1.06);
+  transform: translateY(-1px);
 }
 
 .product-submit-btn:disabled {
   opacity: 0.6;
   cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
 }
 
 /* ===== Filiallar (branch multiselect) ===== */
 
 .product-form-section {
-  margin-top: 26px;
-  padding-top: 24px;
-  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  margin-top: 24px;
+  padding-top: 20px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 .product-section-header h3 {
@@ -516,17 +549,17 @@
 }
 
 .product-section-header p {
-  margin-top: 6px;
-  margin-bottom: 0;
-  color: rgba(255, 255, 255, 0.42);
+  margin: 6px 0 0;
+  color: rgba(255, 255, 255, 0.48);
   font-size: 12px;
+  line-height: 1.45;
 }
 
 .product-branch-empty {
-  margin-top: 16px;
+  margin-top: 14px;
   padding: 16px;
-  border-radius: 14px;
-  background: rgba(255, 255, 255, 0.03);
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.04);
   border: 1px dashed rgba(255, 255, 255, 0.08);
   color: rgba(255, 255, 255, 0.5);
   font-size: 13px;
@@ -534,34 +567,32 @@
 }
 
 .product-branch-grid {
-  margin-top: 16px;
+  margin-top: 14px;
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-  gap: 12px;
+  gap: 10px;
 }
 
 .product-branch-card {
-  min-height: 72px;
-  padding: 14px;
-  border-radius: 18px;
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(255, 255, 255, 0.06);
+  height: 56px;
+  padding: 0 16px;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
   display: flex;
+  align-items: center;
   gap: 12px;
   cursor: pointer;
-  transition: 0.2s ease;
-  align-items: flex-start;
+  transition: border-color 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
 }
 
 .product-branch-card:hover:not(.disabled) {
-  border-color: rgba(139, 92, 246, 0.35);
-  background: rgba(139, 92, 246, 0.06);
+  border-color: rgba(139, 61, 255, 0.45);
 }
 
 .product-branch-card.active {
-  border-color: rgba(139, 92, 246, 0.5);
-  background: rgba(139, 92, 246, 0.12);
-  box-shadow: 0 0 0 1px rgba(139, 92, 246, 0.15);
+  background: rgba(139, 61, 255, 0.12);
+  border: 1px solid rgba(139, 61, 255, 0.65);
 }
 
 .product-branch-card.disabled {
@@ -570,23 +601,24 @@
 }
 
 .product-branch-card input {
-  margin-top: 3px;
-  width: 16px;
-  height: 16px;
-  accent-color: #8b5cf6;
+  margin: 0;
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+  accent-color: #8b3dff;
+  border-radius: 5px;
   cursor: inherit;
 }
 
 .product-branch-info {
   display: flex;
   flex-direction: column;
-  gap: 4px;
   min-width: 0;
 }
 
 .product-branch-info strong {
   color: #fff;
-  font-size: 13px;
+  font-size: 14px;
   font-weight: 600;
   white-space: nowrap;
   overflow: hidden;
@@ -594,8 +626,112 @@
 }
 
 .product-branch-info span {
-  color: rgba(255, 255, 255, 0.42);
-  font-size: 11px;
+  display: none;
+}
+
+/* ===== Ko'rinish va sotuv toggles ===== */
+
+.product-status-section {
+  margin-top: 28px;
+  padding-top: 18px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.product-status-title {
+  margin: 0 0 14px;
+  text-transform: uppercase;
+  letter-spacing: 1.2px;
+  font-size: 12px;
+  font-weight: 800;
+  color: rgba(255, 255, 255, 0.58);
+}
+
+.product-switch-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.product-toggle-card {
+  min-height: 72px;
+  border-radius: 18px;
+  padding: 14px 16px;
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.06),
+    rgba(255, 255, 255, 0.035)
+  );
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  transition: border-color 0.2s ease, transform 0.2s ease, opacity 0.2s ease;
+}
+
+.product-toggle-card:not(.is-disabled):hover {
+  border-color: rgba(139, 61, 255, 0.45);
+  transform: translateY(-1px);
+}
+
+.product-toggle-card.is-disabled {
+  opacity: 0.55;
+  transform: none;
+}
+
+.product-toggle-copy {
+  min-width: 0;
+}
+
+.product-toggle-copy strong {
+  display: block;
+  font-size: 16px;
+  font-weight: 700;
+  color: #fff;
+  line-height: 1.2;
+}
+
+.product-toggle-copy p {
+  margin: 4px 0 0;
+  font-size: 12px;
+  line-height: 1.35;
+  color: rgba(255, 255, 255, 0.55);
+}
+
+.product-switch {
+  width: 48px;
+  height: 28px;
+  border: none;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.16);
+  position: relative;
+  cursor: pointer;
+  transition: background 0.2s ease;
+  flex-shrink: 0;
+}
+
+.product-switch:disabled {
+  cursor: not-allowed;
+}
+
+.product-switch.active {
+  background: linear-gradient(135deg, #8b3dff, #a855f7);
+}
+
+.product-switch-thumb {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: #ffffff;
+  transition: left 0.2s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.18);
+}
+
+.product-switch.active .product-switch-thumb {
+  left: 23px;
 }
 
 @media (max-width: 640px) {
@@ -615,5 +751,20 @@
 
   .product-branch-grid {
     grid-template-columns: 1fr;
+  }
+
+  .product-switch-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .product-modal-footer {
+    flex-direction: column-reverse;
+    align-items: stretch;
+  }
+
+  .product-cancel-btn,
+  .product-submit-btn {
+    width: 100%;
+    min-width: 0;
   }
 }

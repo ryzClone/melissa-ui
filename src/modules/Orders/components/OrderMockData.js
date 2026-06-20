@@ -50,6 +50,22 @@ export const getStatusBadge = (status) => {
   return { label: STATUS_LABELS[status] || status || "—", tone };
 };
 
+export const getOrderStatusVariant = (status) => {
+  const map = {
+    NEW: "new",
+    ACCEPTED: "accepted",
+    COOKING: "cooking",
+    DONE: "done",
+    READY: "done",
+    DELIVERED: "success",
+    DELIVERING: "info",
+    REJECTED: "danger",
+    CANCELLED: "danger",
+  };
+
+  return map[status] || "pending";
+};
+
 /* ---------- Order field helpers ---------- */
 
 export const getOrderStatus = (order) =>

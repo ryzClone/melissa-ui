@@ -1,3 +1,4 @@
+import PageWrapper from "@/components/PageWrapper/PageWrapper";
 import "../FinancePage.css";
 import FinanceHeader from "../components/FinanceHeader/FinanceHeader";
 import FinanceStats from "../components/FinanceStats/FinanceStats";
@@ -5,10 +6,12 @@ import FinanceOrdersTable from "../components/FinanceOrdersTable/FinanceOrdersTa
 
 export default function FinancePage() {
   return (
-    <div className="finance-page">
-      <FinanceHeader />
-      <FinanceStats />
-      <FinanceOrdersTable />
-    </div>
+    <PageWrapper>
+      <div className="finance-page">
+        <FinanceHeader />
+        <FinanceStats />
+        <FinanceOrdersTable />
+      </div>
+    </PageWrapper>
   );
 }

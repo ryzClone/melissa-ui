@@ -15,6 +15,7 @@ import RolesPermissionsPage from "@/modules/RolePermissions/pages/RolesPermissio
 import ChatControlPage from "@/modules/ChatControl/pages/ChatControlPage";
 import HelpCenterPage from "@/modules/Help/pages/HelpCenterPage";
 import SettingsPage from "@/modules/Settings/pages/SettingsPage";
+import ServerUnavailablePage from "@/pages/ServerUnavailablePage/ServerUnavailablePage";
 
 function ProtectedRoute({ children }) {
   const { user, loading } = useAuth();
@@ -33,6 +34,10 @@ function PublicRoute({ children }) {
 }
 
 export const routes = [
+  {
+    path: "/server-unavailable",
+    element: <ServerUnavailablePage />,
+  },
   {
     path: "/login",
     element: (

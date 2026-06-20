@@ -11,7 +11,7 @@ const BASE_URL = "/order/api/v1/merchant-order";
  * NOTE: agar backend PATCH kutsa, post o'rniga patch ishlatilsin.
  */
 export const orderApi = {
-  getCurrentOrders: () => apiClient.get(`${BASE_URL}/current`),
+  getCurrentOrders: (params) => apiClient.get(`${BASE_URL}/current`, { params }),
 
   // NEW -> ACCEPTED
   // agar backend PATCH bo'lsa post o'rniga patch ishlatilsin

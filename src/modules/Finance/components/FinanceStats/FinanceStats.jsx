@@ -1,4 +1,4 @@
-import { CreditCard, TrendingUp, WalletCards } from "lucide-react";
+import { TrendingUp } from "lucide-react";
 import "./FinanceStats.css";
 
 const stats = [
@@ -8,20 +8,6 @@ const stats = [
     sub: "+12.5% o‘sish",
     icon: TrendingUp,
     variant: "purple",
-  },
-  {
-    title: "Naqd",
-    value: "299,500 so'm",
-    sub: "3 ta buyurtma",
-    icon: WalletCards,
-    variant: "orange",
-  },
-  {
-    title: "Karta",
-    value: "1.56M so'm",
-    sub: "2.5% o‘rtacha",
-    icon: CreditCard,
-    variant: "gray",
   },
 ];
 

@@ -1,5 +1,8 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { ChevronDown, ImagePlus, Trash2, X } from "lucide-react";
+import { useGlobalNotification } from "@/hooks/useGlobalNotification";
+import { useScopedPartnerParams } from "@/hooks/useScopedPartnerParams";
+import { useAuth } from "@/core/hooks/useAuth";
 import { attachmentApi } from "@/api/modules/attachmentApi";
 import { merchantCategoryApi } from "@/api/modules/merchantCategoryApi";
 import { merchantProductApi } from "@/api/modules/merchantProductApi";
@@ -41,9 +44,100 @@ const initialForm = {
 
   tagIds: [],
   branchIds: [],
+
+  visible: true,
+  active: true,
 };
 
 const str = (value) => (value != null ? String(value) : "");
+
+function mapProductPayloadToForm(payload = {}) {
+  const attr = payload.productAttribute || {};
+
+  return {
+    nameUz: payload.nameUz || "",
+    nameRu: payload.nameRu || "",
+    nameEn: payload.nameEn || "",
+    descriptionUz: payload.descriptionUz || "",
+    descriptionRu: payload.descriptionRu || "",
+    descriptionEn: payload.descriptionEn || "",
+
+    categoryId:
+      payload.categoryListDTO?.id ||
+      payload.categoryId ||
+      payload.category?.id ||
+      "",
+
+    price: payload.price ?? "",
+
+    attachmentId: payload.attachment?.id || null,
+    attachment: payload.attachment || null,
+
+    measure: str(attr.measure ?? payload.measure),
+    measureUnit: attr.measureUnit || "",
+    calories: str(attr.calories),
+    carbohydrates: str(attr.carbohydrates),
+    fat: str(attr.fat),
+    proteins: str(attr.proteins),
+    mxikCodeUz: attr.mxikCodeUz || "",
+    packageCodeUz: attr.packageCodeUz || "",
+    vat: str(attr.vat),
+    weightQuantum: str(attr.weightQuantum),
+    catchWeight: Boolean(attr.catchWeight),
+    needMarking: Boolean(attr.needMarking),
+    deactivated: Boolean(attr.deactivated),
+
+    tagIds: Array.isArray(payload.tags)
+      ? payload.tags.map((item) => item.id)
+      : Array.isArray(payload.tagIds)
+        ? payload.tagIds
+        : [],
+
+    branchIds: Array.isArray(payload.branches)
+      ? payload.branches.map((item) => item.id)
+      : Array.isArray(payload.branchIds)
+        ? payload.branchIds
+        : [],
+
+    visible: resolveBooleanField(payload, ["visible", "isVisible"], true),
+    active: resolveBooleanField(
+      payload,
+      ["active", "isActive", "enabled"],
+      true
+    ),
+  };
+}
+
+function resolveBooleanField(source = {}, keys = [], defaultValue = true) {
+  for (const key of keys) {
+    if (source[key] !== undefined && source[key] !== null) {
+      return Boolean(source[key]);
+    }
+  }
+  return defaultValue;
+}
+
+function ProductToggleSwitch({ label, description, checked, disabled, onChange }) {
+  return (
+    <div className={`product-toggle-card ${disabled ? "is-disabled" : ""}`}>
+      <div className="product-toggle-copy">
+        <strong>{label}</strong>
+        {description ? <p>{description}</p> : null}
+      </div>
+      <button
+        type="button"
+        role="switch"
+        aria-checked={checked}
+        aria-label={label}
+        className={`product-switch ${checked ? "active" : ""}`}
+        disabled={disabled}
+        onClick={() => !disabled && onChange(!checked)}
+      >
+        <span className="product-switch-thumb" />
+      </button>
+    </div>
+  );
+}
 
 /* ---------- Category dropdown ---------- */
 
@@ -66,7 +160,7 @@ function CategoryDropdown({ value, options, loading, disabled, onChange }) {
   );
 
   const label = selected
-    ? `${selected.id} - ${selected.name}`
+    ? selected.name
     : loading
       ? "Yuklanmoqda..."
       : "Kategoriya tanlang";
@@ -104,7 +198,7 @@ function CategoryDropdown({ value, options, loading, disabled, onChange }) {
                     setOpen(false);
                   }}
                 >
-                  {category.id} - {category.name}
+                  {category.name}
                 </button>
               </li>
             ))
@@ -121,9 +215,13 @@ export default function ProductModal({
   isOpen = false,
   mode = "create",
   productId = null,
+  initialProduct = null,
   onClose,
   onSuccess,
 }) {
+  const { success } = useGlobalNotification();
+  const { isSuperAdmin } = useAuth();
+  const { canFetch, getParams } = useScopedPartnerParams();
   const [form, setForm] = useState(initialForm);
   const [imagePreview, setImagePreview] = useState(null);
 
@@ -146,9 +244,14 @@ export default function ProductModal({
 
   /* ----- Categories: load once when modal opens ----- */
   const fetchCategories = useCallback(async () => {
+    if (!canFetch || isSuperAdmin) {
+      if (isSuperAdmin) setCategories([]);
+      return;
+    }
+
     try {
       setCategoriesLoading(true);
-      const res = await merchantCategoryApi.getAll();
+      const res = await merchantCategoryApi.getAll(getParams());
       const payload = res?.data;
       const list = Array.isArray(payload?.data)
         ? payload.data
@@ -160,7 +263,7 @@ export default function ProductModal({
         list.map((category) => ({
           id: category.id,
           name:
-            category.name || category.title || `Kategoriya #${category.id}`,
+            category.name || category.title || "Kategoriya",
         }))
       );
     } catch (err) {
@@ -169,18 +272,23 @@ export default function ProductModal({
     } finally {
       setCategoriesLoading(false);
     }
-  }, []);
+  }, [canFetch, getParams, isSuperAdmin]);
 
   useEffect(() => {
-    if (!isOpen) return;
+    if (!isOpen || isSuperAdmin) return;
     fetchCategories();
-  }, [isOpen, fetchCategories]);
+  }, [isOpen, fetchCategories, isSuperAdmin]);
 
   /* ----- Branches: load once when modal opens ----- */
   const fetchBranches = useCallback(async () => {
+    if (!canFetch || isSuperAdmin) {
+      if (isSuperAdmin) setBranches([]);
+      return;
+    }
+
     try {
       setBranchesLoading(true);
-      const res = await merchantProductApi.getBranchList();
+      const res = await merchantProductApi.getBranchList(getParams());
       const payload = res?.data;
 
       const list =
@@ -196,12 +304,12 @@ export default function ProductModal({
     } finally {
       setBranchesLoading(false);
     }
-  }, []);
+  }, [canFetch, getParams, isSuperAdmin]);
 
   useEffect(() => {
-    if (!isOpen) return;
+    if (!isOpen || isSuperAdmin) return;
     fetchBranches();
-  }, [isOpen, fetchBranches]);
+  }, [isOpen, fetchBranches, isSuperAdmin]);
 
   /* ----- Create reset: only when modal opens in create mode ----- */
   useEffect(() => {
@@ -218,84 +326,76 @@ export default function ProductModal({
     }
   }, [isOpen, mode]);
 
+  const applyProductToForm = useCallback((payload) => {
+    setForm(mapProductPayloadToForm(payload));
+    setImagePreview(getAttachmentUrl(payload?.attachment));
+    setError("");
+  }, []);
+
   /* ----- Edit/View detail load ----- */
   const loadProductDetail = useCallback(async () => {
     if (!productId || mode === "create") return;
+    if (!canFetch) return;
+
+    if (mode === "view" && initialProduct) {
+      applyProductToForm(initialProduct);
+      return;
+    }
 
     try {
       setLoading(true);
       setError("");
 
-      const res = await merchantProductApi.getById(productId);
+      const res = isSuperAdmin
+        ? await productApi.getById(productId)
+        : await merchantProductApi.getById(productId, getParams());
       const payload = res?.data?.data || res?.data || null;
 
       if (!payload) {
         throw new Error("Product topilmadi");
       }
 
-      const attr = payload.productAttribute || {};
-
-      setForm({
-        nameUz: payload.nameUz || "",
-        nameRu: payload.nameRu || "",
-        nameEn: payload.nameEn || "",
-        descriptionUz: payload.descriptionUz || "",
-        descriptionRu: payload.descriptionRu || "",
-        descriptionEn: payload.descriptionEn || "",
-
-        categoryId:
-          payload.categoryListDTO?.id ||
-          payload.categoryId ||
-          payload.category?.id ||
-          "",
-
-        price: payload.price ?? "",
-
-        attachmentId: payload.attachment?.id || null,
-        attachment: payload.attachment || null,
-
-        measure: str(attr.measure ?? payload.measure),
-        measureUnit: attr.measureUnit || "",
-        calories: str(attr.calories),
-        carbohydrates: str(attr.carbohydrates),
-        fat: str(attr.fat),
-        proteins: str(attr.proteins),
-        mxikCodeUz: attr.mxikCodeUz || "",
-        packageCodeUz: attr.packageCodeUz || "",
-        vat: str(attr.vat),
-        weightQuantum: str(attr.weightQuantum),
-        catchWeight: Boolean(attr.catchWeight),
-        needMarking: Boolean(attr.needMarking),
-        deactivated: Boolean(attr.deactivated),
-
-        tagIds: Array.isArray(payload.tags)
-          ? payload.tags.map((item) => item.id)
-          : Array.isArray(payload.tagIds)
-            ? payload.tagIds
-            : [],
-
-        branchIds: Array.isArray(payload.branches)
-          ? payload.branches.map((item) => item.id)
-          : Array.isArray(payload.branchIds)
-            ? payload.branchIds
-            : [],
-      });
-
-      setImagePreview(getAttachmentUrl(payload.attachment));
+      applyProductToForm(payload);
     } catch (err) {
       console.error(err);
       setError("Product ma'lumotlarini yuklashda xatolik yuz berdi");
     } finally {
       setLoading(false);
     }
-  }, [productId, mode]);
+  }, [
+    productId,
+    mode,
+    canFetch,
+    getParams,
+    isSuperAdmin,
+    initialProduct,
+    applyProductToForm,
+  ]);
 
   useEffect(() => {
     if (!isOpen) return;
     if (mode === "edit" || mode === "view") {
       loadProductDetail();
     }
-  }, [isOpen, mode, loadProductDetail]);
+  }, [isOpen, mode, loadProductDetail, initialProduct]);
+
+  useEffect(() => {
+    if (!isOpen || !isSuperAdmin || !initialProduct) return;
+
+    const cat = initialProduct.categoryListDTO;
+    if (cat?.id) {
+      setCategories([
+        {
+          id: cat.id,
+          name: cat.name || cat.title || "Kategoriya",
+        },
+      ]);
+    }
+
+    if (Array.isArray(initialProduct.branches)) {
+      setBranches(initialProduct.branches);
+    }
+  }, [isOpen, isSuperAdmin, initialProduct]);
 
   /* ----- Lock body scroll ----- */
   useEffect(() => {
@@ -312,7 +412,13 @@ export default function ProductModal({
   /* ----- Handlers ----- */
 
   const handleChange = (key, value) => {
-    setForm((prev) => ({ ...prev, [key]: value }));
+    setForm((prev) => {
+      if (key === "visible" && !value) {
+        return { ...prev, visible: false, active: false };
+      }
+
+      return { ...prev, [key]: value };
+    });
   };
 
   const handleImageUpload = async (event) => {
@@ -441,13 +547,15 @@ export default function ProductModal({
         : null,
     tagIds: Array.isArray(form.tagIds) ? form.tagIds.map(Number) : [],
     branchIds: Array.isArray(form.branchIds) ? form.branchIds.map(Number) : [],
+    visible: Boolean(form.visible),
+    active: Boolean(form.active),
   });
 
   /* ----- Submit ----- */
 
   const handleSubmit = async (event) => {
     if (event?.preventDefault) event.preventDefault();
-    if (isViewMode) return;
+    if (isViewMode || isSuperAdmin) return;
 
     if (uploadingImage) {
       setError("Rasm yuklanishini kuting");
@@ -475,23 +583,18 @@ export default function ProductModal({
 
       const payload = buildProductPayload();
 
-      console.log("PRODUCT PAYLOAD:", payload);
-
       if (isEditMode) {
         await productApi.update(productId, payload);
+        success("Muvaffaqiyatli yangilandi");
       } else {
         await productApi.create(payload);
+        success("Muvaffaqiyatli yaratildi");
       }
 
       await onSuccess?.();
       onClose?.();
     } catch (err) {
       console.error(err);
-      setError(
-        err?.response?.data?.errorMessage ||
-          err?.response?.data?.message ||
-          "Product saqlashda xatolik yuz berdi"
-      );
     } finally {
       setLoading(false);
     }
@@ -831,41 +934,43 @@ export default function ProductModal({
                   />
                 </div>
 
-                <label className="product-form-checkbox">
-                  <input
-                    type="checkbox"
-                    checked={form.catchWeight}
-                    onChange={(e) =>
-                      handleChange("catchWeight", e.target.checked)
-                    }
-                    disabled={isViewMode || isBusy}
-                  />
-                  <span>Catch Weight</span>
-                </label>
+                <div className="product-checkbox-grid">
+                  <label className="product-form-checkbox">
+                    <input
+                      type="checkbox"
+                      checked={form.catchWeight}
+                      onChange={(e) =>
+                        handleChange("catchWeight", e.target.checked)
+                      }
+                      disabled={isViewMode || isBusy}
+                    />
+                    <span>Catch Weight</span>
+                  </label>
 
-                <label className="product-form-checkbox">
-                  <input
-                    type="checkbox"
-                    checked={form.needMarking}
-                    onChange={(e) =>
-                      handleChange("needMarking", e.target.checked)
-                    }
-                    disabled={isViewMode || isBusy}
-                  />
-                  <span>Need Marking</span>
-                </label>
+                  <label className="product-form-checkbox">
+                    <input
+                      type="checkbox"
+                      checked={form.needMarking}
+                      onChange={(e) =>
+                        handleChange("needMarking", e.target.checked)
+                      }
+                      disabled={isViewMode || isBusy}
+                    />
+                    <span>Need Marking</span>
+                  </label>
 
-                <label className="product-form-checkbox">
-                  <input
-                    type="checkbox"
-                    checked={form.deactivated}
-                    onChange={(e) =>
-                      handleChange("deactivated", e.target.checked)
-                    }
-                    disabled={isViewMode || isBusy}
-                  />
-                  <span>Deactivated</span>
-                </label>
+                  <label className="product-form-checkbox">
+                    <input
+                      type="checkbox"
+                      checked={form.deactivated}
+                      onChange={(e) =>
+                        handleChange("deactivated", e.target.checked)
+                      }
+                      disabled={isViewMode || isBusy}
+                    />
+                    <span>Deactivated</span>
+                  </label>
+                </div>
               </div>
             </section>
 
@@ -896,7 +1001,7 @@ export default function ProductModal({
                       branch.name ||
                       branch.title ||
                       branch.nameUz ||
-                      `Branch #${branch.id}`;
+                      "Filial";
 
                     return (
                       <label
@@ -925,7 +1030,6 @@ export default function ProductModal({
 
                         <div className="product-branch-info">
                           <strong>{branchName}</strong>
-                          <span>ID: {branch.id}</span>
                         </div>
                       </label>
                     );
@@ -933,6 +1037,50 @@ export default function ProductModal({
                 </div>
               )}
             </section>
+
+            {!isViewMode && (
+              <section className="product-status-section">
+                <h3 className="product-status-title">Ko‘rinish va sotuv</h3>
+                <div className="product-switch-grid">
+                  <ProductToggleSwitch
+                    label="Ko‘rsatish"
+                    description="Ilovada mahsulotni ko‘rsatish"
+                    checked={Boolean(form.visible)}
+                    disabled={isBusy}
+                    onChange={(value) => handleChange("visible", value)}
+                  />
+                  <ProductToggleSwitch
+                    label="Sotuvga ochiq"
+                    description="Buyurtma qilishga ruxsat berish"
+                    checked={Boolean(form.active)}
+                    disabled={isBusy || !form.visible}
+                    onChange={(value) => handleChange("active", value)}
+                  />
+                </div>
+              </section>
+            )}
+
+            {isViewMode && (
+              <section className="product-status-section">
+                <h3 className="product-status-title">Ko‘rinish va sotuv</h3>
+                <div className="product-switch-grid">
+                  <ProductToggleSwitch
+                    label="Ko‘rsatish"
+                    description="Ilovada mahsulotni ko‘rsatish"
+                    checked={Boolean(form.visible)}
+                    disabled
+                    onChange={() => {}}
+                  />
+                  <ProductToggleSwitch
+                    label="Sotuvga ochiq"
+                    description="Buyurtma qilishga ruxsat berish"
+                    checked={Boolean(form.active)}
+                    disabled
+                    onChange={() => {}}
+                  />
+                </div>
+              </section>
+            )}
 
             {error && <div className="product-form-error">{error}</div>}
           </form>

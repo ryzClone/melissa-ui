@@ -31,6 +31,19 @@
   margin-bottom: 24px;
 }
 
+.dashboard-partner-empty {
+  min-height: 280px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 22px;
+  border: 1px dashed rgba(255, 255, 255, 0.12);
+  color: rgba(255, 255, 255, 0.55);
+  font-size: 15px;
+  font-weight: 600;
+  margin-bottom: 24px;
+}
+
 @media (max-width: 1180px) {
   .dashboard-main-grid {
     grid-template-columns: 1fr;

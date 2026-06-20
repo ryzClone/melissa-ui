@@ -1,0 +1,117 @@
+.filter-bar {
+  display: flex;
+  align-items: flex-end;
+  gap: 14px;
+  flex-wrap: wrap;
+  width: 100%;
+  min-width: 0;
+  margin-bottom: 20px;
+  padding: 16px;
+  border-radius: var(--ui-radius-card, 20px);
+  border: 1px solid var(--ui-border, rgba(255, 255, 255, 0.08));
+  background: rgba(24, 13, 40, 0.92);
+  box-shadow: var(--ui-shadow-soft, 0 20px 60px rgba(0, 0, 0, 0.35));
+  backdrop-filter: blur(12px);
+}
+
+.filter-item {
+  min-width: 200px;
+  max-width: 280px;
+  flex: 1 1 200px;
+}
+
+.filter-item-grow {
+  flex: 2 1 280px;
+  max-width: none;
+}
+
+.filter-item-auto {
+  flex: 0 1 auto;
+  min-width: 150px;
+  max-width: 220px;
+}
+
+.filter-bar .catalog-filter-search,
+.filter-bar .filter-input,
+.filter-bar .catalog-filter-input {
+  width: 100%;
+  height: 46px;
+  padding: 0 16px;
+  border-radius: var(--ui-radius, 14px);
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  background: var(--ui-input, #1b0f2b);
+  color: var(--ui-text, #ffffff);
+  font-size: 14px;
+  outline: none;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.filter-bar .catalog-filter-search {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--ui-text-muted, #7d728d);
+}
+
+.filter-bar .catalog-filter-search:focus-within,
+.filter-bar .catalog-filter-input:focus,
+.filter-bar .filter-input:focus {
+  border-color: var(--ui-primary, #8b3dff);
+  box-shadow: var(--ui-focus-ring, 0 0 0 4px rgba(139, 61, 255, 0.14));
+}
+
+.filter-bar .catalog-filter-search input {
+  flex: 1;
+  min-width: 0;
+  border: 0;
+  background: transparent;
+  color: var(--ui-text, #ffffff);
+  font-size: 14px;
+  outline: none;
+}
+
+.filter-bar .catalog-filter-search input::placeholder,
+.filter-bar .catalog-filter-input::placeholder,
+.filter-bar .filter-input::placeholder {
+  color: var(--ui-text-muted, #7d728d);
+}
+
+.filter-bar .catalog-filter-input[type="number"]::-webkit-outer-spin-button,
+.filter-bar .catalog-filter-input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.filter-bar .catalog-filter-input[type="number"] {
+  -moz-appearance: textfield;
+  appearance: textfield;
+}
+
+@media (max-width: 1200px) {
+  .filter-bar {
+    gap: 12px;
+  }
+
+  .filter-item,
+  .filter-item-auto {
+    min-width: 180px;
+    max-width: 100%;
+  }
+}
+
+@media (max-width: 768px) {
+  .filter-bar {
+    padding: 14px;
+    gap: 12px;
+  }
+
+  .filter-item,
+  .filter-item-grow,
+  .filter-item-auto {
+    min-width: 100%;
+    max-width: 100%;
+    flex: 1 1 100%;
+  }
+}

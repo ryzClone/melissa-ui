@@ -1,9 +1,20 @@
-import { useMemo, useState, useEffect, useCallback } from "react";
-import { Search, Pencil, Trash2, Download, Check, X } from "lucide-react";
+import { useMemo, useState, useEffect, useCallback, useRef } from "react";
+import { Search, Pencil, Trash2, Download, Check, X, Eye } from "lucide-react";
 import GlobalTable from "@/components/GlobalTable/GlobalTable";
+import { extractPaginatedResponse } from "@/components/GlobalTable/tablePagination";
+import FilterBar, { FilterItem } from "@/components/FilterBar/FilterBar";
+import PagePartnerFilter from "@/components/PagePartnerFilter/PagePartnerFilter";
+import { useGlobalNotification } from "@/hooks/useGlobalNotification";
+import { useScopedPartnerParams, PARTNER_SELECT_MESSAGE } from "@/hooks/useScopedPartnerParams";
+import { useDebouncedValue } from "@/hooks/useDebouncedValue";
+import { useLatestRequest } from "@/hooks/useLatestRequest";
+import { useUsersApi } from "@/hooks/useUsersApi";
+import { usePartner } from "@/context/PartnerContext";
+import { useAuth } from "@/core/hooks/useAuth";
+import ViewUserModal from "./ViewUserModal";
 import "./UsersTableSection.css";
-import { organizationUserApi } from "../../../api/modules/organizationUserApi";
 import { organizationRoleApi } from "../../../api/modules/organizationRoleApi";
+import CustomDropdown from "@/components/CustomDropdown/CustomDropdown";
 
 function RoleBadge({ role }) {
   const classMap = {
@@ -23,13 +34,21 @@ function RoleBadge({ role }) {
   );
 }
 
-const pageSize = 5;
+const DEFAULT_PAGE_SIZE = 10;
 
-export default function UsersTableSection() {
+export default function UsersTableSection({ refreshToken = 0 }) {
+  const { success } = useGlobalNotification();
+  const usersApi = useUsersApi();
+  const { isSuperAdmin } = useAuth();
+  const { partnerId } = usePartner();
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
+  const debouncedSearch = useDebouncedValue(search, 3000);
+  const { canFetch, getParams, getOrganizationParams } = useScopedPartnerParams();
+  const { beginRequest, isLatestRequest } = useLatestRequest();
   const [page, setPage] = useState(1);
+  const [size, setSize] = useState(DEFAULT_PAGE_SIZE);
   const [totalPages, setTotalPages] = useState(1);
   const [totalElements, setTotalElements] = useState(0);
 
@@ -47,13 +66,44 @@ export default function UsersTableSection() {
     profileId: "",
   });
 
+  const [viewedUser, setViewedUser] = useState(null);
+  const [isViewOpen, setIsViewOpen] = useState(false);
+
+  const getListParams = useCallback(
+    (extra = {}) => {
+      const base = {
+        page: page - 1,
+        size,
+        sort: ["id,desc"],
+        search: debouncedSearch.trim() || undefined,
+        ...extra,
+      };
+
+      return isSuperAdmin ? getOrganizationParams(base) : getParams(base);
+    },
+    [
+      page,
+      size,
+      debouncedSearch,
+      isSuperAdmin,
+      getOrganizationParams,
+      getParams,
+    ]
+  );
+
   const fetchRoles = useCallback(async () => {
+    if (isSuperAdmin || !canFetch) {
+      setAllRoles([]);
+      return;
+    }
+
     try {
       setRolesLoading(true);
       const res = await organizationRoleApi.getList({
         page: 0,
         size: 100,
         sort: ["id,desc"],
+        ...getParams(),
       });
       const payload = res?.data || res;
       const list =
@@ -76,63 +126,111 @@ export default function UsersTableSection() {
     } finally {
       setRolesLoading(false);
     }
-  }, []);
+  }, [canFetch, getParams, isSuperAdmin]);
 
   useEffect(() => {
     fetchRoles();
   }, [fetchRoles]);
 
   const fetchUsers = useCallback(async () => {
+    if (!canFetch) {
+      setUsers([]);
+      setTotalPages(1);
+      setTotalElements(0);
+      setLoading(false);
+      return;
+    }
+
+    const requestId = beginRequest();
     setLoading(true);
+
     try {
-      const raw = await organizationUserApi.getList({
-        page: page - 1,
-        size: pageSize,
-        sort: ["id,desc"],
-      });
-      const payload = raw?.data?.data || raw?.data || raw;
-      setUsers(payload?.content || []);
-      setTotalElements(payload?.page?.totalElements || 0);
-      setTotalPages(payload?.page?.totalPages || 1);
-      if (
-        payload?.page?.totalPages &&
-        payload.page.totalPages > 0 &&
-        page > payload.page.totalPages
-      ) {
-        setPage(payload.page.totalPages);
+      const raw = await usersApi.getList(getListParams());
+
+      if (!isLatestRequest(requestId)) return;
+
+      const { content, totalElements: total, totalPages: pages } =
+        extractPaginatedResponse(raw);
+      setUsers(content);
+      setTotalElements(total);
+      setTotalPages(pages);
+      if (pages > 0 && page > pages) {
+        setPage(pages);
       }
     } catch {
+      if (!isLatestRequest(requestId)) return;
       setUsers([]);
       setTotalPages(1);
       setTotalElements(0);
     } finally {
-      setLoading(false);
+      if (isLatestRequest(requestId)) {
+        setLoading(false);
+      }
     }
-  }, [page]);
+  }, [
+    page,
+    canFetch,
+    usersApi,
+    getListParams,
+    beginRequest,
+    isLatestRequest,
+  ]);
+
+  const filterKeyRef = useRef(`${partnerId}|${debouncedSearch}`);
 
   useEffect(() => {
-    fetchUsers();
-  }, [fetchUsers]);
+    const nextFilterKey = `${partnerId}|${debouncedSearch}`;
+    const filtersChanged = filterKeyRef.current !== nextFilterKey;
+    filterKeyRef.current = nextFilterKey;
 
-  const filteredUsers = useMemo(() => {
-    const q = search.trim().toLowerCase();
-    if (!q) return users;
-    return users.filter((item) =>
-      [
-        item.name,
-        item.surname,
-        item.username,
-        item.phoneNumber,
-        item.profileId?.toString(),
-        ...(item.roles?.map((role) => role.name) || []),
-      ]
-        .join(" ")
-        .toLowerCase()
-        .includes(q)
-    );
-  }, [search, users]);
+    if (filtersChanged) {
+      setEditingId(null);
+      setIsViewOpen(false);
+      setViewedUser(null);
+
+      if (page !== 1) {
+        setPage(1);
+        return;
+      }
+    }
+
+    fetchUsers();
+  }, [fetchUsers, refreshToken, page]);
+
+  const tableUsers = useMemo(
+    () =>
+      users.map((user) => ({
+        ...user,
+        active: user?.active ?? user?.enabled ?? true,
+      })),
+    [users]
+  );
+
+  const handleView = useCallback(
+    (userEntry) => {
+      if (!userEntry) return;
+
+      if (isSuperAdmin) {
+        if (!canFetch) return;
+        setViewedUser(userEntry);
+        setIsViewOpen(true);
+        return;
+      }
+
+      setViewedUser(userEntry);
+      setIsViewOpen(true);
+    },
+    [isSuperAdmin, canFetch]
+  );
+
+  const closeView = useCallback(() => {
+    setIsViewOpen(false);
+    setViewedUser(null);
+  }, []);
 
   const handleEdit = (userEntry) => {
+    if (isSuperAdmin) return;
+
     setEditingId(userEntry.id);
     setEditForm({
       username: userEntry.username || "",
@@ -146,13 +244,18 @@ export default function UsersTableSection() {
   };
 
   const handleSave = async () => {
-    if (!editingId) return;
-    if (!editForm.username.trim() || !editForm.name.trim() || !editForm.phoneNumber.trim() || !editForm.roleIds.length) {
+    if (isSuperAdmin || !editingId) return;
+    if (
+      !editForm.username.trim() ||
+      !editForm.name.trim() ||
+      !editForm.phoneNumber.trim() ||
+      !editForm.roleIds.length
+    ) {
       alert("Barcha majburiy maydonlarni to'ldiring");
       return;
     }
     try {
-      await organizationUserApi.update(editingId, {
+      await usersApi.update(editingId, {
         username: editForm.username.trim(),
         password: editForm.password || "",
         name: editForm.name.trim(),
@@ -161,11 +264,11 @@ export default function UsersTableSection() {
         roleIds: editForm.roleIds.map(Number),
         attachmentId: 0,
       });
+      success("Muvaffaqiyatli yangilandi");
       setEditingId(null);
       await fetchUsers();
     } catch (error) {
       console.error(error);
-      alert("Foydalanuvchini yangilashda xatolik yuz berdi");
     }
   };
 
@@ -183,112 +286,104 @@ export default function UsersTableSection() {
   };
 
   const handleDelete = async (id) => {
+    if (isSuperAdmin) return;
     if (!window.confirm("Foydalanuvchini o'chirmoqchimisiz?")) return;
     try {
-      await organizationUserApi.delete(id);
+      await usersApi.delete(id);
       if (editingId === id) handleCancel();
       await fetchUsers();
+      success("Muvaffaqiyatli o'chirildi");
     } catch (error) {
       console.error(error);
-      alert("Foydalanuvchini o'chirishda xatolik yuz berdi");
     }
   };
 
   const columns = useMemo(
     () => [
       {
-        key: "avatar",
-        title: "Rasmi",
-        render: (row) => {
-          const initials = `${row.name?.[0] || ""}${row.surname?.[0] || ""}`.toUpperCase();
-          return <div className="users-avatar">{initials || "U"}</div>;
-        },
-      },
-      {
         key: "name",
         title: "Ism",
+        className: "name-cell",
         render: (row) =>
-          editingId === row.id ? (
-            <input
-              className="users-inline-input"
-              value={editForm.name}
-              onChange={(e) => setEditForm((p) => ({ ...p, name: e.target.value }))}
-            />
+          !isSuperAdmin && editingId === row.id ? (
+            <div className="users-inline-fields">
+              <input
+                className="users-inline-input"
+                value={editForm.name}
+                placeholder="Ism"
+                onChange={(e) =>
+                  setEditForm((p) => ({ ...p, name: e.target.value }))
+                }
+              />
+              <input
+                className="users-inline-input"
+                value={editForm.surname}
+                placeholder="Familiya"
+                onChange={(e) =>
+                  setEditForm((p) => ({ ...p, surname: e.target.value }))
+                }
+              />
+            </div>
           ) : (
-            row.name || "-"
-          ),
-      },
-      {
-        key: "surname",
-        title: "Familiya",
-        render: (row) =>
-          editingId === row.id ? (
-            <input
-              className="users-inline-input"
-              value={editForm.surname}
-              onChange={(e) => setEditForm((p) => ({ ...p, surname: e.target.value }))}
-            />
-          ) : (
-            row.surname || "-"
+            `${row.name || ""} ${row.surname || ""}`.trim() || "-"
           ),
       },
       {
         key: "username",
-        title: "Username",
+        title: "Username / Telefon",
         render: (row) =>
-          editingId === row.id ? (
-            <input
-              className="users-inline-input"
-              value={editForm.username}
-              onChange={(e) => setEditForm((p) => ({ ...p, username: e.target.value }))}
-            />
+          !isSuperAdmin && editingId === row.id ? (
+            <div className="users-inline-fields">
+              <input
+                className="users-inline-input"
+                value={editForm.username}
+                placeholder="Username"
+                onChange={(e) =>
+                  setEditForm((p) => ({ ...p, username: e.target.value }))
+                }
+              />
+              <input
+                className="users-inline-input"
+                value={editForm.phoneNumber}
+                placeholder="Telefon"
+                onChange={(e) =>
+                  setEditForm((p) => ({ ...p, phoneNumber: e.target.value }))
+                }
+              />
+            </div>
           ) : (
-            row.username || "-"
-          ),
-      },
-      {
-        key: "phoneNumber",
-        title: "Telefon raqam",
-        render: (row) =>
-          editingId === row.id ? (
-            <input
-              className="users-inline-input"
-              value={editForm.phoneNumber}
-              onChange={(e) => setEditForm((p) => ({ ...p, phoneNumber: e.target.value }))}
-            />
-          ) : (
-            row.phoneNumber || "-"
+            <div className="gt-cell-stack">
+              <span>{row.username || "-"}</span>
+              <span className="gt-cell-muted">{row.phoneNumber || "-"}</span>
+            </div>
           ),
       },
       {
         key: "roles",
-        title: "Rollari",
+        title: "Rol",
         render: (row) =>
-          editingId === row.id ? (
-            <select
-              className="users-inline-select"
-              value={editForm.roleIds[0] || ""}
-              onChange={(e) =>
+          !isSuperAdmin && editingId === row.id ? (
+            <CustomDropdown
+              value={String(editForm.roleIds[0] || "")}
+              onChange={(nextValue) =>
                 setEditForm((p) => ({
                   ...p,
-                  roleIds: e.target.value ? [Number(e.target.value)] : [],
+                  roleIds: nextValue ? [Number(nextValue)] : [],
                 }))
               }
               disabled={rolesLoading}
-            >
-              <option value="">
-                {rolesLoading
-                  ? "Loading..."
+              placeholder={
+                rolesLoading
+                  ? "Yuklanmoqda..."
                   : allRoles.length === 0
-                    ? "Roles not found"
-                    : "Rol tanlang"}
-              </option>
-              {allRoles.map((role) => (
-                <option key={role.id} value={role.id}>
-                  {role.name}
-                </option>
-              ))}
-            </select>
+                    ? "Rollar topilmadi"
+                    : "Rol tanlang"
+              }
+              options={allRoles.map((role) => ({
+                label: role.name,
+                value: String(role.id),
+              }))}
+            />
           ) : row.roles?.length ? (
             <div className="users-role-list">
               {row.roles.map((role) => (
@@ -299,80 +394,110 @@ export default function UsersTableSection() {
             "-"
           ),
       },
-      {
-        key: "profileId",
-        title: "Profile ID",
-        render: (row) => row.profileId || "-",
-      },
+      { key: "active", title: "Holat" },
     ],
-    [editingId, editForm, allRoles, rolesLoading]
+    [editingId, editForm, allRoles, rolesLoading, isSuperAdmin]
   );
 
-  const renderActions = useCallback(
-    (row) => {
-      if (editingId === row.id) {
-        return (
-          <>
-            <button type="button" className="global-table-action-btn success" onClick={handleSave} title="Saqlash">
-              <Check size={15} />
-            </button>
-            <button type="button" className="global-table-action-btn cancel" onClick={handleCancel} title="Bekor qilish">
-              <X size={15} />
-            </button>
-          </>
-        );
-      }
-      return (
-        <>
-          <button type="button" className="global-table-action-btn edit" onClick={() => handleEdit(row)} title="Tahrirlash">
-            <Pencil size={15} />
-          </button>
-          <button type="button" className="global-table-action-btn delete" onClick={() => handleDelete(row.id)} title="O'chirish">
-            <Trash2 size={15} />
-          </button>
-        </>
-      );
-    },
-    [editingId, handleCancel, handleDelete, handleEdit, handleSave]
-  );
+  const actions = useMemo(() => {
+    if (isSuperAdmin) {
+      return [
+        {
+          label: "Ko'rish",
+          icon: <Eye size={16} />,
+          variant: "view",
+          onClick: (row) => handleView(row),
+        },
+      ];
+    }
+
+    return [
+      {
+        label: "Saqlash",
+        icon: <Check size={15} />,
+        variant: "success",
+        when: (row) => editingId === row.id,
+        onClick: () => handleSave(),
+      },
+      {
+        label: "Bekor qilish",
+        icon: <X size={15} />,
+        variant: "cancel",
+        when: (row) => editingId === row.id,
+        onClick: () => handleCancel(),
+      },
+      {
+        label: "Tahrirlash",
+        icon: <Pencil size={16} />,
+        variant: "edit",
+        when: (row) => editingId !== row.id,
+        onClick: (row) => handleEdit(row),
+      },
+      {
+        label: "O'chirish",
+        icon: <Trash2 size={16} />,
+        variant: "delete",
+        when: (row) => editingId !== row.id,
+        onClick: (row) => handleDelete(row.id),
+      },
+    ];
+  }, [isSuperAdmin, editingId, handleView, handleDelete, handleEdit, handleSave]);
 
   return (
-    <div className="users-card">
-      <div className="users-card-header">
-        <h3>Foydalanuvchilar ro&apos;yxati</h3>
-        <div className="users-card-tools">
-          <div className="users-search-box">
-            <Search size={16} />
-            <input
-              type="text"
-              placeholder="Qidiruv..."
-              value={search}
-              onChange={(e) => {
-                setSearch(e.target.value);
-                setPage(1);
-              }}
-            />
+    <>
+      {isSuperAdmin && (
+        <FilterBar>
+          <FilterItem>
+            <PagePartnerFilter partnerLabel="Tashkilot" />
+          </FilterItem>
+        </FilterBar>
+      )}
+
+      <div className="users-card">
+        <div className="users-card-header">
+          <h3>Foydalanuvchilar ro&apos;yxati</h3>
+          <div className="users-card-tools">
+            <div className="users-search-box">
+              <Search size={16} />
+              <input
+                type="text"
+                placeholder="Qidiruv..."
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+              />
+            </div>
+            <button className="users-icon-btn" type="button">
+              <Download size={16} />
+            </button>
           </div>
-          <button className="users-icon-btn" type="button">
-            <Download size={16} />
-          </button>
         </div>
+
+        <GlobalTable
+          className="global-table--flat"
+          columns={columns}
+          data={tableUsers}
+          loading={loading}
+          emptyText={
+            canFetch ? "Ma'lumot topilmadi" : PARTNER_SELECT_MESSAGE
+          }
+          rowKey="id"
+          actions={actions}
+          pagination={{
+            page,
+            size,
+            totalElements,
+            totalPages,
+          }}
+          onPageChange={setPage}
+          onPageSizeChange={setSize}
+        />
       </div>
 
-      <GlobalTable
-        columns={columns}
-        data={filteredUsers}
-        loading={loading}
-        emptyText="Hech narsa topilmadi"
-        rowKey="id"
-        renderActions={renderActions}
-        pagination={{
-          page,
-          pageSize,
-          total: totalElements,
-        }}
-        onPageChange={setPage}
+      <ViewUserModal
+        isOpen={isViewOpen}
+        user={viewedUser}
+        onClose={closeView}
       />
-    </div>
+    </>
   );
 }

@@ -1,0 +1,149 @@
+.dashboard-date-wrap {
+  position: relative;
+}
+
+.dashboard-date-trigger {
+  min-width: 220px;
+  height: 46px;
+  border-radius: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.03);
+  color: #ffffff;
+  padding: 0 14px;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: 0.2s ease;
+}
+
+.dashboard-date-trigger span {
+  flex: 1;
+  text-align: left;
+  white-space: nowrap;
+}
+
+.dashboard-date-trigger svg:last-child {
+  transition: transform 0.2s ease;
+}
+
+.dashboard-date-trigger .rotate {
+  transform: rotate(180deg);
+}
+
+.dashboard-date-trigger.active,
+.dashboard-date-trigger:hover {
+  background: rgba(139, 92, 246, 0.12);
+  border-color: rgba(139, 92, 246, 0.28);
+  box-shadow: 0 0 0 2px rgba(139, 92, 246, 0.12);
+}
+
+.dashboard-date-menu {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  z-index: 60;
+  width: 280px;
+  padding: 12px;
+  border-radius: 16px;
+  background: #17101f;
+  border: 1px solid rgba(139, 92, 246, 0.28);
+  box-shadow: 0 22px 44px rgba(0, 0, 0, 0.48);
+}
+
+.dashboard-date-presets {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.dashboard-date-preset {
+  height: 38px;
+  border: 0;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.04);
+  color: rgba(255, 255, 255, 0.86);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  text-align: left;
+  padding: 0 12px;
+}
+
+.dashboard-date-preset:hover {
+  background: rgba(139, 92, 246, 0.16);
+}
+
+.dashboard-date-divider {
+  height: 1px;
+  margin: 12px 0;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.dashboard-date-custom {
+  display: grid;
+  gap: 10px;
+}
+
+.dashboard-date-custom label {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.dashboard-date-custom span {
+  color: rgba(255, 255, 255, 0.48);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.dashboard-date-custom input[type="date"] {
+  height: 40px;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.03);
+  color: #ffffff;
+  padding: 0 12px;
+  font-size: 13px;
+}
+
+.dashboard-date-custom input[type="date"]::-webkit-calendar-picker-indicator {
+  filter: invert(1);
+  opacity: 0.7;
+  cursor: pointer;
+}
+
+.dashboard-date-apply {
+  width: 100%;
+  height: 40px;
+  margin-top: 12px;
+  border: 0;
+  border-radius: 12px;
+  background: linear-gradient(180deg, #b785ff 0%, #9a63ff 100%);
+  color: #1c1027;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.dashboard-date-apply:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+@media (max-width: 900px) {
+  .dashboard-date-trigger {
+    min-width: 0;
+    width: 100%;
+  }
+
+  .dashboard-date-menu {
+    right: 0;
+    left: 0;
+    width: auto;
+  }
+}

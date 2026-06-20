@@ -1,16 +1,24 @@
 import { useState } from "react";
 import { Plus, Download } from "lucide-react";
+import PageWrapper from "@/components/PageWrapper/PageWrapper";
+import { useAuth } from "@/core/hooks/useAuth";
 import UsersTableSection from "../components/UsersTableSection";
 import RolesPermissionsSection from "@/modules/RolePermissions/components/RolesPermissionsSection";
 import AddUserModal from "../components/AddUserModal";
 import "../UsersPage.css";
 
 export default function UsersPage() {
+  const { isSuperAdmin } = useAuth();
   const [activeTab, setActiveTab] = useState("users");
   const [isAddUserOpen, setIsAddUserOpen] = useState(false);
+  const [usersRefreshToken, setUsersRefreshToken] = useState(0);
+
+  const showCreateButton =
+    activeTab === "roles" || (activeTab === "users" && !isSuperAdmin);
 
   return (
-    <div className="users-page">
+    <PageWrapper>
+      <div className="users-page">
       <div className="users-page-top">
         <div>
           <h1>Foydalanuvchilar</h1>
@@ -25,20 +33,22 @@ export default function UsersPage() {
             </button>
           )}
 
-          <button
-            className="users-primary-btn"
-            type="button"
-            onClick={() => {
-              if (activeTab === "users") {
-                setIsAddUserOpen(true);
-              }
-            }}
-          >
-            <Plus size={16} />
-            <span>
-              {activeTab === "users" ? "Yangi foydalanuvchi" : "Yangi rol"}
-            </span>
-          </button>
+          {showCreateButton && (
+            <button
+              className="users-primary-btn"
+              type="button"
+              onClick={() => {
+                if (activeTab === "users") {
+                  setIsAddUserOpen(true);
+                }
+              }}
+            >
+              <Plus size={16} />
+              <span>
+                {activeTab === "users" ? "Yangi foydalanuvchi" : "Yangi rol"}
+              </span>
+            </button>
+          )}
         </div>
       </div>
 
@@ -62,7 +72,7 @@ export default function UsersPage() {
 
       <div className="users-page-content">
         {activeTab === "users" ? (
-          <UsersTableSection />
+          <UsersTableSection refreshToken={usersRefreshToken} />
         ) : (
           <RolesPermissionsSection />
         )}
@@ -71,7 +81,9 @@ export default function UsersPage() {
       <AddUserModal
         isOpen={isAddUserOpen}
         onClose={() => setIsAddUserOpen(false)}
+        onRefresh={() => setUsersRefreshToken((value) => value + 1)}
       />
-    </div>
+      </div>
+    </PageWrapper>
   );
 }

@@ -1,5 +1,8 @@
-import { useMemo, useState } from "react";
-import { Download } from "lucide-react";
+import { useMemo, useState, useCallback } from "react";
+import { Download, Eye, Pencil, Trash2 } from "lucide-react";
+import { useGlobalNotification } from "@/hooks/useGlobalNotification";
+import { useScopedPartnerParams } from "@/hooks/useScopedPartnerParams";
+import { useAuth } from "@/core/hooks/useAuth";
 import { api } from "@/api";
 import GlobalTable from "@/components/GlobalTable/GlobalTable";
 
@@ -23,12 +26,22 @@ function pickAddress(branch) {
   );
 }
 
-function BranchesTable({
-  data = [],
-  loading = false,
-  onRefresh,
-}) {
-  const [search, setSearch] = useState("");
+function BranchesTable({ data = [], loading = false, onRefresh, emptyText = "Ma'lumot topilmadi" }) {
+  const { success } = useGlobalNotification();
+  const { isSuperAdmin } = useAuth();
+  const { canFetch, hasPartnerSelected, getOrganizationBranchParams } =
+    useScopedPartnerParams();
+
+  const tableData = useMemo(
+    () =>
+      data.map((item) => ({
+        ...item,
+        phone: item?.phone || item?.phoneNumber || "-",
+        formattedAddress: pickAddress(item),
+        active: item?.active ?? item?.isActive ?? true,
+      })),
+    [data]
+  );
 
   const [isViewOpen, setIsViewOpen] = useState(false);
   const [viewLoading, setViewLoading] = useState(false);
@@ -39,40 +52,43 @@ function BranchesTable({
   const [selectedBranch, setSelectedBranch] = useState(null);
   const [actionLoading, setActionLoading] = useState(false);
 
-  const tableData = useMemo(() => {
-    const normalized = data.map((item) => ({
-      ...item,
-      phone: item?.phone || item?.phoneNumber || "-",
-      formattedAddress: pickAddress(item),
-    }));
+  const handleView = useCallback(
+    async (branch) => {
+      if (!branch?.id) return;
 
-    const q = search.trim().toLowerCase();
-    if (!q) return normalized;
+      if (isSuperAdmin) {
+        if (!canFetch || !hasPartnerSelected) return;
 
-    return normalized.filter((item) =>
-      [item.id, item.name, item.phone, item.formattedAddress]
-        .map((v) => String(v ?? "").toLowerCase())
-        .some((v) => v.includes(q))
-    );
-  }, [data, search]);
+        const orgParams = getOrganizationBranchParams();
+        if (!orgParams.organizationId) return;
 
-  const handleView = async (branch) => {
-    if (!branch?.id) return;
+        setViewedBranch(branch);
+        setIsViewOpen(true);
+        setViewLoading(false);
+        return;
+      }
 
-    setViewedBranch(branch);
-    setIsViewOpen(true);
-    setViewLoading(true);
+      setViewedBranch(branch);
+      setIsViewOpen(true);
+      setViewLoading(true);
 
-    try {
-      const res = await api.organizationBranch.getById(branch.id);
-      const full = res?.data || branch;
-      setViewedBranch(full);
-    } catch (error) {
-      console.error(error?.message || "Filial ma'lumotini olishda xatolik");
-    } finally {
-      setViewLoading(false);
-    }
-  };
+      try {
+        const res = await api.organizationBranch.getById(branch.id);
+        const full = res?.data || branch;
+        setViewedBranch(full);
+      } catch (error) {
+        console.error(error?.message || "Filial ma'lumotini olishda xatolik");
+      } finally {
+        setViewLoading(false);
+      }
+    },
+    [
+      isSuperAdmin,
+      canFetch,
+      hasPartnerSelected,
+      getOrganizationBranchParams,
+    ]
+  );
 
   const closeView = () => {
     if (viewLoading) return;
@@ -80,23 +96,26 @@ function BranchesTable({
     setViewedBranch(null);
   };
 
-  const handleEdit = async (branch) => {
-    if (!branch?.id || actionLoading) return;
+  const handleEdit = useCallback(
+    async (branch) => {
+      if (isSuperAdmin || !branch?.id || actionLoading) return;
 
-    try {
-      setActionLoading(true);
-      const res = await api.organizationBranch.getById(branch.id);
-      const full = res?.data || branch;
-      setSelectedBranch(full);
-      setIsEditOpen(true);
-    } catch (error) {
-      console.error(error?.message || "Filial ma'lumotini olishda xatolik");
-      setSelectedBranch(branch);
-      setIsEditOpen(true);
-    } finally {
-      setActionLoading(false);
-    }
-  };
+      try {
+        setActionLoading(true);
+        const res = await api.organizationBranch.getById(branch.id);
+        const full = res?.data || branch;
+        setSelectedBranch(full);
+        setIsEditOpen(true);
+      } catch (error) {
+        console.error(error?.message || "Filial ma'lumotini olishda xatolik");
+        setSelectedBranch(branch);
+        setIsEditOpen(true);
+      } finally {
+        setActionLoading(false);
+      }
+    },
+    [isSuperAdmin, actionLoading]
+  );
 
   const closeEditModal = () => {
     if (actionLoading) return;
@@ -104,11 +123,14 @@ function BranchesTable({
     setIsEditOpen(false);
   };
 
-  const handleDelete = (branch) => {
-    if (!branch?.id || actionLoading) return;
-    setSelectedBranch(branch);
-    setIsDeleteOpen(true);
-  };
+  const handleDelete = useCallback(
+    (branch) => {
+      if (isSuperAdmin || !branch?.id || actionLoading) return;
+      setSelectedBranch(branch);
+      setIsDeleteOpen(true);
+    },
+    [isSuperAdmin, actionLoading]
+  );
 
   const closeDeleteModal = () => {
     if (actionLoading) return;
@@ -117,11 +139,12 @@ function BranchesTable({
   };
 
   const handleSaveEdit = async (payload) => {
-    if (!selectedBranch?.id || !payload) return;
+    if (isSuperAdmin || !selectedBranch?.id || !payload) return;
 
     try {
       setActionLoading(true);
       await api.organizationBranch.update(selectedBranch.id, payload);
+      success("Muvaffaqiyatli yangilandi");
       setIsEditOpen(false);
       setSelectedBranch(null);
       if (onRefresh) await onRefresh();
@@ -133,11 +156,12 @@ function BranchesTable({
   };
 
   const handleDeleteBranch = async () => {
-    if (!selectedBranch?.id) return;
+    if (isSuperAdmin || !selectedBranch?.id) return;
 
     try {
       setActionLoading(true);
       await api.organizationBranch.delete(selectedBranch.id);
+      success("Muvaffaqiyatli o'chirildi");
       setIsDeleteOpen(false);
       setSelectedBranch(null);
       if (onRefresh) await onRefresh();
@@ -150,12 +174,14 @@ function BranchesTable({
 
   const columns = useMemo(
     () => [
-      { key: "id", label: "ID" },
-      { key: "name", label: "Branch name" },
-      { key: "phone", label: "Phone" },
-      { key: "formattedAddress", label: "Address" },
-      { key: "active", label: "Status" },
-      { key: "actions", label: "Actions" },
+      { key: "name", title: "Filial nomi", className: "name-cell" },
+      { key: "phone", title: "Telefon" },
+      {
+        key: "formattedAddress",
+        title: "Manzil",
+        className: "address-cell",
+      },
+      { key: "active", title: "Holat" },
     ],
     []
   );
@@ -163,49 +189,59 @@ function BranchesTable({
   const actions = useMemo(
     () => [
       {
-        label: "View",
-        type: "view",
+        label: "Ko'rish",
+        icon: <Eye size={16} />,
+        variant: "view",
         onClick: (row) => handleView(row),
       },
       {
-        label: "Edit",
-        type: "edit",
+        label: "Tahrirlash",
+        icon: <Pencil size={16} />,
+        variant: "edit",
+        title: "Super Admin uchun ruxsat yo‘q",
+        when: () => !isSuperAdmin,
         onClick: (row) => handleEdit(row),
       },
       {
-        label: "Delete",
-        type: "delete",
+        label: "O'chirish",
+        icon: <Trash2 size={16} />,
+        variant: "delete",
+        title: "Super Admin uchun ruxsat yo‘q",
+        when: () => !isSuperAdmin,
         onClick: (row) => handleDelete(row),
       },
     ],
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [actionLoading]
+    [isSuperAdmin, handleView, handleEdit, handleDelete]
   );
 
   return (
     <>
-      <GlobalTable
-        title="Filial ro'yxati"
-        columns={columns}
-        data={tableData}
-        actions={actions}
-        loading={loading}
-        emptyText="Branches not found"
-        rowKey="id"
-        searchValue={search}
-        onSearchChange={setSearch}
-        searchPlaceholder="Qidiruv..."
-        headerExtra={
-          <button
-            className="branches-download-btn"
-            type="button"
-            onClick={() => console.log("Export")}
-            title="Yuklab olish"
-          >
-            <Download size={16} />
-          </button>
-        }
-      />
+      <div className="branches-table-card">
+        <div className="branches-table-header">
+          <h3>Filial ro&apos;yxati</h3>
+          <div className="branches-table-tools">
+            <button
+              className="branches-download-btn"
+              type="button"
+              onClick={() => console.log("Export")}
+              title="Yuklab olish"
+            >
+              <Download size={16} />
+            </button>
+          </div>
+        </div>
+
+        <GlobalTable
+          className="global-table--flat"
+          columns={columns}
+          data={tableData}
+          loading={loading}
+          emptyText={emptyText}
+          rowKey="id"
+          actions={actions}
+          pagination={{ client: true }}
+        />
+      </div>
 
       <ViewBranchModal
         isOpen={isViewOpen}
@@ -235,4 +271,3 @@ function BranchesTable({
 
 export { BranchesTable };
 export default BranchesTable;
-

@@ -1,5 +1,8 @@
 import { useEffect, useState, useRef } from "react";
 import { Phone, X, MapPin, ChevronDown } from "lucide-react";
+import { useGlobalNotification } from "@/hooks/useGlobalNotification";
+import { useScopedPartnerParams, PARTNER_SELECT_MESSAGE } from "@/hooks/useScopedPartnerParams";
+import { useAuth } from "@/core/hooks/useAuth";
 import { api } from "@/api";
 import "./AddBranchModal.css";
 import AddBranchMapModal from "./AddBranchMapModal";
@@ -164,6 +167,9 @@ function CustomDropdown({
 }
 
 export default function AddBranchModal({ open, onClose, onRefresh }) {
+  const { success, error: notifyError } = useGlobalNotification();
+  const { isSuperAdmin } = useAuth();
+  const { canFetch, getOrganizationParams } = useScopedPartnerParams();
   const [form, setForm] = useState(initialForm);
   const [loading, setLoading] = useState(false);
   const [showMap, setShowMap] = useState(false);
@@ -347,11 +353,34 @@ export default function AddBranchModal({ open, onClose, onRefresh }) {
 
     try {
       setLoading(true);
-      const res = await api.organizationBranch.create(payload);
+
+      let res;
+
+      if (isSuperAdmin) {
+        if (!canFetch) {
+          notifyError(PARTNER_SELECT_MESSAGE);
+          return;
+        }
+
+        const { organizationId } = getOrganizationParams();
+        if (!organizationId) {
+          notifyError(PARTNER_SELECT_MESSAGE);
+          return;
+        }
+
+        res = await api.organizationBranch.createForOrganization(
+          organizationId,
+          payload
+        );
+      } else {
+        res = await api.organizationBranch.create(payload);
+      }
+
       if (res?.errorMessage) {
-        console.error(res.errorMessage);
+        notifyError(res.errorMessage);
         return;
       }
+      success("Muvaffaqiyatli yaratildi");
       onClose();
       if (onRefresh) await onRefresh();
     } catch (error) {

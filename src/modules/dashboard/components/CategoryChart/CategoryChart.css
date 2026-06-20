@@ -67,36 +67,6 @@
   background: linear-gradient(90deg, #8f63ff 0%, #b27cff 100%);
 }
 
-.branch-top-seller {
+.branch-top-block {
   margin-top: auto;
-  border-radius: 16px;
-  padding: 14px 14px;
-  background: rgba(255, 255, 255, 0.04);
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.branch-top-icon {
-  width: 34px;
-  height: 34px;
-  border-radius: 12px;
-  background: rgba(255, 179, 92, 0.14);
-  color: #ffbd66;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.branch-top-seller p {
-  margin: 0 0 4px;
-  color: rgba(255, 255, 255, 0.38);
-  font-size: 11px;
-}
-
-.branch-top-seller h4 {
-  margin: 0;
-  color: #ffffff;
-  font-size: 16px;
-  font-weight: 600;
 }

@@ -1,0 +1,132 @@
+.global-toast-container {
+  position: fixed;
+  top: 24px;
+  right: 24px;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  max-width: 380px;
+  width: calc(100vw - 48px);
+  pointer-events: none;
+}
+
+.global-toast {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 14px 14px 14px 16px;
+  background: #ffffff;
+  border-radius: 14px;
+  box-shadow: 0 12px 35px rgba(0, 0, 0, 0.14);
+  border: 1px solid rgba(0, 0, 0, 0.04);
+  overflow: hidden;
+  pointer-events: auto;
+  animation: global-toast-slide-in 0.32s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.global-toast::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 4px;
+  background: var(--global-toast-accent, #8b3dff);
+}
+
+.global-toast.exiting {
+  animation: global-toast-slide-out 0.24s ease forwards;
+}
+
+.global-toast.success {
+  --global-toast-accent: #16a34a;
+}
+
+.global-toast.error {
+  --global-toast-accent: #dc2626;
+}
+
+.global-toast.warning {
+  --global-toast-accent: #f59e0b;
+}
+
+.global-toast.info {
+  --global-toast-accent: #8b3dff;
+}
+
+.global-toast-icon {
+  flex-shrink: 0;
+  margin-top: 1px;
+  color: var(--global-toast-accent, #8b3dff);
+}
+
+.global-toast-content {
+  flex: 1;
+  min-width: 0;
+  padding-right: 18px;
+}
+
+.global-toast-message {
+  margin: 0;
+  color: #111827;
+  font-size: 13px;
+  line-height: 1.45;
+  font-weight: 600;
+  word-break: break-word;
+}
+
+.global-toast-close {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 24px;
+  height: 24px;
+  border: 0;
+  border-radius: 8px;
+  background: rgba(17, 24, 39, 0.05);
+  color: rgba(17, 24, 39, 0.55);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+.global-toast-close:hover {
+  background: rgba(17, 24, 39, 0.08);
+  color: rgba(17, 24, 39, 0.85);
+}
+
+@keyframes global-toast-slide-in {
+  from {
+    transform: translateX(calc(100% + 24px));
+    opacity: 0;
+  }
+
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes global-toast-slide-out {
+  from {
+    transform: translateX(0);
+    opacity: 1;
+  }
+
+  to {
+    transform: translateX(calc(100% + 24px));
+    opacity: 0;
+  }
+}
+
+@media (max-width: 640px) {
+  .global-toast-container {
+    top: 16px;
+    right: 16px;
+    width: calc(100vw - 32px);
+  }
+}

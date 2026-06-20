@@ -1,80 +1,20 @@
 import { useMemo, useState } from "react";
-import GlobalTable from "@/components/ui/GlobalTable/GlobalTable";
+import GlobalTable from "@/components/GlobalTable/GlobalTable";
+import StatusBadge, { inferStatusVariant } from "@/components/StatusBadge/StatusBadge";
 import "./RecentOrders.css";
 
-const orders = [
-  {
-    id: "#12548",
-    customer: "Jamshid Karimov",
-    date: "24.05.2024",
-    status: "Tayyor",
-    amount: "1,250,000 UZS",
-    initials: "JK",
-  },
-  {
-    id: "#12547",
-    customer: "Nodira Mansurova",
-    date: "24.05.2024",
-    status: "Kutilmoqda",
-    amount: "840,000 UZS",
-    initials: "NM",
-  },
-  {
-    id: "#12546",
-    customer: "Otabek Alimov",
-    date: "23.05.2024",
-    status: "Bekor qilindi",
-    amount: "2,100,000 UZS",
-    initials: "OA",
-  },
-  {
-    id: "#12545",
-    customer: "Malika Ergasheva",
-    date: "23.05.2024",
-    status: "Tayyor",
-    amount: "970,000 UZS",
-    initials: "ME",
-  },
-  {
-    id: "#12544",
-    customer: "Sardor Yo‘ldoshev",
-    date: "22.05.2024",
-    status: "Kutilmoqda",
-    amount: "1,430,000 UZS",
-    initials: "SY",
-  },
-  {
-    id: "#12543",
-    customer: "Dilshod Tursunov",
-    date: "22.05.2024",
-    status: "Bekor qilindi",
-    amount: "560,000 UZS",
-    initials: "DT",
-  },
-  {
-    id: "#12542",
-    customer: "Nargiza Qodirova",
-    date: "21.05.2024",
-    status: "Tayyor",
-    amount: "2,340,000 UZS",
-    initials: "NQ",
-  },
-];
-
-function getStatusClass(status) {
-  if (status === "Tayyor") return "status-active";
-  if (status === "Kutilmoqda") return "status-pending";
-  if (status === "Bekor qilindi") return "status-inactive";
-  return "status-pending";
+function getStatusVariant(status) {  if (status === "Tayyor") return "done";
+  if (status === "Kutilmoqda") return "warning";
+  if (status === "Bekor qilindi") return "inactive";
+  return inferStatusVariant(status);
 }
 
-export default function RecentOrders() {
+export default function RecentOrders({ orders = [], loading = false }) {
   const [showAll, setShowAll] = useState(false);
 
   const visibleOrders = useMemo(() => {
     return showAll ? orders : orders.slice(0, 5);
-  }, [showAll]);
-
+  }, [orders, showAll]);
   const columns = useMemo(
     () => [
       {
@@ -102,7 +42,10 @@ export default function RecentOrders() {
         key: "status",
         title: "HOLAT",
         render: (row) => (
-          <span className={getStatusClass(row.status)}>{row.status || "—"}</span>
+          <StatusBadge
+            variant={getStatusVariant(row.status)}
+            label={row.status || "—"}
+          />
         ),
       },
       {
@@ -136,13 +79,13 @@ export default function RecentOrders() {
 
       <div className="recent-orders-table-wrap">
         <GlobalTable
-          className="recent-orders-global-table"
+          className="global-table--flat recent-orders-global-table"
           columns={columns}
           data={visibleOrders}
+          loading={loading}
           emptyText="Ma'lumot topilmadi"
           rowKey="id"
-        />
-      </div>
+        />      </div>
     </div>
   );
 }

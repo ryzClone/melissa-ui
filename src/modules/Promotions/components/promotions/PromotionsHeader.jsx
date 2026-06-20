@@ -1,7 +1,7 @@
 import { Download, Plus } from "lucide-react";
 import "./PromotionsHeader.css";
 
-export default function PromotionsHeader({ activeTab, onCreateClick }) {
+export default function PromotionsHeader({ activeTab, onCreateClick, readOnly = false }) {
   const handleCreateClick = () => {
     if (typeof onCreateClick === "function") {
       onCreateClick();
@@ -23,16 +23,18 @@ export default function PromotionsHeader({ activeTab, onCreateClick }) {
           </button>
         )}
 
-        <button
-          type="button"
-          className="promo-primary-btn"
-          onClick={handleCreateClick}
-        >
-          <Plus size={16} />
-          <span>
-            {activeTab === "Aksiyalar" ? "Yangi aksiya" : "Yangi promokod"}
-          </span>
-        </button>
+        {!readOnly && (
+          <button
+            type="button"
+            className="promo-primary-btn"
+            onClick={handleCreateClick}
+          >
+            <Plus size={16} />
+            <span>
+              {activeTab === "Aksiyalar" ? "Yangi aksiya" : "Yangi promokod"}
+            </span>
+          </button>
+        )}
       </div>
     </div>
   );

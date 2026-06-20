@@ -6,7 +6,7 @@ import {
   X,
 } from "lucide-react";
 import "./PromotionModals.css";
-import { merchantPromoApi } from "../../../../../api/modules/merchantPromoApi";
+import { merchantProductApi } from "../../../../../api/modules/merchantProductApi";
 
 const initialForm = {
   name: "",
@@ -99,8 +99,10 @@ const parseProductList = (res) => {
   return dedupeProducts(Array.isArray(list) ? list : []);
 };
 
-const getProducts = async () => {
-  const res = await merchantPromoApi.getMerchentPromoList();
+const getProducts = async (getParams = () => ({})) => {
+  const res = await merchantProductApi.getList(
+    getParams({ page: 0, size: 100 })
+  );
   return parseProductList(res);
 };
 
@@ -325,6 +327,7 @@ export default function CreatePromotionModal({
   onClose,
   onSave,
   editData,
+  getParams = () => ({}),
 }) {
   const [form, setForm] = useState(initialForm);
   const [activePicker, setActivePicker] = useState(null);
@@ -368,7 +371,7 @@ export default function CreatePromotionModal({
     const fetchProducts = async () => {
       setProductsLoading(true);
       try {
-        const list = await getProducts();
+        const list = await getProducts(getParams);
         setProducts(list);
       } catch (error) {
         console.error("Merchant product list error:", error);
@@ -379,7 +382,7 @@ export default function CreatePromotionModal({
     };
 
     fetchProducts();
-  }, [open, editData]);
+  }, [open, editData, getParams]);
 
   useEffect(() => {
     if (!open || productsLoading || !products.length) return;

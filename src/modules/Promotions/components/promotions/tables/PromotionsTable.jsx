@@ -1,50 +1,47 @@
-import { useEffect, useMemo, useState } from "react";
-import { Download } from "lucide-react";
-import GlobalTable from "@/components/ui/GlobalTable/GlobalTable";
+import { useMemo } from "react";
+import { Download, Eye, Pencil, Trash2 } from "lucide-react";
+import GlobalTable from "@/components/GlobalTable/GlobalTable";
 import "./PromotionsTable.css";
 
-const PAGE_SIZE = 4;
-
-const mapStatusClass = (status) => {
-  if (status === "Faol") return "status-active";
-  if (status === "Kutilmoqda") return "status-pending";
-  return "status-inactive";
-};
-
-export default function PromotionsTable({ items = [], onEdit, onDelete }) {
-  const [currentPage, setCurrentPage] = useState(1);
-
-  const totalPages = Math.max(1, Math.ceil(items.length / PAGE_SIZE));
-
-  const paginatedItems = useMemo(() => {
-    const startIndex = (currentPage - 1) * PAGE_SIZE;
-    return items.slice(startIndex, startIndex + PAGE_SIZE);
-  }, [items, currentPage]);
-
-  useEffect(() => {
-    if (currentPage > totalPages) {
-      setCurrentPage(totalPages);
-    }
-  }, [currentPage, totalPages]);
-
+export default function PromotionsTable({
+  items = [],
+  loading = false,
+  onView,
+  onEdit,
+  onDelete,
+  readOnly = false,
+  emptyText = "Ma'lumot topilmadi",
+}) {
   const columns = useMemo(
     () => [
-      { key: "id", title: "ID", render: (row) => row.id ?? "—" },
-      { key: "type", title: "Turi", render: (row) => row.type || "—" },
       {
         key: "name",
         title: "Nomi",
+        className: "name-cell",
         render: (row) => <strong>{row.name || "—"}</strong>,
       },
-      { key: "value", title: "Qiymat", render: (row) => row.value ?? "—" },
-      { key: "period", title: "Muddati", render: (row) => row.period || "—" },
       {
-        key: "status",
-        title: "Holat",
-        render: (row) => (
-          <span className={mapStatusClass(row.status)}>{row.status || "—"}</span>
-        ),
+        key: "code",
+        title: "Kod",
+        render: (row) => row.code || "—",
       },
+      { key: "type", title: "Turi", render: (row) => row.type || "—" },
+      {
+        key: "discount",
+        title: "Chegirma",
+        render: (row) => row.discount ?? row.value ?? "—",
+      },
+      {
+        key: "startDate",
+        title: "Boshlanish",
+        render: (row) => row.startDate || "—",
+      },
+      {
+        key: "endDate",
+        title: "Tugash",
+        render: (row) => row.endDate || "—",
+      },
+      { key: "status", title: "Holat" },
     ],
     []
   );
@@ -52,17 +49,28 @@ export default function PromotionsTable({ items = [], onEdit, onDelete }) {
   const actions = useMemo(
     () => [
       {
-        type: "edit",
+        label: "Ko'rish",
+        icon: <Eye size={16} />,
+        variant: "view",
+        when: () => readOnly,
+        onClick: (row) => onView?.(row),
+      },
+      {
         label: "Tahrirlash",
+        icon: <Pencil size={16} />,
+        variant: "edit",
+        when: () => !readOnly,
         onClick: (row) => onEdit?.(row),
       },
       {
-        type: "delete",
         label: "O'chirish",
+        icon: <Trash2 size={16} />,
+        variant: "delete",
+        when: () => !readOnly,
         onClick: (row) => onDelete?.(row.id),
       },
     ],
-    [onEdit, onDelete]
+    [readOnly, onView, onEdit, onDelete]
   );
 
   return (
@@ -77,17 +85,14 @@ export default function PromotionsTable({ items = [], onEdit, onDelete }) {
       </div>
 
       <GlobalTable
+        className="global-table--flat"
         columns={columns}
-        data={paginatedItems}
-        emptyText="Ma'lumot topilmadi"
+        data={items}
+        loading={loading}
+        emptyText={emptyText}
         rowKey="id"
         actions={actions}
-        pagination={{
-          page: currentPage,
-          pageSize: PAGE_SIZE,
-          total: items.length,
-        }}
-        onPageChange={setCurrentPage}
+        pagination={{ client: true }}
       />
     </div>
   );

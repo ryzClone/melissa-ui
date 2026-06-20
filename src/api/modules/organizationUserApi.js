@@ -7,7 +7,10 @@ export const organizationUserApi = {
 
   getList: (params) => apiClient.get(BASE_URL, { params }),
 
-  create: (payload) => apiClient.post(BASE_URL, payload),
+  create: (payload, params) => {
+    const hasParams = params && Object.keys(params).length > 0;
+    return apiClient.post(BASE_URL, payload, hasParams ? { params } : undefined);
+  },
 
   update: (id, payload) => apiClient.put(`${BASE_URL}/${id}`, payload),
 

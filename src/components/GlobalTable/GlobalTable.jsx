@@ -1,28 +1,37 @@
+import { useEffect, useMemo, useState } from "react";
 import {
   Eye,
   Pencil,
   Trash2,
+  Check,
+  X,
   Search,
   ChevronLeft,
   ChevronRight,
 } from "lucide-react";
+import CustomDropdown from "@/components/CustomDropdown/CustomDropdown";
+import StatusBadge, {
+  formatStatusLabel,
+  inferStatusVariant,
+  isAutoStatusColumn,
+} from "@/components/StatusBadge/StatusBadge";
 import "./GlobalTable.css";
+import {
+  DEFAULT_PAGE_SIZE,
+  PAGE_SIZE_DROPDOWN_OPTIONS,
+  normalizePaginationConfig,
+  paginateList,
+} from "./tablePagination";
 
-const ACTION_ICONS = {
+const DEFAULT_ACTION_ICONS = {
   view: Eye,
   edit: Pencil,
   update: Pencil,
   delete: Trash2,
   remove: Trash2,
+  success: Check,
+  cancel: X,
 };
-
-const STATUS_COLUMN_KEYS = new Set([
-  "status",
-  "active",
-  "isActive",
-  "enabled",
-  "isEnabled",
-]);
 
 const getColumnLabel = (column) => column.label ?? column.title ?? column.key;
 
@@ -40,84 +49,8 @@ const getNestedValue = (row, key) => {
   return row[key];
 };
 
-const isStatusColumn = (column, value) => {
-  if (column.key === "actions") return false;
-  if (column.render) return false;
-  if (STATUS_COLUMN_KEYS.has(column.key)) return true;
-  if (typeof value === "boolean") return true;
-  if (value === "active" || value === "inactive") return true;
-  const normalized = String(value ?? "").toLowerCase();
-  return normalized === "true" || normalized === "false";
-};
-
-const getStatusBadgeClass = (value) => {
-  if (typeof value === "boolean") {
-    return value ? "gt-badge-active" : "gt-badge-inactive";
-  }
-
-  const normalized = String(value ?? "").toLowerCase();
-
-  if (
-    [
-      "true",
-      "active",
-      "faol",
-      "aktiv",
-      "tasdiqlandi",
-      "tayyor",
-      "confirmed",
-      "completed",
-      "yopildi",
-    ].includes(normalized) ||
-    normalized.includes("faol") ||
-    normalized.includes("aktiv") ||
-    normalized.includes("tasdiq")
-  ) {
-    return "gt-badge-active";
-  }
-
-  if (
-    [
-      "false",
-      "inactive",
-      "nofaol",
-      "bekor",
-      "cancelled",
-      "canceled",
-      "cancel",
-    ].includes(normalized) ||
-    normalized.includes("bekor") ||
-    normalized.includes("nofaol")
-  ) {
-    return "gt-badge-inactive";
-  }
-
-  return "gt-badge-pending";
-};
-
-const formatStatusLabel = (value, key) => {
-  if (typeof value === "boolean") {
-    if (key === "active") return value ? "Faol" : "Nofaol";
-    return value ? "Ha" : "Yo'q";
-  }
-
-  const normalized = String(value ?? "").toLowerCase();
-  if (normalized === "true" || normalized === "active") return "Faol";
-  if (normalized === "false" || normalized === "inactive") return "Nofaol";
-
-  return value ?? "—";
-};
-
-function StatusBadge({ value, columnKey }) {
-  return (
-    <span className={`gt-badge ${getStatusBadgeClass(value)}`}>
-      {formatStatusLabel(value, columnKey)}
-    </span>
-  );
-}
-
-function resolveActionType(action) {
-  const raw = (action.type || action.className || "edit")
+const resolveActionVariant = (action) => {
+  const raw = (action.variant || action.type || action.className || "edit")
     .toString()
     .toLowerCase()
     .trim();
@@ -125,23 +58,32 @@ function resolveActionType(action) {
   if (raw === "update") return "edit";
   if (raw === "remove") return "delete";
   return raw;
-}
+};
 
 function TableActions({ actions, row, index }) {
+  const visibleActions = actions.filter(
+    (action) => typeof action.when !== "function" || action.when(row, index)
+  );
+
+  if (visibleActions.length === 0) return "—";
+
   return (
-    <div className="gt-actions">
-      {actions.map((action, actionIndex) => {
-        const type = resolveActionType(action);
-        const Icon = ACTION_ICONS[type] || Pencil;
+    <div className="global-table-actions gt-actions">
+      {visibleActions.map((action, actionIndex) => {
+        const variant = resolveActionVariant(action);
+        const Icon = DEFAULT_ACTION_ICONS[variant] || Pencil;
         const iconNode = action.icon ?? <Icon size={16} />;
 
         return (
           <button
-            key={`${type}-${action.label ?? action.title ?? actionIndex}`}
+            key={`${variant}-${action.label ?? actionIndex}`}
             type="button"
-            className={`gt-action-btn gt-action-${type} global-table-action-btn ${type}`}
+            className={`global-table-action-btn gt-action-btn ${variant}`}
             title={action.title || action.label}
-            onClick={() => action.onClick?.(row, index)}
+            onClick={(event) => {
+              event.stopPropagation();
+              action.onClick?.(row, index);
+            }}
           >
             {iconNode}
           </button>
@@ -156,17 +98,10 @@ function GlobalTablePagination({
   onPageChange,
   onPageSizeChange,
 }) {
-  const {
-    page = 1,
-    pageSize = 10,
-    total = 0,
-    pageSizeOptions = [10, 20, 50],
-  } = pagination;
+  const { page, size, totalElements, totalPages } =
+    normalizePaginationConfig(pagination);
 
-  const totalPages = Math.max(1, Math.ceil(total / pageSize) || 1);
   const currentPage = Math.min(Math.max(page, 1), totalPages);
-  const start = total === 0 ? 0 : (currentPage - 1) * pageSize + 1;
-  const end = total === 0 ? 0 : Math.min(currentPage * pageSize, total);
 
   const pages = [];
   if (totalPages <= 6) {
@@ -179,35 +114,34 @@ function GlobalTablePagination({
     if (currentPage < totalPages - 2) pages.push("...", totalPages);
   }
 
+  const handlePageSizeChange = (nextValue) => {
+    const nextSize = Number(nextValue) || DEFAULT_PAGE_SIZE;
+    onPageChange?.(1);
+    onPageSizeChange?.(nextSize);
+  };
+
   return (
-    <div className="gt-footer global-table-footer">
-      <div className="gt-footer-info global-table-footer-info">
-        <span>
-          {total === 0
-            ? "0 ta yozuv"
-            : `${start}–${end} / ${total} ta yozuv`}
-        </span>
-        {onPageSizeChange && (
-          <label className="gt-page-size global-table-page-size">
-            <span>Sahifada</span>
-            <select
-              value={pageSize}
-              onChange={(event) => onPageSizeChange(Number(event.target.value))}
-            >
-              {pageSizeOptions.map((option) => (
-                <option key={option} value={option}>
-                  {option}
-                </option>
-              ))}
-            </select>
-          </label>
-        )}
+    <div className="global-table-footer gt-footer">
+      <div className="global-table-footer-total gt-footer-total">
+        <span>Jami: {totalElements} ta</span>
       </div>
 
-      <div className="gt-pagination global-table-pagination">
+      <div className="global-table-pagination gt-pagination">
+        <label className="pagination-size gt-page-size">
+          <span>Sahifada</span>
+          <CustomDropdown
+            className="pagination-size-dropdown gt-page-size-dropdown"
+            value={String(size)}
+            options={PAGE_SIZE_DROPDOWN_OPTIONS}
+            onChange={handlePageSizeChange}
+            disabled={!onPageSizeChange}
+            menuPortal
+          />
+        </label>
+
         <button
           type="button"
-          className="gt-page-nav global-table-page-nav"
+          className="global-table-page-nav gt-page-nav"
           disabled={currentPage === 1}
           onClick={() => onPageChange?.(currentPage - 1)}
         >
@@ -215,7 +149,7 @@ function GlobalTablePagination({
           <span>Oldingi</span>
         </button>
 
-        <div className="gt-page-list global-table-page-list">
+        <div className="global-table-page-list gt-page-list">
           {pages.map((pageNumber, index) =>
             pageNumber === "..." ? (
               <span
@@ -228,7 +162,7 @@ function GlobalTablePagination({
               <button
                 key={`page-${pageNumber}`}
                 type="button"
-                className={`gt-page-btn global-table-page-btn ${
+                className={`global-table-page-btn gt-page-btn ${
                   currentPage === pageNumber ? "active" : ""
                 }`}
                 onClick={() => onPageChange?.(pageNumber)}
@@ -241,7 +175,7 @@ function GlobalTablePagination({
 
         <button
           type="button"
-          className="gt-page-nav global-table-page-nav"
+          className="global-table-page-nav gt-page-nav"
           disabled={currentPage === totalPages}
           onClick={() => onPageChange?.(currentPage + 1)}
         >
@@ -257,7 +191,7 @@ function renderCell(column, row, index, actions, renderActions) {
   if (column.key === "actions") {
     if (typeof renderActions === "function") {
       return (
-        <div className="gt-actions global-table-actions">
+        <div className="global-table-actions gt-actions">
           {renderActions(row, index)}
         </div>
       );
@@ -274,8 +208,18 @@ function renderCell(column, row, index, actions, renderActions) {
 
   const value = getNestedValue(row, column.key);
 
-  if (isStatusColumn(column, value)) {
-    return <StatusBadge value={value} columnKey={column.key} />;
+  if (isAutoStatusColumn(column, value)) {
+    const variant =
+      typeof column.statusVariant === "function"
+        ? column.statusVariant(row, value)
+        : inferStatusVariant(value, column.key);
+
+    return (
+      <StatusBadge
+        variant={variant}
+        label={formatStatusLabel(value, column.key)}
+      />
+    );
   }
 
   if (value === null || value === undefined || value === "") {
@@ -295,6 +239,7 @@ export default function GlobalTable({
   pagination,
   onPageChange,
   onPageSizeChange,
+  showPagination = true,
   rowKey = "id",
   className = "",
   renderActions,
@@ -305,6 +250,42 @@ export default function GlobalTable({
   onRowClick,
   onRowDoubleClick,
 }) {
+  const isClientPagination = pagination?.client === true;
+  const [clientPage, setClientPage] = useState(1);
+  const [clientSize, setClientSize] = useState(DEFAULT_PAGE_SIZE);
+
+  useEffect(() => {
+    if (!isClientPagination) return;
+    setClientPage(1);
+  }, [data, isClientPagination]);
+
+  const clientPaginationResult = useMemo(() => {
+    if (!isClientPagination) return null;
+    return paginateList(data, clientPage, clientSize);
+  }, [data, clientPage, clientSize, isClientPagination]);
+
+  const resolvedPagination = isClientPagination
+    ? {
+        page: clientPaginationResult.page,
+        size: clientPaginationResult.size,
+        totalElements: clientPaginationResult.totalElements,
+        totalPages: clientPaginationResult.totalPages,
+      }
+    : normalizePaginationConfig(pagination);
+
+  const tableData = isClientPagination
+    ? clientPaginationResult.content
+    : data;
+
+  const handlePageChange = isClientPagination ? setClientPage : onPageChange;
+
+  const handlePageSizeChange = isClientPagination
+    ? (nextSize) => {
+        setClientPage(1);
+        setClientSize(nextSize);
+      }
+    : onPageSizeChange;
+
   const hasActionsColumn = columns.some((column) => column.key === "actions");
   const showActionsColumn =
     hasActionsColumn ||
@@ -314,7 +295,7 @@ export default function GlobalTable({
   const tableColumns = hasActionsColumn
     ? columns
     : showActionsColumn
-      ? [...columns, { key: "actions", label: "Amallar" }]
+      ? [...columns, { key: "actions", title: "Amallar" }]
       : columns;
 
   const showHeader =
@@ -323,14 +304,14 @@ export default function GlobalTable({
     Boolean(headerExtra);
 
   return (
-    <div className={`gt-wrapper global-table ${className}`.trim()}>
+    <div className={`global-table-card gt-wrapper ${className}`.trim()}>
       {showHeader && (
-        <div className="gt-header global-table-header">
-          {title && <h3 className="gt-title global-table-title">{title}</h3>}
+        <div className="global-table-header gt-header">
+          {title && <h3 className="global-table-title gt-title">{title}</h3>}
 
-          <div className="gt-header-tools global-table-header-tools">
+          <div className="global-table-header-tools gt-header-tools">
             {typeof onSearchChange === "function" && (
-              <div className="gt-search global-table-search">
+              <div className="global-table-search gt-search">
                 <Search size={16} />
                 <input
                   type="text"
@@ -345,8 +326,8 @@ export default function GlobalTable({
         </div>
       )}
 
-      <div className="gt-scroll global-table-scroll">
-        <table className="gt-table global-table-element">
+      <div className="global-table-wrapper gt-scroll global-table-scroll">
+        <table className="global-table gt-table global-table-element">
           <thead>
             <tr>
               {tableColumns.map((column) => (
@@ -367,24 +348,30 @@ export default function GlobalTable({
           <tbody>
             {loading && (
               <tr>
-                <td colSpan={tableColumns.length} className="gt-state global-table-state">
-                  <div className="gt-loading global-table-loading">
+                <td
+                  colSpan={tableColumns.length}
+                  className="global-table-state gt-state"
+                >
+                  <div className="global-table-loading gt-loading">
                     Yuklanmoqda...
                   </div>
                 </td>
               </tr>
             )}
 
-            {!loading && data.length === 0 && (
+            {!loading && tableData.length === 0 && (
               <tr>
-                <td colSpan={tableColumns.length} className="gt-state global-table-state">
-                  <div className="gt-empty global-table-empty">{emptyText}</div>
+                <td
+                  colSpan={tableColumns.length}
+                  className="global-table-state gt-state"
+                >
+                  <div className="global-table-empty gt-empty">{emptyText}</div>
                 </td>
               </tr>
             )}
 
             {!loading &&
-              data.map((row, index) => (
+              tableData.map((row, index) => (
                 <tr
                   key={getRowKey(row, index, rowKey)}
                   onClick={
@@ -408,7 +395,7 @@ export default function GlobalTable({
                       className={[
                         column.className,
                         column.key === "actions"
-                          ? "gt-actions-col global-table-actions-cell"
+                          ? "global-table-actions-cell gt-actions-col"
                           : "",
                       ]
                         .filter(Boolean)
@@ -423,11 +410,11 @@ export default function GlobalTable({
         </table>
       </div>
 
-      {pagination && (
+      {pagination && showPagination && (
         <GlobalTablePagination
-          pagination={pagination}
-          onPageChange={onPageChange}
-          onPageSizeChange={onPageSizeChange}
+          pagination={resolvedPagination}
+          onPageChange={handlePageChange}
+          onPageSizeChange={handlePageSizeChange}
         />
       )}
     </div>

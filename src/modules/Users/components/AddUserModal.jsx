@@ -1,7 +1,15 @@
 import { useEffect, useRef, useState } from "react";
 import { X, ChevronDown } from "lucide-react";
+import { useGlobalNotification } from "@/hooks/useGlobalNotification";
+import { useScopedPartnerParams, PARTNER_SELECT_MESSAGE } from "@/hooks/useScopedPartnerParams";
+import { useSuperAdminOrganizationBranches } from "@/hooks/useSuperAdminOrganizationBranches";
+import { useUsersApi } from "@/hooks/useUsersApi";
+import { useAuth } from "@/core/hooks/useAuth";
+import { usePartner } from "@/context/PartnerContext";
+import CustomDropdown from "@/components/CustomDropdown/CustomDropdown";
+import { performLogout } from "@/utils/performLogout";
+import { redirectToLogin } from "@/utils/authSession";
 import "./AddUserModal.css";
-import { organizationUserApi } from "../../../api/modules/organizationUserApi";
 import { organizationRoleApi } from "../../../api/modules/organizationRoleApi";
 
 const formatUzPhone = (value) => {
@@ -30,10 +38,17 @@ const initialForm = {
   surname: "",
   phoneNumber: "+998",
   roleIds: [],
+  branchId: "",
   attachmentId: null,
 };
 
 export default function AddUserModal({ isOpen, onClose, onRefresh }) {
+  const { success } = useGlobalNotification();
+  const { isSuperAdmin } = useAuth();
+  const { partnerId } = usePartner();
+  const usersApi = useUsersApi();
+  const { canFetch, getParams, getOrganizationParams } = useScopedPartnerParams();
+  const { branches, branchesLoading } = useSuperAdminOrganizationBranches();
   const [formData, setFormData] = useState(initialForm);
   const [loading, setLoading] = useState(false);
   const [uploadingAvatar, setUploadingAvatar] = useState(false);
@@ -54,14 +69,24 @@ export default function AddUserModal({ isOpen, onClose, onRefresh }) {
     let cancelled = false;
 
     const loadRoles = async () => {
+      if (!canFetch) {
+        setRoleOptions([]);
+        return;
+      }
+
       try {
         setRolesLoading(true);
         setRolesError("");
+
+        const roleScopeParams = isSuperAdmin
+          ? getOrganizationParams()
+          : getParams();
 
         const res = await organizationRoleApi.getList({
           page: 0,
           size: 100,
           sort: ["id,desc"],
+          ...roleScopeParams,
         });
         const payload = res?.data || res;
         const list =
@@ -95,7 +120,14 @@ export default function AddUserModal({ isOpen, onClose, onRefresh }) {
     return () => {
       cancelled = true;
     };
-  }, [isOpen]);
+  }, [
+    isOpen,
+    canFetch,
+    getParams,
+    getOrganizationParams,
+    isSuperAdmin,
+    partnerId,
+  ]);
 
   useEffect(() => {
     if (isOpen) {
@@ -109,6 +141,11 @@ export default function AddUserModal({ isOpen, onClose, onRefresh }) {
       }
     }
   }, [isOpen]);
+
+  useEffect(() => {
+    if (!isOpen || !isSuperAdmin) return;
+    setFormData((prev) => ({ ...prev, branchId: "" }));
+  }, [isOpen, isSuperAdmin, partnerId]);
 
   useEffect(() => {
     const handleEsc = (e) => {
@@ -210,10 +247,8 @@ export default function AddUserModal({ isOpen, onClose, onRefresh }) {
   
       if (res.status === 401) {
         setError("Token vaqti tugadi");
-        localStorage.removeItem("token");
-        localStorage.removeItem("accessToken");
-        localStorage.removeItem("user");
-        window.location.href = "/login";
+        performLogout();
+        redirectToLogin();
         return;
       }
   
@@ -280,6 +315,11 @@ export default function AddUserModal({ isOpen, onClose, onRefresh }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    if (!canFetch) {
+      setError(PARTNER_SELECT_MESSAGE);
+      return;
+    }
+
     if (!formData.username.trim()) {
       setError("Username kiriting");
       return;
@@ -312,6 +352,11 @@ export default function AddUserModal({ isOpen, onClose, onRefresh }) {
       return;
     }
 
+    if (isSuperAdmin && !formData.branchId) {
+      setError("Filial tanlang");
+      return;
+    }
+
     const payload = {
       username: formData.username.trim(),
       password: formData.password.trim(),
@@ -325,6 +370,10 @@ export default function AddUserModal({ isOpen, onClose, onRefresh }) {
           : null,
     };
 
+    if (isSuperAdmin && formData.branchId) {
+      payload.branchId = Number(formData.branchId);
+    }
+
     // Agar backend null ni ham qabul qilmasa, yuqoridagi attachmentId ni olib tashlab,
     // shuni ishlating:
     // if (payload.attachmentId === null) delete payload.attachmentId;
@@ -333,8 +382,9 @@ export default function AddUserModal({ isOpen, onClose, onRefresh }) {
       setLoading(true);
       setError("");
 
-      await organizationUserApi.create(payload);
+      await usersApi.create(payload, getParams());
 
+      success("Muvaffaqiyatli yaratildi");
       setFormData(initialForm);
       setAvatarPreview(null);
 
@@ -349,11 +399,6 @@ export default function AddUserModal({ isOpen, onClose, onRefresh }) {
       onClose();
     } catch (err) {
       console.error(err);
-      setError(
-        err?.response?.data?.errorMessage ||
-          err?.response?.data?.message ||
-          "Foydalanuvchi yaratishda xatolik yuz berdi"
-      );
     } finally {
       setLoading(false);
     }
@@ -517,6 +562,33 @@ export default function AddUserModal({ isOpen, onClose, onRefresh }) {
               )}
             </div>
           </div>
+
+          {isSuperAdmin && (
+            <div className="users-form-grid one">
+              <div className="users-form-group">
+                <label>Filial *</label>
+                <CustomDropdown
+                  value={formData.branchId}
+                  onChange={(value) => handleChange("branchId", value)}
+                  disabled={isBusy || branchesLoading || !canFetch}
+                  placeholder={
+                    !canFetch
+                      ? "Avval partner tanlang"
+                      : branchesLoading
+                        ? "Yuklanmoqda..."
+                        : branches.length === 0
+                          ? "Filiallar topilmadi"
+                          : "Filial tanlang"
+                  }
+                  options={branches.map((branch) => ({
+                    label: branch.name || branch.title || "Filial",
+                    value: String(branch.id),
+                  }))}
+                  menuPortal
+                />
+              </div>
+            </div>
+          )}
 
           <div className="users-form-grid one">
             <div className="users-form-group">

@@ -6,6 +6,7 @@ import { merchantProductApi } from "./modules/merchantProductApi";
 import { merchantCategoryApi } from "./modules/merchantCategoryApi";
 import { attachmentApi } from "./modules/attachmentApi";
 import { productApi } from "./modules/productApi";
+import { userControllerApi } from "./modules/userControllerApi";
 
 export const api = {
   organizationBranch: organizationBranchApi,
@@ -16,4 +17,5 @@ export const api = {
   merchantCategory: merchantCategoryApi,
   attachment: attachmentApi,
   product: productApi,
+  userController: userControllerApi,
 };

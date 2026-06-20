@@ -1,46 +1,19 @@
-import { Wallet, ShoppingBasket, UserPlus, ReceiptText } from "lucide-react";
+import { Wallet, ShoppingBasket, ReceiptText } from "lucide-react";
 import "./StatsGrid.css";
 
-const stats = [
-  {
-    title: "JAMI SAVDO",
-    value: "45,280,000",
-    suffix: "UZS",
-    trend: "+12.5%",
-    positive: true,
-    icon: Wallet,
-  },
-  {
-    title: "BUYURTMALAR SONI",
-    value: "1,248",
-    suffix: "ta",
-    trend: "+8.2%",
-    positive: true,
-    icon: ShoppingBasket,
-  },
-  {
-    title: "YANGI MIJOZLAR",
-    value: "142",
-    suffix: "ta",
-    trend: "-2.4%",
-    positive: false,
-    icon: UserPlus,
-  },
-  {
-    title: "O‘RTACHA CHEK",
-    value: "320,000",
-    suffix: "UZS",
-    trend: "+5.1%",
-    positive: true,
-    icon: ReceiptText,
-  },
-];
+const ICONS = {
+  wallet: Wallet,
+  orders: ShoppingBasket,
+  receipt: ReceiptText,
+};
 
-export default function StatsGrid() {
+export default function StatsGrid({ stats = [] }) {
+  if (!stats.length) return null;
+
   return (
     <div className="dashboard-stats">
       {stats.map((item) => {
-        const Icon = item.icon;
+        const Icon = ICONS[item.icon] || Wallet;
 
         return (
           <div className="dashboard-stat-card" key={item.title}>

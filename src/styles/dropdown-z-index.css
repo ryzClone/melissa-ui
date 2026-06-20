@@ -1,0 +1,108 @@
+/**
+ * Global dropdown / select stacking above tables and cards.
+ * Keeps menus above sticky table headers without raising table row z-index.
+ */
+
+.custom-dropdown,
+.custom-select,
+.select-wrapper,
+.dropdown-wrapper,
+.custom-select-wrapper,
+.pm-custom-select,
+.users-custom-select,
+.addbranch-custom-select,
+.promo-custom-select,
+.partner-selector {
+  position: relative;
+  z-index: 50;
+}
+
+.custom-dropdown.open,
+.custom-select.open,
+.select-wrapper.open,
+.dropdown-wrapper.open,
+.custom-select-wrapper.open,
+.pm-custom-select.open,
+.users-custom-select:has(.users-custom-select-trigger.open),
+.promo-custom-select.promo-dropdown-open,
+.promo-custom-select:has(.promo-custom-options) {
+  z-index: 9999;
+}
+
+.custom-dropdown-menu,
+.custom-select-menu,
+.select-dropdown,
+.dropdown-menu,
+.popover-content,
+.pm-custom-select-menu,
+.users-custom-select-menu,
+.addbranch-custom-select-menu,
+.promo-custom-options {
+  position: absolute;
+  z-index: 10000 !important;
+}
+
+.custom-dropdown-menu--portal {
+  position: fixed;
+  z-index: 10000 !important;
+}
+
+.filter-bar,
+.filter-item {
+  overflow: visible;
+}
+
+.table-wrapper,
+.table-container,
+.global-table-wrapper,
+.gt-scroll,
+.global-table-scroll,
+.global-table-card,
+.gt-wrapper,
+.global-table {
+  position: relative;
+  z-index: 1;
+}
+
+.global-table thead,
+.global-table th,
+.gt-table thead,
+.gt-table th,
+.global-table-element thead,
+.global-table-element th {
+  z-index: 10;
+}
+
+.global-table-actions-cell,
+.gt-actions-col {
+  z-index: 10;
+}
+
+.global-table thead .global-table-actions-cell,
+.gt-table thead .gt-actions-col,
+.global-table-element thead .global-table-actions-cell {
+  z-index: 10;
+}
+
+.global-table tbody tr,
+.global-table tbody td,
+.gt-table tbody tr,
+.gt-table tbody td,
+.global-table-element tbody tr,
+.global-table-element tbody td {
+  z-index: auto;
+}
+
+.global-table-footer,
+.gt-footer {
+  z-index: 1;
+}
+
+.users-card,
+.promo-table-card,
+.catalog-card,
+.branches-page,
+.orders-kanban-page {
+  position: relative;
+  z-index: 1;
+}

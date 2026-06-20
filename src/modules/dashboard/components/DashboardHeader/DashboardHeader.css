@@ -24,7 +24,25 @@
 .dashboard-top-actions {
   display: flex;
   align-items: center;
+  justify-content: flex-end;
+  flex-wrap: wrap;
   gap: 12px;
+}
+
+@media (max-width: 900px) {
+  .dashboard-top {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .dashboard-top-actions {
+    width: 100%;
+  }
+
+  .dashboard-top-btn {
+    flex: 1;
+    justify-content: center;
+  }
 }
 
 .dashboard-top-btn {
@@ -59,4 +77,10 @@
 
 .dashboard-top-btn-primary:hover {
   transform: translateY(-1px);
+}
+
+.dashboard-top-btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+  transform: none;
 }

@@ -1,4 +1,7 @@
-import { Clock, Phone, Building2 } from "lucide-react";
+import { useMemo } from "react";
+import { Eye } from "lucide-react";
+import GlobalTable from "@/components/GlobalTable/GlobalTable";
+import StatusBadge from "@/components/StatusBadge/StatusBadge";
 import {
   formatSom,
   getOrderBranchName,
@@ -8,81 +11,104 @@ import {
   getOrderNumber,
   getOrderPhone,
   getOrderStatus,
+  getOrderStatusVariant,
   getOrderTotalAmount,
-  getStatusBadge,
   getProductQuantity,
+  getStatusBadge,
 } from "./OrderMockData";
 
-function HistoryRow({ order, onOpenDetails }) {
-  const badge = getStatusBadge(getOrderStatus(order));
-  const itemsCount = getOrderItems(order).reduce(
-    (sum, item) => sum + getProductQuantity(item),
-    0
+export default function OrderHistoryList({
+  orders = [],
+  onOpenDetails,
+  loading = false,
+}) {
+  const columns = useMemo(
+    () => [
+      {
+        key: "orderNumber",
+        title: "Buyurtma",
+        render: (row) => getOrderNumber(row),
+      },
+      {
+        key: "customer",
+        title: "Mijoz",
+        className: "name-cell",
+        render: (row) => getOrderCustomerName(row),
+      },
+      {
+        key: "phone",
+        title: "Telefon",
+        render: (row) => getOrderPhone(row),
+      },
+      {
+        key: "branch",
+        title: "Filial",
+        className: "address-cell",
+        render: (row) => getOrderBranchName(row),
+      },
+      {
+        key: "items",
+        title: "Mahsulot",
+        render: (row) => {
+          const itemsCount = getOrderItems(row).reduce(
+            (sum, item) => sum + getProductQuantity(item),
+            0
+          );
+          return `${itemsCount} ta`;
+        },
+      },
+      {
+        key: "total",
+        title: "Summa",
+        render: (row) => formatSom(getOrderTotalAmount(row)),
+      },
+      {
+        key: "status",
+        title: "Holat",
+        render: (row) => {
+          const status = getOrderStatus(row);
+          const badge = getStatusBadge(status);
+
+          return (
+            <StatusBadge
+              variant={getOrderStatusVariant(status)}
+              label={badge.label}
+            />
+          );
+        },
+      },
+      {
+        key: "time",
+        title: "Vaqt",
+        render: (row) => getOrderDateTimeLabel(row),
+      },
+    ],
+    []
+  );
+
+  const actions = useMemo(
+    () => [
+      {
+        label: "Ko'rish",
+        icon: <Eye size={16} />,
+        variant: "view",
+        onClick: (row) => onOpenDetails?.(row),
+      },
+    ],
+    [onOpenDetails]
   );
 
   return (
-    <article
-      className="orders-history-item"
-      role="button"
-      tabIndex={0}
-      onClick={() => onOpenDetails?.(order)}
-      onKeyDown={(event) => {
-        if (event.key === "Enter" || event.key === " ") {
-          event.preventDefault();
-          onOpenDetails?.(order);
-        }
-      }}
-    >
-      <div className="orders-history-main">
-        <span className="orders-history-id">{getOrderNumber(order)}</span>
-        <strong className="orders-history-name">
-          {getOrderCustomerName(order)}
-        </strong>
-        <span className="orders-history-muted">
-          <Phone size={12} />
-          {getOrderPhone(order)}
-        </span>
-      </div>
-
-      <span className="orders-history-branch">
-        <Building2 size={12} />
-        {getOrderBranchName(order)}
-      </span>
-
-      <span className="orders-history-count">{itemsCount} ta mahsulot</span>
-
-      <span className="orders-history-total">
-        {formatSom(getOrderTotalAmount(order))}
-      </span>
-
-      <span className={`orders-status-badge ${badge.tone}`}>{badge.label}</span>
-
-      <span className="orders-history-time">
-        <Clock size={12} />
-        {getOrderDateTimeLabel(order)}
-      </span>
-    </article>
-  );
-}
-
-export default function OrderHistoryList({ orders = [], onOpenDetails }) {
-  if (orders.length === 0) {
-    return (
-      <div className="orders-history-empty">
-        Tarixda buyurtmalar yo'q
-      </div>
-    );
-  }
-
-  return (
-    <div className="orders-history-list">
-      {orders.map((order, index) => (
-        <HistoryRow
-          key={order?.id ?? order?.orderId ?? index}
-          order={order}
-          onOpenDetails={onOpenDetails}
-        />
-      ))}
-    </div>
+    <GlobalTable
+      className="global-table--flat orders-history-table"
+      columns={columns}
+      data={orders}
+      loading={loading}
+      emptyText="Tarixda buyurtmalar yo'q"
+      rowKey={(row, index) => row?.id ?? row?.orderId ?? `history-${index}`}
+      actions={actions}
+      pagination={{ client: true }}
+      onRowClick={(row) => onOpenDetails?.(row)}
+    />
   );
 }

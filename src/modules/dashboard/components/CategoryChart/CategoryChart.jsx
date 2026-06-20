@@ -1,13 +1,22 @@
 import "./CategoryChart.css";
-import { Star } from "lucide-react";
+import { useAuth } from "@/core/hooks/useAuth";
+import TopFilialSelector, {
+  TopFilialStaticCard,
+} from "../TopFilialSelector/TopFilialSelector";
 
-const branches = [
+const DEFAULT_BRANCHES = [
   { name: "Markaziy filial", percent: 78 },
   { name: "Chilonzor", percent: 52 },
   { name: "Yunusobod", percent: 94 },
 ];
 
-export default function CategoryChart() {
+export default function CategoryChart({
+  branches = DEFAULT_BRANCHES,
+  topBranch = "Yunusobod",
+}) {
+  const { isSuperAdmin } = useAuth();
+  const branchList = branches.length ? branches : DEFAULT_BRANCHES;
+
   return (
     <div className="branch-card">
       <div className="branch-header">
@@ -15,7 +24,7 @@ export default function CategoryChart() {
       </div>
 
       <div className="branch-list">
-        {branches.map((item) => (
+        {branchList.map((item) => (
           <div className="branch-item" key={item.name}>
             <div className="branch-row">
               <span>{item.name}</span>
@@ -32,15 +41,12 @@ export default function CategoryChart() {
         ))}
       </div>
 
-      <div className="branch-top-seller">
-        <div className="branch-top-icon">
-          <Star size={16} />
-        </div>
-
-        <div>
-          <p>TOP SOTUVCHI</p>
-          <h4>Anvar G‘aniyev</h4>
-        </div>
+      <div className="branch-top-block">
+        {isSuperAdmin ? (
+          <TopFilialSelector />
+        ) : (
+          <TopFilialStaticCard value={topBranch} />
+        )}
       </div>
     </div>
   );

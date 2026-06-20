@@ -44,6 +44,33 @@
     --radius-md: 14px;
     --radius-lg: 20px;
     --radius-xl: 24px;
+
+    /* Melissa dark surface tokens */
+    --ui-primary: #8b3dff;
+    --ui-primary-hover: #9f5cff;
+    --ui-bg: #07030f;
+    --ui-bg-page: #0b0614;
+    --ui-surface: #13091f;
+    --ui-surface-elevated: #180d28;
+    --ui-input: #1b0f2b;
+    --ui-menu: #160c24;
+    --ui-header: #1b0f2b;
+    --ui-border: rgba(255, 255, 255, 0.08);
+    --ui-border-strong: rgba(255, 255, 255, 0.1);
+    --ui-text: #ffffff;
+    --ui-text-secondary: #a9a0b8;
+    --ui-text-muted: #7d728d;
+    --ui-hover: rgba(139, 61, 255, 0.16);
+    --ui-selected: rgba(139, 61, 255, 0.22);
+    --ui-selected-text: #b98cff;
+    --ui-radius: 14px;
+    --ui-radius-menu: 16px;
+    --ui-radius-card: 20px;
+    --ui-shadow-soft: 0 20px 60px rgba(0, 0, 0, 0.35);
+    --ui-shadow-menu: 0 18px 45px rgba(0, 0, 0, 0.45);
+    --ui-focus-ring: 0 0 0 4px rgba(139, 61, 255, 0.14);
+    --ui-modal-bg: linear-gradient(180deg, #24123a 0%, #0b0614 100%);
+    --ui-modal-border: rgba(139, 61, 255, 0.35);
   
     --transition: 0.2s ease;
   }

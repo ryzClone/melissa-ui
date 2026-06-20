@@ -5,6 +5,7 @@ export default function OrderColumn({
   accent = "purple",
   orders = [],
   now,
+  readOnly = false,
   onOpenDetails,
   onAction,
 }) {
@@ -27,6 +28,7 @@ export default function OrderColumn({
               key={order.id}
               order={order}
               now={now}
+              readOnly={readOnly}
               onOpenDetails={onOpenDetails}
               onAction={onAction}
             />

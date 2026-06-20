@@ -1,16 +1,17 @@
 import { useMemo } from "react";
-import GlobalTable from "@/components/ui/GlobalTable/GlobalTable";
+import GlobalTable from "@/components/GlobalTable/GlobalTable";
+import StatusBadge from "@/components/StatusBadge/StatusBadge";
 
-function getStatusClass(status) {
+function getReservationStatusVariant(status) {
   switch (status) {
     case "Confirmed":
-      return "status-active";
+      return "success";
     case "Pending":
-      return "status-pending";
+      return "warning";
     case "Cancelled":
-      return "status-inactive";
+      return "inactive";
     default:
-      return "status-pending";
+      return "pending";
   }
 }
 
@@ -51,12 +52,16 @@ export default function ReservationsTable({ data = [] }) {
         key: "status",
         title: "Holat",
         render: (row) => (
-          <span className={getStatusClass(row.status)}>{row.status || "—"}</span>
+          <StatusBadge
+            variant={getReservationStatusVariant(row.status)}
+            label={row.status || "—"}
+          />
         ),
       },
       {
         key: "note",
         title: "Izoh",
+        className: "description-cell",
         render: (row) => row.note || "—",
       },
     ],

@@ -3,11 +3,20 @@ import {
   Check,
   CreditCard,
   Download,
-  Filter,
   Search,
 } from "lucide-react";
-import GlobalTable from "@/components/ui/GlobalTable/GlobalTable";
+import GlobalTable from "@/components/GlobalTable/GlobalTable";
+import CustomDropdown from "@/components/CustomDropdown/CustomDropdown";
+import { useDebouncedValue } from "@/hooks/useDebouncedValue";
 import "./FinanceOrdersTable.css";
+
+const PAYMENT_FILTERS = [
+  { value: "all", label: "Barchasi" },
+  { value: "Naqd", label: "Naqd" },
+  { value: "Karta", label: "Karta" },
+  { value: "Click", label: "Click" },
+  { value: "Payme", label: "Payme" },
+];
 
 const paymentTypeClass = {
   Naqd: "cash",
@@ -100,7 +109,6 @@ export default function FinanceOrdersTable({
   orders,
   title = "Tasdiqlanmagan naqd buyurtmalar",
   totalCount,
-  pageSize = 7,
   onApprove,
   onDownload,
 }) {
@@ -109,13 +117,14 @@ export default function FinanceOrdersTable({
 
   const [search, setSearch] = useState("");
   const [activeFilter, setActiveFilter] = useState("all");
-  const [page, setPage] = useState(1);
+  const debouncedSearch = useDebouncedValue(search, 3000);
 
   const filteredOrders = useMemo(() => {
     return tableOrders.filter((order) => {
-      const searchValue = search.toLowerCase();
+      const searchValue = debouncedSearch.trim().toLowerCase();
 
       const matchesSearch =
+        !searchValue ||
         String(order.id || "").toLowerCase().includes(searchValue) ||
         String(order.customer || "").toLowerCase().includes(searchValue) ||
         String(order.phone || "").toLowerCase().includes(searchValue) ||
@@ -126,38 +135,27 @@ export default function FinanceOrdersTable({
 
       return matchesSearch && matchesFilter;
     });
-  }, [tableOrders, search, activeFilter]);
+  }, [tableOrders, debouncedSearch, activeFilter]);
 
-  const total = filteredOrders.length;
-  const totalPages = Math.max(1, Math.ceil(total / pageSize));
-  const currentPage = Math.min(page, totalPages);
-
-  const paginatedOrders = useMemo(
+  const normalizedOrders = useMemo(
     () =>
-      filteredOrders.slice(
-        (currentPage - 1) * pageSize,
-        currentPage * pageSize
-      ),
-    [filteredOrders, currentPage, pageSize]
+      filteredOrders.map((order) => ({
+        ...order,
+        status: order.status || "Tasdiqlanmagan",
+      })),
+    [filteredOrders]
   );
 
   const newCount = tableOrders.filter(
     (order) => order.status === "Tasdiqlanmagan" || !order.status
   ).length;
 
-  const handleFilterToggle = () => {
-    const filters = ["all", "Naqd", "Karta", "Click", "Payme"];
-    const currentIndex = filters.indexOf(activeFilter);
-    const nextIndex =
-      currentIndex === filters.length - 1 ? 0 : currentIndex + 1;
-
-    setActiveFilter(filters[nextIndex]);
-    setPage(1);
-  };
-
   const handleSearch = (value) => {
     setSearch(value);
-    setPage(1);
+  };
+
+  const handlePaymentFilterChange = (value) => {
+    setActiveFilter(value || "all");
   };
 
   const columns = useMemo(
@@ -219,11 +217,7 @@ export default function FinanceOrdersTable({
       {
         key: "status",
         title: "Holat",
-        render: (row) => (
-          <span className="status-pending">
-            {row.status || "Tasdiqlanmagan"}
-          </span>
-        ),
+        statusVariant: () => "warning",
       },
     ],
     []
@@ -232,9 +226,9 @@ export default function FinanceOrdersTable({
   const actions = useMemo(
     () => [
       {
+        label: "Tasdiqlash",
         icon: <Check size={16} />,
-        title: "Tasdiqlash",
-        className: "success",
+        variant: "success",
         onClick: (row) => onApprove?.(row),
       },
     ],
@@ -259,14 +253,12 @@ export default function FinanceOrdersTable({
             />
           </div>
 
-          <button
-            type="button"
-            className={activeFilter !== "all" ? "filter-active" : ""}
-            onClick={handleFilterToggle}
-            title={activeFilter === "all" ? "Barcha" : activeFilter}
-          >
-            <Filter size={16} />
-          </button>
+          <CustomDropdown
+            className="finance-payment-filter"
+            value={activeFilter}
+            onChange={handlePaymentFilterChange}
+            options={PAYMENT_FILTERS}
+          />
 
           <button type="button" onClick={() => onDownload?.(filteredOrders)}>
             <Download size={16} />
@@ -288,18 +280,14 @@ export default function FinanceOrdersTable({
 
       <div className="finance-table-wrap">
         <GlobalTable
-          className="finance-global-table"
+          className="global-table--flat finance-global-table"
           columns={columns}
-          data={paginatedOrders}
+          data={normalizedOrders}
+          loading={false}
           emptyText="Ma'lumot topilmadi"
           rowKey="id"
           actions={actions}
-          pagination={{
-            page: currentPage,
-            pageSize,
-            total,
-          }}
-          onPageChange={setPage}
+          pagination={{ client: true }}
         />
       </div>
     </div>

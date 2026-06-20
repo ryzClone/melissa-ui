@@ -1,7 +1,23 @@
 import "./OrdersPage.css";
 import { FiDownload, FiPrinter } from "react-icons/fi";
 import { useMemo, useState, useEffect, useRef, useCallback } from "react";
-import GlobalTable from "@/components/ui/GlobalTable/GlobalTable";
+import CustomDropdown from "@/components/CustomDropdown/CustomDropdown";
+import GlobalTable from "@/components/GlobalTable/GlobalTable";
+
+const STATUS_OPTIONS = [
+  { label: "Barchasi", value: "" },
+  { label: "Yetkazilmoqda", value: "DELIVERING" },
+  { label: "Qabul qilindi", value: "ACCEPTED" },
+  { label: "Kutilmoqda", value: "PENDING" },
+  { label: "Yopildi", value: "COMPLETED" },
+  { label: "Bekor qilindi", value: "CANCELLED" },
+];
+
+const PAYMENT_OPTIONS = [
+  { label: "Barchasi", value: "" },
+  { label: "Karta", value: "Karta" },
+  { label: "Naqd", value: "Naqd" },
+];
 
 const ordersData = [
   {
@@ -59,8 +75,6 @@ const STATUS_MAP = {
   CANCELLED: { label: "Bekor qilindi", className: "status-inactive" },
 };
 
-const ITEMS_PER_PAGE = 6;
-
 export default function OrdersPage() {
   const orders = useMemo(
     () => ordersData.map((o, idx) => ({ ...o, rowId: `${o.id}-${idx}` })),
@@ -68,22 +82,12 @@ export default function OrdersPage() {
   );
 
   const [selected, setSelected] = useState([]);
-  const [currentPage, setCurrentPage] = useState(1);
-
-  const totalPages = Math.max(1, Math.ceil(orders.length / ITEMS_PER_PAGE));
-
-  useEffect(() => {
-    if (currentPage > totalPages) setCurrentPage(totalPages);
-  }, [currentPage, totalPages]);
-
-  const paginatedOrders = useMemo(() => {
-    const start = (currentPage - 1) * ITEMS_PER_PAGE;
-    return orders.slice(start, start + ITEMS_PER_PAGE);
-  }, [orders, currentPage]);
+  const [statusFilter, setStatusFilter] = useState("");
+  const [paymentFilter, setPaymentFilter] = useState("");
 
   const pageIds = useMemo(
-    () => paginatedOrders.map((o) => o.rowId),
-    [paginatedOrders]
+    () => orders.map((o) => o.rowId),
+    [orders]
   );
 
   const allSelectedOnPage =
@@ -208,23 +212,20 @@ export default function OrdersPage() {
 
         <div className="filter-group">
           <label>Holat</label>
-          <select>
-            <option>Barchasi</option>
-            <option value="DELIVERING">Yetkazilmoqda</option>
-            <option value="ACCEPTED">Qabul qilindi</option>
-            <option value="PENDING">Kutilmoqda</option>
-            <option value="COMPLETED">Yopildi</option>
-            <option value="CANCELLED">Bekor qilindi</option>
-          </select>
+          <CustomDropdown
+            value={statusFilter}
+            onChange={setStatusFilter}
+            options={STATUS_OPTIONS}
+          />
         </div>
 
         <div className="filter-group">
           <label>To‘lov turi</label>
-          <select>
-            <option>Barchasi</option>
-            <option value="Karta">Karta</option>
-            <option value="Naqd">Naqd</option>
-          </select>
+          <CustomDropdown
+            value={paymentFilter}
+            onChange={setPaymentFilter}
+            options={PAYMENT_OPTIONS}
+          />
         </div>
 
         <div className="filter-group">
@@ -237,15 +238,10 @@ export default function OrdersPage() {
         <GlobalTable
           className="orders-global-table"
           columns={columns}
-          data={paginatedOrders}
+          data={orders}
           emptyText="Ma'lumot topilmadi"
           rowKey="rowId"
-          pagination={{
-            page: currentPage,
-            pageSize: ITEMS_PER_PAGE,
-            total: orders.length,
-          }}
-          onPageChange={setCurrentPage}
+          pagination={{ client: true }}
         />
       </div>
     </div>

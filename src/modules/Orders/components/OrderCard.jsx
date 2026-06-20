@@ -1,4 +1,4 @@
-import { Clock, Phone, MapPin, Building2, Timer, AlertTriangle } from "lucide-react";
+import { Clock, Phone, MapPin, Building2, Timer, AlertTriangle, Eye } from "lucide-react";
 import {
   formatSom,
   formatRemainingTime,
@@ -61,7 +61,7 @@ function CustomerAvatar({ name, avatar }) {
   );
 }
 
-export default function OrderCard({ order, now, onOpenDetails, onAction }) {
+export default function OrderCard({ order, now, readOnly = false, onOpenDetails, onAction }) {
   const status = getOrderStatus(order);
   const isNew = status === "NEW";
   const isAccepted = status === "ACCEPTED";
@@ -152,34 +152,47 @@ export default function OrderCard({ order, now, onOpenDetails, onAction }) {
         </div>
 
         <div className="orders-card-actions">
-          {isNew && (
+          {readOnly ? (
             <button
               type="button"
-              className="orders-btn primary full"
-              onClick={(e) => stop(e, () => onAction?.("accept", order))}
+              className="orders-btn ghost full"
+              onClick={(e) => stop(e, () => onOpenDetails?.(order))}
             >
-              Qabul qilish
+              <Eye size={14} />
+              Ko'rish
             </button>
-          )}
+          ) : (
+            <>
+              {isNew && (
+                <button
+                  type="button"
+                  className="orders-btn primary full"
+                  onClick={(e) => stop(e, () => onAction?.("accept", order))}
+                >
+                  Qabul qilish
+                </button>
+              )}
 
-          {isAccepted && (
-            <button
-              type="button"
-              className="orders-btn primary full"
-              onClick={(e) => stop(e, () => onAction?.("process", order))}
-            >
-              Jarayonga o'tkazish
-            </button>
-          )}
+              {isAccepted && (
+                <button
+                  type="button"
+                  className="orders-btn primary full"
+                  onClick={(e) => stop(e, () => onAction?.("process", order))}
+                >
+                  Jarayonga o'tkazish
+                </button>
+              )}
 
-          {isCooking && (
-            <button
-              type="button"
-              className="orders-btn success full"
-              onClick={(e) => stop(e, () => onAction?.("complete", order))}
-            >
-              Bajarildi
-            </button>
+              {isCooking && (
+                <button
+                  type="button"
+                  className="orders-btn success full"
+                  onClick={(e) => stop(e, () => onAction?.("complete", order))}
+                >
+                  Bajarildi
+                </button>
+              )}
+            </>
           )}
         </div>
       </footer>

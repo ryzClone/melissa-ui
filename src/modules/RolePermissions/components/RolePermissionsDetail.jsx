@@ -42,27 +42,28 @@ export default function RolePermissionsDetail({
 }) {
   const columns = useMemo(
     () => [
-      { key: "id", label: "ID", render: (row) => row?.id ?? "-" },
+      { key: "id", title: "ID", render: (row) => row?.id ?? "-" },
       {
         key: "name",
-        label: "Permission nomi",
+        title: "Permission nomi",
         render: (row) => permissionName(row),
       },
       {
         key: "code",
-        label: "Code",
+        title: "Code",
         render: (row) => (
           <span className="permission-code-badge">{permissionCode(row)}</span>
         ),
       },
       {
         key: "module",
-        label: "Module",
+        title: "Module",
         render: (row) => permissionModule(row),
       },
       {
         key: "description",
-        label: "Description",
+        title: "Description",
+        className: "description-cell",
         render: (row) => permissionDescription(row),
       },
     ],

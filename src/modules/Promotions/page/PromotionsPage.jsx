@@ -1,7 +1,16 @@
 import { useCallback, useEffect, useState } from "react";
+import { useGlobalNotification } from "@/hooks/useGlobalNotification";
+import PageWrapper from "@/components/PageWrapper/PageWrapper";
+import FilterBar, { FilterItem } from "@/components/FilterBar/FilterBar";
+import PagePartnerFilter from "@/components/PagePartnerFilter/PagePartnerFilter";
+import { useScopedPartnerParams, PARTNER_SELECT_MESSAGE } from "@/hooks/useScopedPartnerParams";
+import { useDebouncedValue } from "@/hooks/useDebouncedValue";
+import { useLatestRequest } from "@/hooks/useLatestRequest";
+import { useAuth } from "@/core/hooks/useAuth";
 import "../PromotionsPage.css";
 import { discountApi } from "../../../api/modules/discountApi";
-import { merchantPromoApi } from "../../../api/modules/merchantPromoApi";
+import { merchantDiscountApi } from "../../../api/modules/merchantDiscountApi";
+import { adminMerchantPromoApi } from "../../../api/modules/adminMerchantPromoApi";
 import { parsePromoList, promoApi } from "../../../api/modules/promoApi";
 
 import PromotionsHeader from "../components/promotions/PromotionsHeader";
@@ -11,10 +20,13 @@ import PromoCodesTable from "../components/promotions/tables/PromoCodesTable";
 import PromotionsStats from "../components/promotions/PromotionsStats";
 import CreatePromotionModal from "../components/promotions/modals/CreatePromotionModal";
 import CreatePromoCodeModal from "../components/promotions/modals/CreatePromoCodeModal";
+import ViewDiscountModal from "../components/promotions/modals/ViewDiscountModal";
+import ViewPromoModal from "../components/promotions/modals/ViewPromoModal";
 
 const promoTabs = ["Aksiyalar", "Promokod"];
 
 export default function PromotionsPage() {
+  const { success } = useGlobalNotification();
   const [activeTab, setActiveTab] = useState("Aksiyalar");
   const [promotions, setPromotions] = useState([]);
   const [promoCodes, setPromoCodes] = useState([]);
@@ -23,9 +35,18 @@ export default function PromotionsPage() {
 
   const [openPromotionModal, setOpenPromotionModal] = useState(false);
   const [openPromoCodeModal, setOpenPromoCodeModal] = useState(false);
+  const [openViewDiscountModal, setOpenViewDiscountModal] = useState(false);
+  const [openViewPromoModal, setOpenViewPromoModal] = useState(false);
 
   const [selectedPromotion, setSelectedPromotion] = useState(null);
   const [selectedPromoCode, setSelectedPromoCode] = useState(null);
+  const [viewDiscount, setViewDiscount] = useState(null);
+  const [viewPromo, setViewPromo] = useState(null);
+  const { isSuperAdmin } = useAuth();
+  const { canFetch, getParams, getOrganizationParams } = useScopedPartnerParams();
+  const { beginRequest, isLatestRequest } = useLatestRequest();
+  const [promoSearch, setPromoSearch] = useState("");
+  const debouncedPromoSearch = useDebouncedValue(promoSearch, 3000);
 
   const toApiDate = (value = "") => {
     if (!value) return "";
@@ -58,9 +79,16 @@ export default function PromotionsPage() {
     id: item?.id,
     type: item?.type === "PERCENTAGE" ? "Foiz" : "Qiymat",
     name: item?.name || "",
+    code: item?.code || item?.promoCode || "—",
+    discount: resolveDisplayValue(item),
     value: resolveDisplayValue(item),
-    period: `${item?.startDate || ""} — ${item?.endDate || ""}`,
+    startDate: fromApiDate(item?.startDate || ""),
+    endDate: fromApiDate(item?.endDate || ""),
+    period: `${fromApiDate(item?.startDate || "")} — ${fromApiDate(item?.endDate || "")}`,
     status: item?.active ? "Faol" : "Nofaol",
+    active: Boolean(item?.active),
+    productId: item?.productId,
+    productName: item?.productName || item?.product?.name || "",
     raw: item,
   });
 
@@ -84,44 +112,92 @@ export default function PromotionsPage() {
   };
 
   const loadDiscounts = useCallback(async () => {
+    if (!canFetch) {
+      setPromotions([]);
+      return;
+    }
+
+    const requestId = beginRequest();
     setLoadingDiscounts(true);
+
     try {
-      const response = await discountApi.getDiscounts();
+      const response = isSuperAdmin
+        ? await merchantDiscountApi.getList(getOrganizationParams())
+        : await discountApi.getDiscounts(getParams());
+
+      if (!isLatestRequest(requestId)) return;
+
       const content = response?.data?.content || response?.content || [];
       const mapped = Array.isArray(content)
         ? content.map(mapDiscountToPromotionRow)
         : [];
       setPromotions(mapped);
     } catch (error) {
+      if (!isLatestRequest(requestId)) return;
       console.error("Discount list fetch failed:", error);
       setPromotions([]);
     } finally {
-      setLoadingDiscounts(false);
+      if (isLatestRequest(requestId)) {
+        setLoadingDiscounts(false);
+      }
     }
-  }, []);
+  }, [canFetch, getParams, getOrganizationParams, isSuperAdmin, beginRequest, isLatestRequest]);
 
   const loadPromos = useCallback(async () => {
+    if (!canFetch) {
+      setPromoCodes([]);
+      return;
+    }
+
+    const requestId = beginRequest();
     setLoadingPromoCodes(true);
+
     try {
-      const res = await promoApi.getPromos();
+      const listParams = isSuperAdmin
+        ? getOrganizationParams({
+            search: debouncedPromoSearch.trim() || undefined,
+          })
+        : getParams({ search: debouncedPromoSearch.trim() || undefined });
+
+      const res = isSuperAdmin
+        ? await adminMerchantPromoApi.getList(listParams)
+        : await promoApi.getPromos(listParams);
+
+      if (!isLatestRequest(requestId)) return;
+
       setPromoCodes(parsePromoList(res));
     } catch (error) {
+      if (!isLatestRequest(requestId)) return;
       console.error("Promo list fetch failed:", error);
       setPromoCodes([]);
     } finally {
-      setLoadingPromoCodes(false);
+      if (isLatestRequest(requestId)) {
+        setLoadingPromoCodes(false);
+      }
     }
-  }, []);
+  }, [
+    canFetch,
+    getParams,
+    getOrganizationParams,
+    isSuperAdmin,
+    debouncedPromoSearch,
+    beginRequest,
+    isLatestRequest,
+  ]);
 
   useEffect(() => {
-    if (activeTab === "Aksiyalar") {
-      loadDiscounts();
-    } else if (activeTab === "Promokod") {
-      loadPromos();
-    }
-  }, [activeTab, loadDiscounts, loadPromos]);
+    if (activeTab !== "Aksiyalar") return;
+    loadDiscounts();
+  }, [activeTab, loadDiscounts]);
+
+  useEffect(() => {
+    if (activeTab !== "Promokod") return;
+    loadPromos();
+  }, [activeTab, loadPromos]);
 
   const handleOpenCreate = () => {
+    if (isSuperAdmin) return;
+
     if (activeTab === "Aksiyalar") {
       setSelectedPromotion(null);
       setOpenPromotionModal(true);
@@ -132,6 +208,8 @@ export default function PromotionsPage() {
   };
 
   const handleEditPromotion = (item) => {
+    if (isSuperAdmin) return;
+
     const [startDate = "", endDate = ""] = (item?.period || "").split(" — ");
     setSelectedPromotion({
       ...item,
@@ -141,36 +219,72 @@ export default function PromotionsPage() {
     setOpenPromotionModal(true);
   };
 
+  const handleViewPromotion = (item) => {
+    if (!isSuperAdmin || !item) return;
+
+    setViewDiscount(item);
+    setOpenViewDiscountModal(true);
+  };
+
+  const handleCloseViewDiscountModal = () => {
+    setViewDiscount(null);
+    setOpenViewDiscountModal(false);
+  };
+
   const handleEditPromoCode = (item) => {
+    if (isSuperAdmin) return;
+
     setSelectedPromoCode(item);
     setOpenPromoCodeModal(true);
   };
 
+  const handleViewPromoCode = (item) => {
+    if (!isSuperAdmin || !item) return;
+
+    setViewPromo(item);
+    setOpenViewPromoModal(true);
+  };
+
+  const handleCloseViewPromoModal = () => {
+    setViewPromo(null);
+    setOpenViewPromoModal(false);
+  };
+
   const handleDeletePromotion = async (id) => {
+    if (isSuperAdmin) return;
+
     try {
       await discountApi.deleteDiscount(id);
       await loadDiscounts();
+      success("Muvaffaqiyatli o'chirildi");
     } catch (error) {
       console.error("Discount delete failed:", error);
     }
   };
 
   const handleDeletePromoCode = async (id) => {
+    if (isSuperAdmin) return;
+
     try {
       await promoApi.deletePromo(id);
       await loadPromos();
+      success("Muvaffaqiyatli o'chirildi");
     } catch (error) {
       console.error("Merchant promo delete failed:", error);
     }
   };
 
   const handleSavePromotion = async (data) => {
+    if (isSuperAdmin) return;
+
     const payload = buildDiscountPayload(data);
     try {
       if (selectedPromotion?.id !== undefined && selectedPromotion?.id !== null) {
         await discountApi.updateDiscount(selectedPromotion.id, payload);
+        success("Muvaffaqiyatli yangilandi");
       } else {
         await discountApi.createDiscount(payload);
+        success("Muvaffaqiyatli yaratildi");
       }
       await loadDiscounts();
       setSelectedPromotion(null);
@@ -181,11 +295,15 @@ export default function PromotionsPage() {
   };
 
   const handleSavePromoCode = async (data) => {
+    if (isSuperAdmin) return;
+
     try {
       if (selectedPromoCode?.id !== undefined && selectedPromoCode?.id !== null) {
         await promoApi.updatePromo(selectedPromoCode.id, data);
+        success("Muvaffaqiyatli yangilandi");
       } else {
         await promoApi.createPromo(data);
+        success("Muvaffaqiyatli yaratildi");
       }
       await loadPromos();
       setSelectedPromoCode(null);
@@ -206,11 +324,12 @@ export default function PromotionsPage() {
   };
 
   return (
-    <>
+    <PageWrapper>
       <div className="promo-page">
         <PromotionsHeader
           activeTab={activeTab}
           onCreateClick={handleOpenCreate}
+          readOnly={isSuperAdmin}
         />
 
         <PromotionsTabs
@@ -219,26 +338,36 @@ export default function PromotionsPage() {
           onChange={setActiveTab}
         />
 
+        {isSuperAdmin && (
+          <FilterBar>
+            <FilterItem>
+              <PagePartnerFilter partnerLabel="Tashkilot" />
+            </FilterItem>
+          </FilterBar>
+        )}
+
         {activeTab === "Aksiyalar" ? (
-          loadingDiscounts ? (
-            <div className="promo-loading">Yuklanmoqda...</div>
-          ) : (
             <PromotionsTable
               items={promotions}
+              loading={loadingDiscounts}
+              onView={handleViewPromotion}
               onEdit={handleEditPromotion}
               onDelete={handleDeletePromotion}
+              readOnly={isSuperAdmin}
+              emptyText={canFetch ? "Ma'lumot topilmadi" : PARTNER_SELECT_MESSAGE}
             />
-          )
         ) : (
-          loadingPromoCodes ? (
-            <div className="promo-loading">Yuklanmoqda...</div>
-          ) : (
             <PromoCodesTable
               items={promoCodes}
+              loading={loadingPromoCodes}
+              onView={handleViewPromoCode}
               onEdit={handleEditPromoCode}
               onDelete={handleDeletePromoCode}
+              readOnly={isSuperAdmin}
+              emptyText={canFetch ? "Ma'lumot topilmadi" : PARTNER_SELECT_MESSAGE}
+              searchValue={promoSearch}
+              onSearchChange={setPromoSearch}
             />
-          )
         )}
 
         <PromotionsStats activeTab={activeTab} promotions={promotions} />
@@ -249,6 +378,7 @@ export default function PromotionsPage() {
         editData={selectedPromotion}
         onClose={handleClosePromotionModal}
         onSave={handleSavePromotion}
+        getParams={getParams}
       />
 
       <CreatePromoCodeModal
@@ -257,6 +387,18 @@ export default function PromotionsPage() {
         onClose={handleClosePromoCodeModal}
         onSave={handleSavePromoCode}
       />
-    </>
+
+      <ViewDiscountModal
+        open={openViewDiscountModal}
+        discount={viewDiscount}
+        onClose={handleCloseViewDiscountModal}
+      />
+
+      <ViewPromoModal
+        open={openViewPromoModal}
+        promo={viewPromo}
+        onClose={handleCloseViewPromoModal}
+      />
+    </PageWrapper>
   );
 }

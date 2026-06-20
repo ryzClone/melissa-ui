@@ -145,36 +145,31 @@ export default function RolesPermissionsSection() {
 
   const columns = useMemo(
     () => [
-      { key: "id", label: "ID" },
+      { key: "id", title: "ID" },
       {
         key: "roleName",
-        label: "Rol nomi",
+        title: "Rol nomi",
         render: (row) => roleDisplayName(row),
       },
       {
         key: "description",
-        label: "Tavsif",
+        title: "Tavsif",
+        className: "description-cell",
         render: (row) => row?.description || "—",
       },
-      { key: "actions", label: "Amallar" },
     ],
     []
   );
 
-  const renderActions = useCallback(
-    (row) => (
-      <button
-        type="button"
-        className="global-table-action-btn view"
-        title="Ruxsatlarni ko'rish"
-        onClick={(event) => {
-          event.stopPropagation();
-          openRoleDetails(row);
-        }}
-      >
-        <Eye size={15} />
-      </button>
-    ),
+  const actions = useMemo(
+    () => [
+      {
+        label: "Ruxsatlarni ko'rish",
+        icon: <Eye size={15} />,
+        variant: "view",
+        onClick: (row) => openRoleDetails(row),
+      },
+    ],
     [openRoleDetails]
   );
 
@@ -221,17 +216,16 @@ export default function RolesPermissionsSection() {
           setPage(0);
         }}
         searchPlaceholder="Rol bo'yicha qidirish..."
-        renderActions={renderActions}
+        actions={actions}
         onRowDoubleClick={(row) => openRoleDetails(row)}
         pagination={{
           page: page + 1,
-          pageSize,
-          total: totalElements,
+          size: pageSize,
+          totalElements,
         }}
         onPageChange={(nextPage) => setPage(Math.max(0, nextPage - 1))}
-        onPageSizeChange={(size) => {
-          setPageSize(Number(size) || DEFAULT_PAGE_SIZE);
-          setPage(0);
+        onPageSizeChange={(nextSize) => {
+          setPageSize(Number(nextSize) || DEFAULT_PAGE_SIZE);
         }}
       />
     </div>

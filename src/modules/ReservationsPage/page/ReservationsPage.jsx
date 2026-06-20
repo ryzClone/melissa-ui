@@ -1,4 +1,5 @@
 import { useState } from "react";
+import PageWrapper from "@/components/PageWrapper/PageWrapper";
 import ReservationsHeader from "../components/ReservationsHeader";
 import ReservationsTabs from "../components/ReservationsTabs";
 import ReservationsTable from "../components/ReservationsTable";
@@ -42,17 +43,17 @@ export default function ReservationsPage() {
   ];
 
   return (
-    <div className="reservations-page">
-      <ReservationsHeader />
-      <ReservationsTabs activeView={activeView} setActiveView={setActiveView} />
+    <PageWrapper>
+      <div className="reservations-page">
+        <ReservationsHeader />
+        <ReservationsTabs activeView={activeView} setActiveView={setActiveView} />
 
-      {activeView === "table" ? (
-        <ReservationsTable data={reservations} />
-      ) : (
-        <ReservationsCalendar data={reservations} />
-      )}
-
-      
-    </div>
+        {activeView === "table" ? (
+          <ReservationsTable data={reservations} />
+        ) : (
+          <ReservationsCalendar data={reservations} />
+        )}
+      </div>
+    </PageWrapper>
   );
 }

@@ -1,49 +1,19 @@
-import { useEffect, useMemo, useState } from "react";
-import { Download, Search } from "lucide-react";
-import GlobalTable from "@/components/ui/GlobalTable/GlobalTable";
+import { useMemo } from "react";
+import { Download, Eye, Pencil, Search, Trash2 } from "lucide-react";
+import GlobalTable from "@/components/GlobalTable/GlobalTable";
 import "./PromotionsTable.css";
 
-const PAGE_SIZE = 5;
-
-export default function PromoCodesTable({ items = [], onEdit, onDelete }) {
-  const [currentPage, setCurrentPage] = useState(1);
-  const [searchValue, setSearchValue] = useState("");
-
-  const filteredItems = useMemo(() => {
-    const query = searchValue.trim().toLowerCase();
-    if (!query) return items;
-
-    return items.filter((item) =>
-      [
-        item.id,
-        item.name,
-        item.code,
-        item.type,
-        item.percentageValue,
-        item.fixedAmount,
-      ]
-        .map((v) => String(v ?? "").toLowerCase())
-        .some((v) => v.includes(query))
-    );
-  }, [items, searchValue]);
-
-  const totalPages = Math.max(1, Math.ceil(filteredItems.length / PAGE_SIZE));
-
-  const paginatedItems = useMemo(() => {
-    const startIndex = (currentPage - 1) * PAGE_SIZE;
-    return filteredItems.slice(startIndex, startIndex + PAGE_SIZE);
-  }, [filteredItems, currentPage]);
-
-  useEffect(() => {
-    setCurrentPage(1);
-  }, [searchValue]);
-
-  useEffect(() => {
-    if (currentPage > totalPages) {
-      setCurrentPage(totalPages);
-    }
-  }, [currentPage, totalPages]);
-
+export default function PromoCodesTable({
+  items = [],
+  loading = false,
+  onView,
+  onEdit,
+  onDelete,
+  readOnly = false,
+  emptyText = "Ma'lumot topilmadi",
+  searchValue = "",
+  onSearchChange,
+}) {
   const columns = useMemo(
     () => [
       { key: "id", title: "ID", render: (row) => row.id ?? "—" },
@@ -62,7 +32,7 @@ export default function PromoCodesTable({ items = [], onEdit, onDelete }) {
       { key: "type", title: "Turi", render: (row) => row.type || "—" },
       {
         key: "value",
-        title: "Qiymat",
+        title: "Chegirma",
         render: (row) =>
           row.type === "PERCENTAGE"
             ? `${row.percentageValue ?? 0}%`
@@ -85,25 +55,15 @@ export default function PromoCodesTable({ items = [], onEdit, onDelete }) {
       },
       {
         key: "startDate",
-        title: "Start",
+        title: "Boshlanish",
         render: (row) => row.startDate || "—",
       },
       {
         key: "endDate",
-        title: "End",
+        title: "Tugash",
         render: (row) => row.endDate || "—",
       },
-      {
-        key: "active",
-        title: "Faol",
-        render: (row) => (
-          <span
-            className={row.active ? "status-active" : "status-inactive"}
-          >
-            {row.active ? "Faol" : "Nofaol"}
-          </span>
-        ),
-      },
+      { key: "active", title: "Holat" },
     ],
     []
   );
@@ -111,17 +71,28 @@ export default function PromoCodesTable({ items = [], onEdit, onDelete }) {
   const actions = useMemo(
     () => [
       {
-        type: "edit",
+        label: "Ko'rish",
+        icon: <Eye size={16} />,
+        variant: "view",
+        when: () => readOnly,
+        onClick: (row) => onView?.(row),
+      },
+      {
         label: "Tahrirlash",
+        icon: <Pencil size={16} />,
+        variant: "edit",
+        when: () => !readOnly,
         onClick: (row) => onEdit?.(row),
       },
       {
-        type: "delete",
         label: "O'chirish",
+        icon: <Trash2 size={16} />,
+        variant: "delete",
+        when: () => !readOnly,
         onClick: (row) => onDelete?.(row.id),
       },
     ],
-    [onEdit, onDelete]
+    [readOnly, onView, onEdit, onDelete]
   );
 
   return (
@@ -135,7 +106,7 @@ export default function PromoCodesTable({ items = [], onEdit, onDelete }) {
               type="text"
               placeholder="Qidiruv..."
               value={searchValue}
-              onChange={(e) => setSearchValue(e.target.value)}
+              onChange={(e) => onSearchChange?.(e.target.value)}
             />
           </div>
           <button type="button" className="promo-icon-btn">
@@ -145,17 +116,14 @@ export default function PromoCodesTable({ items = [], onEdit, onDelete }) {
       </div>
 
       <GlobalTable
+        className="global-table--flat"
         columns={columns}
-        data={paginatedItems}
-        emptyText="Ma'lumot topilmadi"
+        data={items}
+        loading={loading}
+        emptyText={emptyText}
         rowKey={(row, index) => `${row.id ?? "promo"}-${index}`}
         actions={actions}
-        pagination={{
-          page: currentPage,
-          pageSize: PAGE_SIZE,
-          total: filteredItems.length,
-        }}
-        onPageChange={setCurrentPage}
+        pagination={{ client: true }}
       />
     </div>
   );

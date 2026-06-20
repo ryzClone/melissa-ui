@@ -141,61 +141,64 @@
 }
 
 /* USER MENU */
-.header-user-menu {
+.header-user-menu,
+.profile-menu {
   position: relative;
 }
 
-.header-user-trigger {
-  height: 42px;
-  padding: 0 10px 0 12px;
-  border: 1px solid rgba(255, 255, 255, 0.05);
-  border-radius: 14px;
-  background: rgba(255, 255, 255, 0.02);
-
+.profile-trigger {
+  height: 54px;
+  padding: 6px 12px 6px 16px;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.035);
+  border: 1px solid rgba(255, 255, 255, 0.08);
   display: flex;
   align-items: center;
   gap: 10px;
-
   cursor: pointer;
   transition: all 0.2s ease;
 }
 
-.header-user-trigger:hover {
-  background: rgba(255, 255, 255, 0.04);
-  border-color: rgba(139, 92, 246, 0.22);
+.profile-trigger:hover {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(139, 61, 255, 0.22);
 }
 
-.header-user-text {
+.profile-text {
   display: flex;
   flex-direction: column;
   align-items: flex-end;
   line-height: 1;
 }
 
-.header-user-text h4 {
+.profile-name {
   margin: 0;
-  color: #ffffff;
+  color: #fff;
   font-size: 14px;
-  font-weight: 500;
+  font-weight: 700;
   line-height: 1.1;
 }
 
-.header-user-text p {
+.profile-role {
   margin: 4px 0 0;
-  color: rgba(255, 255, 255, 0.45);
-  font-size: 10px;
+  color: #a9a0b8;
+  font-size: 12px;
   font-weight: 600;
-  letter-spacing: 1.1px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
   line-height: 1;
 }
 
-.header-avatar {
-  width: 34px;
-  height: 34px;
-  border-radius: 12px;
+.profile-avatar {
+  width: 38px;
+  height: 38px;
+  border-radius: 14px;
   overflow: hidden;
   flex-shrink: 0;
-
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   background: linear-gradient(180deg, #2b1a3d 0%, #1a1225 100%);
   border: 1px solid rgba(130, 84, 255, 0.35);
   box-shadow:
@@ -203,11 +206,22 @@
     0 0 18px rgba(111, 54, 220, 0.14);
 }
 
-.header-avatar img {
+.profile-avatar img {
   width: 100%;
   height: 100%;
   object-fit: cover;
   display: block;
+}
+
+.profile-avatar-initials {
+  color: #d9c2ff;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+
+.profile-avatar-initials.hidden {
+  display: none;
 }
 
 .header-chevron {
@@ -219,56 +233,46 @@
   transform: rotate(180deg);
 }
 
-/* USER DROPDOWN */
-.header-dropdown {
+.profile-dropdown {
   position: absolute;
-  top: calc(100% + 10px);
+  top: calc(100% + 12px);
   right: 0;
-  width: 180px;
-  padding: 8px;
-  border-radius: 16px;
-  background: linear-gradient(
-    180deg,
-    rgba(29, 20, 38, 0.98) 0%,
-    rgba(17, 12, 22, 0.98) 100%
-  );
-  border: 1px solid rgba(139, 92, 246, 0.16);
-  box-shadow:
-    0 18px 40px rgba(0, 0, 0, 0.38),
-    0 0 0 1px rgba(255, 255, 255, 0.02);
-  z-index: 1100;
+  min-width: 260px;
+  padding: 12px;
+  border-radius: 20px;
+  background: #160c24;
+  border: 1px solid rgba(139, 61, 255, 0.26);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.45);
+  z-index: 1000;
 }
 
-.header-dropdown-item {
+.profile-dropdown-item {
   width: 100%;
-  height: 42px;
-  padding: 0 12px;
+  height: 52px;
   border: none;
-  border-radius: 12px;
+  border-radius: 14px;
   background: transparent;
-
+  color: #fff;
   display: flex;
   align-items: center;
-  gap: 10px;
-
-  color: #ddd6f3;
+  gap: 12px;
+  padding: 0 16px;
   font-size: 14px;
   font-weight: 500;
   cursor: pointer;
   transition: all 0.2s ease;
 }
 
-.header-dropdown-item:hover {
-  background: rgba(139, 92, 246, 0.1);
-  color: #ffffff;
+.profile-dropdown-item:hover {
+  background: rgba(139, 61, 255, 0.16);
 }
 
-.header-dropdown-item.logout:hover {
-  background: rgba(255, 77, 103, 0.1);
+.profile-dropdown-item.logout:hover {
+  background: rgba(255, 77, 103, 0.12);
   color: #ff9aad;
 }
 
-.header-dropdown-item svg {
+.profile-dropdown-item svg {
   width: 16px;
   height: 16px;
   stroke-width: 2;
@@ -463,16 +467,16 @@
 
 /* FOCUS */
 .header-icon-btn:focus,
-.header-user-trigger:focus,
-.header-dropdown-item:focus,
+.profile-trigger:focus,
+.profile-dropdown-item:focus,
 .notif-close-btn:focus,
 .notif-item:focus {
   outline: none;
 }
 
 .header-icon-btn:focus-visible,
-.header-user-trigger:focus-visible,
-.header-dropdown-item:focus-visible,
+.profile-trigger:focus-visible,
+.profile-dropdown-item:focus-visible,
 .notif-close-btn:focus-visible,
 .notif-item:focus-visible {
   box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.15);
@@ -490,8 +494,8 @@
 
 /* 🔥 CLICKABLE elementlar */
 .header-icon-btn,
-.header-user-trigger,
-.header-dropdown-item,
+.profile-trigger,
+.profile-dropdown-item,
 .notif-item,
 .notif-close-btn {
   cursor: pointer;
@@ -503,7 +507,7 @@
     width: 220px;
   }
 
-  .header-user-text {
+  .profile-text {
     display: none;
   }
 
