@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 
-import { Eye, Pencil, Search, Trash2 } from "lucide-react";
+import { Pencil, Search, Trash2 } from "lucide-react";
 
 import GlobalTable from "@/components/GlobalTable/GlobalTable";
 
@@ -39,6 +39,7 @@ import { buildListParams } from "@/utils/buildListParams";
 import { getAttachmentUrl } from "@/modules/products/attachmentUtils";
 
 import {
+  extractCategoriesFromCatalogResponse,
   extractCategoriesFromList,
   normalizeAdminProductList,
   normalizeMerchantProductList,
@@ -144,19 +145,34 @@ function buildCatalogApiFilters({
 
 }) {
 
+  const parsedCategoryId = categoryId ? Number(categoryId) : undefined;
+
+  const parsedMinPrice =
+    debouncedMinPrice !== "" && Number.isFinite(Number(debouncedMinPrice))
+      ? Number(debouncedMinPrice)
+      : undefined;
+
+  const parsedMaxPrice =
+    debouncedMaxPrice !== "" && Number.isFinite(Number(debouncedMaxPrice))
+      ? Number(debouncedMaxPrice)
+      : undefined;
+
   return buildListParams({
 
     page: 0,
 
     size: 100,
 
-    categoryId: categoryId ? Number(categoryId) : undefined,
+    categoryId:
+      parsedCategoryId != null && Number.isFinite(parsedCategoryId)
+        ? parsedCategoryId
+        : undefined,
 
     search: debouncedSearch.trim() || undefined,
 
-    minPrice: debouncedMinPrice !== "" ? Number(debouncedMinPrice) : undefined,
+    minPrice: parsedMinPrice,
 
-    maxPrice: debouncedMaxPrice !== "" ? Number(debouncedMaxPrice) : undefined,
+    maxPrice: parsedMaxPrice,
 
     modifier:
 
@@ -188,8 +204,7 @@ export default function CatalogPage() {
 
   const { isSuperAdmin } = useAuth();
 
-  const { canFetch, getParams, getOrganizationParams, partnerId } =
-    useScopedPartnerParams();
+  const { canFetch, getParams, partnerId } = useScopedPartnerParams();
 
 
 
@@ -203,7 +218,7 @@ export default function CatalogPage() {
 
   }, [isSuperAdmin, partnerId]);
 
-
+  const filtersDisabled = isSuperAdmin && !canFetch;
 
   const [search, setSearch] = useState("");
 
@@ -276,39 +291,10 @@ export default function CatalogPage() {
 
 
   const fetchCategories = useCallback(async () => {
-    if (!canFetch) {
-      setCategories([]);
-      return;
-    }
-
-    if (isSuperAdmin) {
-      if (organizationId == null) {
-        setCategories([]);
-        return;
-      }
-
-      try {
-        const res = await merchantCategoryApi.getAll(getOrganizationParams());
-        const payload = res?.data;
-        const list = Array.isArray(payload?.data)
-          ? payload.data
-          : Array.isArray(payload)
-            ? payload
-            : [];
-
-        setCategories(
-          extractCategoriesFromList(
-            list.map((category) => ({
-              id: category.id,
-              name: category.name || category.title || "Kategoriya",
-            }))
-          )
-        );
-      } catch (err) {
-        console.error(err);
+    if (!canFetch || isSuperAdmin) {
+      if (isSuperAdmin) {
         setCategories([]);
       }
-
       return;
     }
 
@@ -333,13 +319,7 @@ export default function CatalogPage() {
       console.error(err);
       setCategories([]);
     }
-  }, [
-    canFetch,
-    getParams,
-    getOrganizationParams,
-    isSuperAdmin,
-    organizationId,
-  ]);
+  }, [canFetch, getParams, isSuperAdmin]);
 
   useEffect(() => {
     fetchCategories();
@@ -347,7 +327,13 @@ export default function CatalogPage() {
 
   useEffect(() => {
     if (!isSuperAdmin) return;
+
     setCategoryId("");
+    setSearch("");
+    setMinPrice("");
+    setMaxPrice("");
+    setModifierFilter("all");
+    setCategories([]);
   }, [organizationId, isSuperAdmin]);
 
 
@@ -369,6 +355,8 @@ export default function CatalogPage() {
     if (isSuperAdmin && organizationId == null) {
 
       setProducts([]);
+
+      setCategories([]);
 
       setLoading(false);
 
@@ -407,6 +395,10 @@ export default function CatalogPage() {
         : normalizeMerchantProductList(res);
 
       setProducts(list);
+
+      if (isSuperAdmin) {
+        setCategories(extractCategoriesFromCatalogResponse(res, list));
+      }
 
     } catch (err) {
 
@@ -830,17 +822,13 @@ export default function CatalogPage() {
 
     () => [
 
-      {
-
-        label: "Ko'rish",
-
-        icon: <Eye size={14} />,
-
-        variant: "view",
-
-        onClick: (row) => handleViewProduct(row),
-
-      },
+      // Vaqtinchalik: View tugmasi o'chirilgan
+      // {
+      //   label: "Ko'rish",
+      //   icon: <Eye size={14} />,
+      //   variant: "view",
+      //   onClick: (row) => handleViewProduct(row),
+      // },
 
       {
 
@@ -876,7 +864,7 @@ export default function CatalogPage() {
 
     ],
 
-    [isSuperAdmin, handleDeleteProduct, handleEditProduct, handleViewProduct]
+    [isSuperAdmin, handleDeleteProduct, handleEditProduct]
 
   );
 
@@ -920,7 +908,7 @@ export default function CatalogPage() {
 
 
 
-      <FilterBar>
+      <FilterBar className="catalog-filter-bar">
 
         {isSuperAdmin && (
 
@@ -948,6 +936,8 @@ export default function CatalogPage() {
 
               value={search}
 
+              disabled={filtersDisabled}
+
               onChange={(e) => setSearch(e.target.value)}
 
             />
@@ -971,6 +961,8 @@ export default function CatalogPage() {
             searchable
 
             clearable
+
+            disabled={filtersDisabled}
 
             options={[
 
@@ -1004,6 +996,8 @@ export default function CatalogPage() {
 
             value={minPrice}
 
+            disabled={filtersDisabled}
+
             onChange={(e) => setMinPrice(e.target.value)}
 
           />
@@ -1024,6 +1018,8 @@ export default function CatalogPage() {
 
             value={maxPrice}
 
+            disabled={filtersDisabled}
+
             onChange={(e) => setMaxPrice(e.target.value)}
 
           />
@@ -1039,6 +1035,8 @@ export default function CatalogPage() {
             value={modifierFilter}
 
             onChange={setModifierFilter}
+
+            disabled={filtersDisabled}
 
             options={MODIFIER_FILTERS}
 
@@ -1074,7 +1072,7 @@ export default function CatalogPage() {
 
           pagination={{ client: true }}
 
-          onRowDoubleClick={handleViewProduct}
+          // onRowDoubleClick={handleViewProduct}
 
         />
 
