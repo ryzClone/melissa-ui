@@ -1,12 +1,18 @@
 import { useCallback, useEffect, useState } from "react";
-import { useGlobalNotification } from "@/hooks/useGlobalNotification";
+import { useTranslation } from "react-i18next";
 import PageWrapper from "@/components/PageWrapper/PageWrapper";
 import FilterBar, { FilterItem } from "@/components/FilterBar/FilterBar";
 import PagePartnerFilter from "@/components/PagePartnerFilter/PagePartnerFilter";
-import { useScopedPartnerParams, PARTNER_SELECT_MESSAGE } from "@/hooks/useScopedPartnerParams";
+import { useScopedPartnerParams } from "@/hooks/useScopedPartnerParams";
 import { useDebouncedValue } from "@/hooks/useDebouncedValue";
 import { useLatestRequest } from "@/hooks/useLatestRequest";
 import { useAuth } from "@/core/hooks/useAuth";
+import { PROMOTIONS_NAMESPACE } from "@/i18n/namespaces";
+import {
+  PROMO_TABS,
+  PROMO_TAB_PROMOTIONS,
+  PROMO_TAB_PROMO_CODES,
+} from "../constants/promoTabs";
 import "../PromotionsPage.css";
 import { discountApi } from "../../../api/modules/discountApi";
 import { merchantDiscountApi } from "../../../api/modules/merchantDiscountApi";
@@ -23,11 +29,11 @@ import CreatePromoCodeModal from "../components/promotions/modals/CreatePromoCod
 import ViewDiscountModal from "../components/promotions/modals/ViewDiscountModal";
 import ViewPromoModal from "../components/promotions/modals/ViewPromoModal";
 
-const promoTabs = ["Aksiyalar", "Promokod"];
+const promoTabs = PROMO_TABS;
 
 export default function PromotionsPage() {
-  const { success } = useGlobalNotification();
-  const [activeTab, setActiveTab] = useState("Aksiyalar");
+  const { t } = useTranslation(PROMOTIONS_NAMESPACE);
+  const [activeTab, setActiveTab] = useState(PROMO_TAB_PROMOTIONS);
   const [promotions, setPromotions] = useState([]);
   const [promoCodes, setPromoCodes] = useState([]);
   const [loadingDiscounts, setLoadingDiscounts] = useState(false);
@@ -186,19 +192,19 @@ export default function PromotionsPage() {
   ]);
 
   useEffect(() => {
-    if (activeTab !== "Aksiyalar") return;
+    if (activeTab !== PROMO_TAB_PROMOTIONS) return;
     loadDiscounts();
   }, [activeTab, loadDiscounts]);
 
   useEffect(() => {
-    if (activeTab !== "Promokod") return;
+    if (activeTab !== PROMO_TAB_PROMO_CODES) return;
     loadPromos();
   }, [activeTab, loadPromos]);
 
   const handleOpenCreate = () => {
     if (isSuperAdmin) return;
 
-    if (activeTab === "Aksiyalar") {
+    if (activeTab === PROMO_TAB_PROMOTIONS) {
       setSelectedPromotion(null);
       setOpenPromotionModal(true);
     } else {
@@ -256,9 +262,7 @@ export default function PromotionsPage() {
     try {
       await discountApi.deleteDiscount(id);
       await loadDiscounts();
-      success("Muvaffaqiyatli o'chirildi");
-    } catch (error) {
-      console.error("Discount delete failed:", error);
+    } catch {
     }
   };
 
@@ -268,9 +272,7 @@ export default function PromotionsPage() {
     try {
       await promoApi.deletePromo(id);
       await loadPromos();
-      success("Muvaffaqiyatli o'chirildi");
-    } catch (error) {
-      console.error("Merchant promo delete failed:", error);
+    } catch {
     }
   };
 
@@ -281,16 +283,13 @@ export default function PromotionsPage() {
     try {
       if (selectedPromotion?.id !== undefined && selectedPromotion?.id !== null) {
         await discountApi.updateDiscount(selectedPromotion.id, payload);
-        success("Muvaffaqiyatli yangilandi");
       } else {
         await discountApi.createDiscount(payload);
-        success("Muvaffaqiyatli yaratildi");
       }
       await loadDiscounts();
       setSelectedPromotion(null);
       setOpenPromotionModal(false);
-    } catch (error) {
-      console.error("Discount save failed:", error);
+    } catch {
     }
   };
 
@@ -300,16 +299,13 @@ export default function PromotionsPage() {
     try {
       if (selectedPromoCode?.id !== undefined && selectedPromoCode?.id !== null) {
         await promoApi.updatePromo(selectedPromoCode.id, data);
-        success("Muvaffaqiyatli yangilandi");
       } else {
         await promoApi.createPromo(data);
-        success("Muvaffaqiyatli yaratildi");
       }
       await loadPromos();
       setSelectedPromoCode(null);
       setOpenPromoCodeModal(false);
-    } catch (error) {
-      console.error("Merchant promo save failed:", error);
+    } catch {
     }
   };
 
@@ -341,12 +337,12 @@ export default function PromotionsPage() {
         {isSuperAdmin && (
           <FilterBar>
             <FilterItem>
-              <PagePartnerFilter partnerLabel="Tashkilot" />
+              <PagePartnerFilter partnerLabel={t("filters.organization")} />
             </FilterItem>
           </FilterBar>
         )}
 
-        {activeTab === "Aksiyalar" ? (
+        {activeTab === PROMO_TAB_PROMOTIONS ? (
             <PromotionsTable
               items={promotions}
               loading={loadingDiscounts}
@@ -354,7 +350,7 @@ export default function PromotionsPage() {
               onEdit={handleEditPromotion}
               onDelete={handleDeletePromotion}
               readOnly={isSuperAdmin}
-              emptyText={canFetch ? "Ma'lumot topilmadi" : PARTNER_SELECT_MESSAGE}
+              emptyText={canFetch ? t("states.noData") : t("states.partnerSelect")}
             />
         ) : (
             <PromoCodesTable
@@ -364,7 +360,7 @@ export default function PromotionsPage() {
               onEdit={handleEditPromoCode}
               onDelete={handleDeletePromoCode}
               readOnly={isSuperAdmin}
-              emptyText={canFetch ? "Ma'lumot topilmadi" : PARTNER_SELECT_MESSAGE}
+              emptyText={canFetch ? t("states.noData") : t("states.partnerSelect")}
               searchValue={promoSearch}
               onSearchChange={setPromoSearch}
             />

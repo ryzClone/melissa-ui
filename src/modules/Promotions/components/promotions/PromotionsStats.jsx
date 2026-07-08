@@ -1,72 +1,71 @@
 import { useMemo } from "react";
+import { useTranslation } from "react-i18next";
 import { Clock3, Gift, Percent, TrendingUp } from "lucide-react";
+import { PROMOTIONS_NAMESPACE } from "@/i18n/namespaces";
+import { PROMO_TAB_PROMOTIONS } from "../../constants/promoTabs";
 import "./PromotionsStats.css";
 
-const buildPromotionStats = (promotions = []) =>
-  [
-    {
-      title: "Jami aksiyalar",
-      value: promotions.length,
-      description: "Barcha aksiyalar",
-      icon: Gift,
-      iconTone: "purple",
-    },
-    {
-      title: "Faol aksiyalar",
-      value: promotions.filter((item) => item.status === "Faol").length,
-      description: "Hozir faol",
-      icon: TrendingUp,
-      iconTone: "green",
-    },
-    {
-      title: "Kutilmoqda",
-      value: promotions.filter((item) => item.status === "Kutilmoqda").length,
-      description: "Hali boshlanmagan",
-      icon: Clock3,
-      iconTone: "orange",
-    },
-  ].filter((item) => item.value !== null && item.value !== undefined);
-
-const buildPromoCodeStats = () =>
-  [
-    {
-      title: "O‘rtacha chegirma",
-      value: "12.5%",
-      description: null,
-      icon: Percent,
-      iconTone: "purple",
-    },
-    {
-      title: "Faol kuponlar",
-      value: "42 ta",
-      description: null,
-      icon: Gift,
-      iconTone: "green",
-    },
-    {
-      title: "Jami tejoy",
-      value: "4.2M UZS",
-      description: null,
-      icon: TrendingUp,
-      iconTone: "blue",
-    },
-    {
-      title: "Tugayotgan",
-      value: "8 ta",
-      description: null,
-      icon: Clock3,
-      iconTone: "orange",
-    },
-  ].filter((item) => item.value !== null && item.value !== undefined);
-
 export default function PromotionsStats({ activeTab, promotions = [] }) {
+  const { t } = useTranslation(PROMOTIONS_NAMESPACE);
+
   const promoStats = useMemo(() => {
-    if (activeTab === "Aksiyalar") {
-      return buildPromotionStats(promotions);
+    if (activeTab === PROMO_TAB_PROMOTIONS) {
+      return [
+        {
+          title: t("stats.totalPromotions"),
+          value: promotions.length,
+          description: t("stats.totalPromotionsDesc"),
+          icon: Gift,
+          iconTone: "purple",
+        },
+        {
+          title: t("stats.activePromotions"),
+          value: promotions.filter((item) => item.status === "Faol").length,
+          description: t("stats.activePromotionsDesc"),
+          icon: TrendingUp,
+          iconTone: "green",
+        },
+        {
+          title: t("stats.pendingPromotions"),
+          value: promotions.filter((item) => item.status === "Kutilmoqda").length,
+          description: t("stats.pendingPromotionsDesc"),
+          icon: Clock3,
+          iconTone: "orange",
+        },
+      ].filter((item) => item.value !== null && item.value !== undefined);
     }
 
-    return buildPromoCodeStats();
-  }, [activeTab, promotions]);
+    return [
+      {
+        title: t("stats.avgDiscount"),
+        value: "12.5%",
+        description: null,
+        icon: Percent,
+        iconTone: "purple",
+      },
+      {
+        title: t("stats.activeCoupons"),
+        value: t("stats.countUnit", { count: 42 }),
+        description: null,
+        icon: Gift,
+        iconTone: "green",
+      },
+      {
+        title: t("stats.totalSavings"),
+        value: "4.2M UZS",
+        description: null,
+        icon: TrendingUp,
+        iconTone: "blue",
+      },
+      {
+        title: t("stats.expiringSoon"),
+        value: t("stats.countUnit", { count: 8 }),
+        description: null,
+        icon: Clock3,
+        iconTone: "orange",
+      },
+    ].filter((item) => item.value !== null && item.value !== undefined);
+  }, [activeTab, promotions, t]);
 
   return (
     <div className="promo-stats-grid">

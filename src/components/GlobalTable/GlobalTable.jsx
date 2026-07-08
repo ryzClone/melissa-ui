@@ -97,7 +97,14 @@ function GlobalTablePagination({
   pagination,
   onPageChange,
   onPageSizeChange,
+  labels = {},
 }) {
+  const {
+    total = (count) => `Jami: ${count} ta`,
+    perPage = "Sahifada",
+    previous = "Oldingi",
+    next = "Keyingi",
+  } = labels;
   const { page, size, totalElements, totalPages } =
     normalizePaginationConfig(pagination);
 
@@ -123,12 +130,12 @@ function GlobalTablePagination({
   return (
     <div className="global-table-footer gt-footer">
       <div className="global-table-footer-total gt-footer-total">
-        <span>Jami: {totalElements} ta</span>
+        <span>{total(totalElements)}</span>
       </div>
 
       <div className="global-table-pagination gt-pagination">
         <label className="pagination-size gt-page-size">
-          <span>Sahifada</span>
+          <span>{perPage}</span>
           <CustomDropdown
             className="pagination-size-dropdown gt-page-size-dropdown"
             value={String(size)}
@@ -146,7 +153,7 @@ function GlobalTablePagination({
           onClick={() => onPageChange?.(currentPage - 1)}
         >
           <ChevronLeft size={14} />
-          <span>Oldingi</span>
+          <span>{previous}</span>
         </button>
 
         <div className="global-table-page-list gt-page-list">
@@ -179,7 +186,7 @@ function GlobalTablePagination({
           disabled={currentPage === totalPages}
           onClick={() => onPageChange?.(currentPage + 1)}
         >
-          <span>Keyingi</span>
+          <span>{next}</span>
           <ChevronRight size={14} />
         </button>
       </div>
@@ -236,6 +243,8 @@ export default function GlobalTable({
   actions = [],
   loading = false,
   emptyText = "Ma'lumot topilmadi",
+  loadingText = "Yuklanmoqda...",
+  paginationLabels,
   pagination,
   onPageChange,
   onPageSizeChange,
@@ -295,7 +304,7 @@ export default function GlobalTable({
   const tableColumns = hasActionsColumn
     ? columns
     : showActionsColumn
-      ? [...columns, { key: "actions", title: "Amallar" }]
+      ? [...columns, { key: "actions", title: paginationLabels?.actions ?? "Amallar" }]
       : columns;
 
   const showHeader =
@@ -353,7 +362,7 @@ export default function GlobalTable({
                   className="global-table-state gt-state"
                 >
                   <div className="global-table-loading gt-loading">
-                    Yuklanmoqda...
+                    {loadingText}
                   </div>
                 </td>
               </tr>
@@ -415,6 +424,7 @@ export default function GlobalTable({
           pagination={resolvedPagination}
           onPageChange={handlePageChange}
           onPageSizeChange={handlePageSizeChange}
+          labels={paginationLabels}
         />
       )}
     </div>

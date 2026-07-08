@@ -11,6 +11,9 @@ export const attachmentApi = {
       headers: {
         "Content-Type": "multipart/form-data",
       },
+      meta: {
+        skipSuccessNotification: true,
+      },
     });
   },
 };

@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { Building2 } from "lucide-react";
 import CustomDropdown from "@/components/CustomDropdown/CustomDropdown";
-import { useGlobalNotification } from "@/hooks/useGlobalNotification";
 import { organizationBranchApi } from "@/api/modules/organizationBranchApi";
 
 export const normalizeOrganizationList = (res) => {
@@ -23,7 +22,6 @@ export default function OrganizationDropdown({
   label = "Tashkilot",
   disabled = false,
 }) {
-  const { error: notifyError } = useGlobalNotification();
   const [organizations, setOrganizations] = useState([]);
   const [loading, setLoading] = useState(false);
 
@@ -33,18 +31,12 @@ export default function OrganizationDropdown({
       const res = await organizationBranchApi.getAll();
       const list = normalizeOrganizationList(res);
       setOrganizations(Array.isArray(list) ? list : []);
-    } catch (error) {
-      console.error(error);
-      notifyError(
-        error?.response?.data?.message ||
-          error?.message ||
-          "Tashkilotlar ro'yxatini yuklashda xatolik"
-      );
+    } catch {
       setOrganizations([]);
     } finally {
       setLoading(false);
     }
-  }, [notifyError]);
+  }, []);
 
   useEffect(() => {
     fetchOrganizations();

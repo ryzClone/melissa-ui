@@ -1,0 +1,15 @@
+{
+  "dashboard": "Главная",
+  "branches": "Филиалы",
+  "users": "Пользователи",
+  "promotions": "Акции",
+  "catalog": "Каталог",
+  "finance": "Финансы",
+  "chatMonitoring": "Контроль чата",
+  "orders": "Заказы",
+  "settings": "Настройки",
+  "comingSoon": "Скоро",
+  "admin": "Админ",
+  "adminNews": "Новости",
+  "adminMessages": "Важные сообщения"
+}

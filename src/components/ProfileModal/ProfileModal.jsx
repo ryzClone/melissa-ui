@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { X } from "lucide-react";
+import { useTranslation } from "react-i18next";
+import { Camera, Trash2, X } from "lucide-react";
 import CustomDropdown from "@/components/CustomDropdown/CustomDropdown";
-import { useGlobalNotification } from "@/hooks/useGlobalNotification";
 import { attachmentApi } from "@/api/modules/attachmentApi";
 import {
   getProfileDisplayName,
@@ -10,16 +10,14 @@ import {
   resolveProfileImageUrl,
   useProfile,
 } from "@/context/ProfileContext";
+import { PROFILE_NAMESPACE } from "@/i18n/namespaces";
 import {
   getAttachmentUrl,
   normalizeAttachmentResponse,
 } from "@/modules/products/attachmentUtils";
 import "./ProfileModal.css";
 
-const GENDER_OPTIONS = [
-  { label: "Erkak", value: "MALE" },
-  { label: "Ayol", value: "FEMALE" },
-];
+const GENDER_VALUES = ["MALE", "FEMALE"];
 
 const emptyForm = {
   name: "",
@@ -29,7 +27,7 @@ const emptyForm = {
 };
 
 export default function ProfileModal() {
-  const { success } = useGlobalNotification();
+  const { t } = useTranslation(PROFILE_NAMESPACE);
   const {
     profile,
     isModalOpen,
@@ -46,6 +44,16 @@ export default function ProfileModal() {
   const [fieldErrors, setFieldErrors] = useState({});
 
   const fileInputRef = useRef(null);
+
+  const genderOptions = useMemo(
+    () =>
+      GENDER_VALUES.map((value) => ({
+        value,
+        label:
+          value === "MALE" ? t("gender.male") : t("gender.female"),
+      })),
+    [t]
+  );
 
   const displayName = useMemo(
     () =>
@@ -115,7 +123,7 @@ export default function ProfileModal() {
     if (!file) return;
 
     if (!file.type.startsWith("image/")) {
-      setError("Faqat rasm fayllar yuklash mumkin");
+      setError("validation.imageOnly");
       return;
     }
 
@@ -131,7 +139,7 @@ export default function ProfileModal() {
       const uploadedAttachment = normalizeAttachmentResponse(response);
 
       if (!uploadedAttachment.id) {
-        setError("Rasm yuklandi, lekin attachment ID qaytarmadi");
+        setError("validation.attachmentIdMissing");
         setForm((prev) => ({ ...prev, attachmentId: 0 }));
         return;
       }
@@ -143,9 +151,8 @@ export default function ProfileModal() {
 
       const backendPreview = getAttachmentUrl(uploadedAttachment);
       setAvatarPreview(backendPreview || localPreviewUrl);
-    } catch (uploadError) {
-      console.error(uploadError);
-      setError("Rasm yuklashda xatolik");
+    } catch {
+      setError("validation.imageUploadError");
       setAvatarPreview(resolveProfileImageUrl(profile?.imageUrl));
       setForm((prev) => ({
         ...prev,
@@ -174,9 +181,9 @@ export default function ProfileModal() {
   const validateForm = () => {
     const nextErrors = {};
 
-    if (!form.name.trim()) nextErrors.name = "Ism majburiy";
-    if (!form.surname.trim()) nextErrors.surname = "Familiya majburiy";
-    if (!form.genderType) nextErrors.genderType = "Jins majburiy";
+    if (!form.name.trim()) nextErrors.name = "validation.required";
+    if (!form.surname.trim()) nextErrors.surname = "validation.required";
+    if (!form.genderType) nextErrors.genderType = "validation.required";
 
     setFieldErrors(nextErrors);
     return Object.keys(nextErrors).length === 0;
@@ -199,15 +206,9 @@ export default function ProfileModal() {
 
       await updateProfile(payload);
 
-      success("Muvaffaqiyatli saqlandi");
       closeProfileModal();
-    } catch (saveError) {
-      console.error(saveError);
-      setError(
-        saveError?.response?.data?.errorMessage ||
-          saveError?.response?.data?.message ||
-          "Profilni saqlashda xatolik"
-      );
+    } catch {
+      setError("toast.updateError");
     } finally {
       setSaving(false);
     }
@@ -230,9 +231,10 @@ export default function ProfileModal() {
         onClick={(event) => event.stopPropagation()}
       >
         <div className="profile-modal-header">
-          <div>
-            <div className="profile-modal-kicker">Profil</div>
-            <h2 id="profile-modal-title">Profil ma&apos;lumotlari</h2>
+          <div className="profile-modal-header-text">
+            <p className="profile-modal-kicker">{t("kicker")}</p>
+            <h2 id="profile-modal-title">{t("title")}</h2>
+            <p className="profile-modal-subtitle">{t("subtitle")}</p>
           </div>
 
           <button
@@ -240,35 +242,27 @@ export default function ProfileModal() {
             className="profile-modal-close"
             onClick={closeProfileModal}
             disabled={saving || uploadingAvatar}
-            aria-label="Yopish"
+            aria-label={t("buttons.close")}
           >
             <X size={18} />
           </button>
         </div>
 
         <div className="profile-modal-body">
-          <div className="profile-modal-hero">
-            <div className="profile-modal-hero-avatar">
-              {avatarPreview ? (
-                <img src={avatarPreview} alt={displayName} />
-              ) : (
-                <span>{avatarInitials}</span>
-              )}
+          <section className="profile-modal-avatar-section">
+            <div className="profile-modal-avatar-ring">
+              <div className="profile-modal-avatar-preview">
+                {avatarPreview ? (
+                  <img src={avatarPreview} alt={displayName} />
+                ) : (
+                  <span>{avatarInitials}</span>
+                )}
+              </div>
             </div>
 
-            <div className="profile-modal-hero-info">
+            <div className="profile-modal-avatar-meta">
               <h3>{displayName}</h3>
               <p>{userRole}</p>
-            </div>
-          </div>
-
-          <div className="profile-modal-avatar-block">
-            <div className="profile-modal-avatar-preview">
-              {avatarPreview ? (
-                <img src={avatarPreview} alt={displayName} />
-              ) : (
-                <span>{avatarInitials}</span>
-              )}
             </div>
 
             <div className="profile-modal-avatar-actions">
@@ -286,7 +280,12 @@ export default function ProfileModal() {
                 onClick={() => fileInputRef.current?.click()}
                 disabled={uploadingAvatar || saving}
               >
-                {uploadingAvatar ? "Yuklanmoqda..." : "Rasm tanlash"}
+                <Camera size={15} />
+                {uploadingAvatar
+                  ? t("states.loading")
+                  : avatarPreview
+                    ? t("buttons.changeImage")
+                    : t("buttons.uploadImage")}
               </button>
 
               <button
@@ -295,12 +294,15 @@ export default function ProfileModal() {
                 onClick={handleRemoveAvatar}
                 disabled={uploadingAvatar || saving}
               >
-                O&apos;chirish
+                <Trash2 size={15} />
+                {t("buttons.removeImage")}
               </button>
             </div>
-          </div>
+          </section>
 
-          {error && <div className="profile-modal-form-error">{error}</div>}
+          {error && (
+            <div className="profile-modal-form-error">{t(error)}</div>
+          )}
 
           <div className="profile-modal-form-grid">
             <div
@@ -308,18 +310,18 @@ export default function ProfileModal() {
                 fieldErrors.name ? "has-error" : ""
               }`}
             >
-              <label htmlFor="profile-name">Ism</label>
+              <label htmlFor="profile-name">{t("form.name")}</label>
               <input
                 id="profile-name"
                 type="text"
                 value={form.name}
                 onChange={(event) => handleChange("name", event.target.value)}
-                placeholder="Ismingiz"
+                placeholder={t("placeholders.name")}
                 disabled={saving || uploadingAvatar}
               />
               {fieldErrors.name && (
                 <span className="profile-modal-field-error">
-                  {fieldErrors.name}
+                  {t(fieldErrors.name)}
                 </span>
               )}
             </div>
@@ -329,7 +331,7 @@ export default function ProfileModal() {
                 fieldErrors.surname ? "has-error" : ""
               }`}
             >
-              <label htmlFor="profile-surname">Familiya</label>
+              <label htmlFor="profile-surname">{t("form.surname")}</label>
               <input
                 id="profile-surname"
                 type="text"
@@ -337,12 +339,12 @@ export default function ProfileModal() {
                 onChange={(event) =>
                   handleChange("surname", event.target.value)
                 }
-                placeholder="Familiyangiz"
+                placeholder={t("placeholders.surname")}
                 disabled={saving || uploadingAvatar}
               />
               {fieldErrors.surname && (
                 <span className="profile-modal-field-error">
-                  {fieldErrors.surname}
+                  {t(fieldErrors.surname)}
                 </span>
               )}
             </div>
@@ -352,29 +354,32 @@ export default function ProfileModal() {
                 fieldErrors.genderType ? "has-error" : ""
               }`}
             >
-              <label htmlFor="profile-gender">Jins</label>
+              <label htmlFor="profile-gender">{t("form.gender")}</label>
               <CustomDropdown
+                className="profile-modal-dropdown"
                 value={form.genderType}
                 onChange={(nextValue) => handleChange("genderType", nextValue)}
-                options={GENDER_OPTIONS}
-                placeholder="Jinsni tanlang"
+                options={genderOptions}
+                placeholder={t("placeholders.gender")}
                 disabled={saving || uploadingAvatar}
               />
               {fieldErrors.genderType && (
                 <span className="profile-modal-field-error">
-                  {fieldErrors.genderType}
+                  {t(fieldErrors.genderType)}
                 </span>
               )}
             </div>
 
             <div className="profile-modal-form-group profile-modal-form-full">
-              <label htmlFor="profile-phone">Telefon raqam</label>
+              <label htmlFor="profile-phone">{t("form.phoneNumber")}</label>
               <input
                 id="profile-phone"
                 type="text"
                 value={phoneNumber}
                 readOnly
                 disabled
+                className="profile-modal-input-disabled"
+                placeholder={t("placeholders.phoneNumber")}
               />
             </div>
           </div>
@@ -387,7 +392,7 @@ export default function ProfileModal() {
             onClick={closeProfileModal}
             disabled={saving || uploadingAvatar}
           >
-            Bekor qilish
+            {t("buttons.cancel")}
           </button>
 
           <button
@@ -396,7 +401,7 @@ export default function ProfileModal() {
             onClick={handleSave}
             disabled={saving || uploadingAvatar}
           >
-            {saving ? "Saqlanmoqda..." : "Saqlash"}
+            {saving ? t("states.saving") : t("buttons.save")}
           </button>
         </div>
       </div>

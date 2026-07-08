@@ -1,7 +1,6 @@
 .users-modal-overlay {
   position: fixed;
   inset: 0;
-  z-index: 999;
   background:
     radial-gradient(circle at top, rgba(139, 92, 246, 0.16), transparent 38%),
     rgba(4, 2, 10, 0.84);

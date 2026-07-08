@@ -6,28 +6,40 @@ const DEFAULT_BRANCHES = [
 
 const DEFAULT_STATS = [
   {
-    title: "JAMI SAVDO",
-    value: "45,280,000",
-    suffix: "UZS",
-    trend: "+12.5%",
-    positive: true,
-    icon: "wallet",
-  },
-  {
-    title: "BUYURTMALAR SONI",
-    value: "1,248",
+    title: "Bugungi buyurtmalar",
+    value: "128",
     suffix: "ta",
-    trend: "+8.2%",
+    description: "Kecha bilan solishtirganda",
+    trend: "+12.4%",
     positive: true,
     icon: "orders",
   },
   {
-    title: "O‘RTACHA CHEK",
-    value: "320,000",
-    suffix: "UZS",
-    trend: "+5.1%",
+    title: "Umumiy filiallar",
+    value: "24",
+    suffix: "ta",
+    description: "Faol filiallar soni",
+    trend: "+2.1%",
     positive: true,
-    icon: "receipt",
+    icon: "branches",
+  },
+  {
+    title: "Faol mahsulotlar",
+    value: "1,842",
+    suffix: "ta",
+    description: "Katalogdagi aktiv pozitsiyalar",
+    trend: "+5.8%",
+    positive: true,
+    icon: "products",
+  },
+  {
+    title: "Umumiy tushum",
+    value: "45,280,000",
+    suffix: "UZS",
+    description: "Tanlangan davr bo‘yicha",
+    trend: "+9.3%",
+    positive: true,
+    icon: "revenue",
   },
 ];
 
@@ -193,8 +205,16 @@ export function normalizeDashboardResponse(response) {
   const defaults = getDefaultDashboardData();
 
   const totalSales = data.totalSales || data.totalRevenue || data.sales || {};
-  const orderCount = data.orderCount || data.ordersCount || data.totalOrders || {};
-  const averageCheck = data.averageCheck || data.avgCheck || data.averageOrderValue || {};
+  const orderCount =
+    data.orderCount ||
+    data.ordersCount ||
+    data.totalOrders ||
+    data.todayOrders ||
+    {};
+  const branchesCount =
+    data.branchesCount || data.totalBranches || data.branchCount || {};
+  const activeProducts =
+    data.activeProducts || data.productsCount || data.totalProducts || {};
 
   const branchesSource =
     data.branchStats ||
@@ -209,25 +229,51 @@ export function normalizeDashboardResponse(response) {
 
   const stats = [
     {
-      title: "JAMI SAVDO",
-      value: formatNumber(totalSales.value ?? totalSales.amount ?? defaults.stats[0].value),
-      suffix: totalSales.suffix || totalSales.currency || "UZS",
-      icon: "wallet",
-      ...normalizeTrendItem(totalSales, defaults.stats[0]),
-    },
-    {
-      title: "BUYURTMALAR SONI",
-      value: formatNumber(orderCount.value ?? orderCount.count ?? defaults.stats[1].value),
+      title: "Bugungi buyurtmalar",
+      value: formatNumber(
+        orderCount.value ?? orderCount.count ?? orderCount.today ?? defaults.stats[0].value
+      ),
       suffix: orderCount.suffix || "ta",
+      description:
+        orderCount.description || "Kecha bilan solishtirganda",
       icon: "orders",
-      ...normalizeTrendItem(orderCount, defaults.stats[1]),
+      ...normalizeTrendItem(orderCount, defaults.stats[0]),
     },
     {
-      title: "O‘RTACHA CHEK",
-      value: formatNumber(averageCheck.value ?? averageCheck.amount ?? defaults.stats[2].value),
-      suffix: averageCheck.suffix || averageCheck.currency || "UZS",
-      icon: "receipt",
-      ...normalizeTrendItem(averageCheck, defaults.stats[2]),
+      title: "Umumiy filiallar",
+      value: formatNumber(
+        branchesCount.value ??
+          branchesCount.count ??
+          (branches.length || defaults.stats[1].value)
+      ),
+      suffix: branchesCount.suffix || "ta",
+      description: branchesCount.description || "Faol filiallar soni",
+      icon: "branches",
+      ...normalizeTrendItem(branchesCount, defaults.stats[1]),
+    },
+    {
+      title: "Faol mahsulotlar",
+      value: formatNumber(
+        activeProducts.value ??
+          activeProducts.count ??
+          defaults.stats[2].value
+      ),
+      suffix: activeProducts.suffix || "ta",
+      description:
+        activeProducts.description || "Katalogdagi aktiv pozitsiyalar",
+      icon: "products",
+      ...normalizeTrendItem(activeProducts, defaults.stats[2]),
+    },
+    {
+      title: "Umumiy tushum",
+      value: formatNumber(
+        totalSales.value ?? totalSales.amount ?? defaults.stats[3].value
+      ),
+      suffix: totalSales.suffix || totalSales.currency || "UZS",
+      description:
+        totalSales.description || "Tanlangan davr bo‘yicha",
+      icon: "revenue",
+      ...normalizeTrendItem(totalSales, defaults.stats[3]),
     },
   ];
 

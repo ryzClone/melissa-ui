@@ -1,21 +1,7 @@
 import { X } from "lucide-react";
+import { useTranslation } from "react-i18next";
+import { BRANCHES_NAMESPACE } from "@/i18n/namespaces";
 import "./BranchModal.css";
-
-const ADDRESS_FIELDS = [
-  { key: "title", label: "Sarlavha" },
-  { key: "formattedAddress", label: "To'liq manzil" },
-  { key: "country", label: "Mamlakat" },
-  { key: "region", label: "Viloyat" },
-  { key: "city", label: "Shahar" },
-  { key: "district", label: "Tuman" },
-  { key: "street", label: "Ko'cha" },
-  { key: "house", label: "Uy" },
-  { key: "entrance", label: "Kirish" },
-  { key: "floor", label: "Qavat" },
-  { key: "apartment", label: "Xona" },
-  { key: "comment", label: "Izoh" },
-  { key: "placeId", label: "Place ID" },
-];
 
 function Field({ label, value }) {
   return (
@@ -31,6 +17,24 @@ function Field({ label, value }) {
 }
 
 export default function ViewBranchModal({ isOpen, branch, loading, onClose }) {
+  const { t } = useTranslation(BRANCHES_NAMESPACE);
+
+  const addressFields = [
+    { key: "title", label: t("form.title") },
+    { key: "formattedAddress", label: t("form.fullAddress") },
+    { key: "country", label: t("form.country") },
+    { key: "region", label: t("form.region") },
+    { key: "city", label: t("form.city") },
+    { key: "district", label: t("form.district") },
+    { key: "street", label: t("form.street") },
+    { key: "house", label: t("form.house") },
+    { key: "entrance", label: t("form.entrance") },
+    { key: "floor", label: t("form.floor") },
+    { key: "apartment", label: t("form.apartment") },
+    { key: "comment", label: t("form.comment") },
+    { key: "placeId", label: t("form.placeId") },
+  ];
+
   if (!isOpen || (!branch && !loading)) return null;
 
   const address = branch?.address || {};
@@ -40,8 +44,8 @@ export default function ViewBranchModal({ isOpen, branch, loading, onClose }) {
       <div className="branch-modal" onClick={(e) => e.stopPropagation()}>
         <div className="branch-modal-header">
           <div>
-            <h3>Filial ma'lumotlari</h3>
-            <p>Filialning to'liq tafsilotlari</p>
+            <h3>{t("modal.view")}</h3>
+            <p>{t("modal.viewSubtitle")}</p>
           </div>
           <button
             type="button"
@@ -54,22 +58,24 @@ export default function ViewBranchModal({ isOpen, branch, loading, onClose }) {
 
         <div className="branch-modal-form">
           {loading ? (
-            <div className="branch-view-loading">Yuklanmoqda...</div>
+            <div className="branch-view-loading">{t("states.loading")}</div>
           ) : (
             <>
               <div className="branch-form-grid">
-                <Field label="ID" value={branch?.id} />
-                <Field label="Filial nomi" value={branch?.name} />
+                <Field label={t("form.id")} value={branch?.id} />
+                <Field label={t("form.name")} value={branch?.name} />
                 <Field
-                  label="Telefon"
+                  label={t("form.phone")}
                   value={branch?.phone || branch?.phoneNumber}
                 />
                 <Field
-                  label="Status"
-                  value={branch?.active ? "Aktiv" : "No aktiv"}
+                  label={t("form.status")}
+                  value={
+                    branch?.active ? t("status.active") : t("status.inactive")
+                  }
                 />
 
-                {ADDRESS_FIELDS.map((field) => (
+                {addressFields.map((field) => (
                   <Field
                     key={field.key}
                     label={field.label}
@@ -77,8 +83,8 @@ export default function ViewBranchModal({ isOpen, branch, loading, onClose }) {
                   />
                 ))}
 
-                <Field label="Latitude" value={address?.latitude} />
-                <Field label="Longitude" value={address?.longitude} />
+                <Field label={t("form.latitude")} value={address?.latitude} />
+                <Field label={t("form.longitude")} value={address?.longitude} />
               </div>
 
               <div className="branch-modal-actions">
@@ -87,7 +93,7 @@ export default function ViewBranchModal({ isOpen, branch, loading, onClose }) {
                   className="branch-secondary-btn"
                   onClick={onClose}
                 >
-                  Yopish
+                  {t("buttons.close")}
                 </button>
               </div>
             </>

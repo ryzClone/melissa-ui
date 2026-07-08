@@ -1,4 +1,4 @@
-export const API_ORIGIN = "https://api.mtechdynamics.uz";
+export const API_ORIGIN = "https://dev-api.mtechdynamics.uz";
 
 export const getAttachmentUrl = (attachment) => {
   if (!attachment) return null;

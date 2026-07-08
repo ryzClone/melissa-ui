@@ -1,0 +1,132 @@
+{
+  "title": "Branches",
+  "subtitle": "Manage all branches",
+  "search": {
+    "placeholder": "Search..."
+  },
+  "filters": {
+    "city": "City",
+    "region": "Region",
+    "status": "Status"
+  },
+  "table": {
+    "listTitle": "Branch list",
+    "name": "Branch name",
+    "phone": "Phone",
+    "address": "Address",
+    "status": "Status",
+    "createdAt": "Created at",
+    "actions": "Actions"
+  },
+  "buttons": {
+    "add": "New branch",
+    "edit": "Edit",
+    "view": "View",
+    "delete": "Delete",
+    "save": "Save",
+    "cancel": "Cancel",
+    "close": "Close",
+    "search": "Search",
+    "create": "Create",
+    "download": "Download",
+    "confirm": "Confirm"
+  },
+  "modal": {
+    "create": "Add new branch",
+    "createSubtitle": "Enter new branch details",
+    "edit": "Edit branch",
+    "editSubtitle": "Update branch information",
+    "view": "Branch details",
+    "viewSubtitle": "Full branch information",
+    "delete": "Delete branch",
+    "deleteSubtitle": "This action cannot be undone"
+  },
+  "form": {
+    "name": "Branch name",
+    "phone": "Phone number",
+    "address": "Address",
+    "fullAddress": "Full address",
+    "latitude": "Latitude",
+    "longitude": "Longitude",
+    "status": "Status",
+    "city": "City",
+    "region": "Region",
+    "country": "Country",
+    "district": "District",
+    "street": "Street",
+    "house": "House",
+    "entrance": "Entrance",
+    "floor": "Floor",
+    "apartment": "Apartment",
+    "comment": "Comment",
+    "placeId": "Place ID",
+    "title": "Title",
+    "id": "ID",
+    "sectionAddress": "Address",
+    "selectPlaceholder": "Select",
+    "selectRegionFirst": "Select region first",
+    "selectCityFirst": "Select city first",
+    "noOptions": "No options",
+    "mapPick": "Pick on map",
+    "placeholders": {
+      "name": "e.g. Melissa Chilonzor",
+      "phone": "+998",
+      "fullAddress": "e.g. Tashkent, Chilonzor, Bunyodkor street",
+      "latitude": "Latitude",
+      "longitude": "Longitude",
+      "country": "Uzbekistan",
+      "street": "Bunyodkor",
+      "house": "12",
+      "entrance": "1",
+      "floor": "1",
+      "apartment": "101",
+      "placeId": "Google place id",
+      "comment": "Additional information about the branch..."
+    }
+  },
+  "validation": {
+    "required": "Enter branch name",
+    "invalidPhone": "Enter a valid phone number (+998 99 999 99 99)"
+  },
+  "toast": {
+    "created": "Branch created successfully",
+    "updated": "Branch updated successfully",
+    "deleted": "Branch deleted successfully"
+  },
+  "states": {
+    "loading": "Loading...",
+    "saving": "Saving...",
+    "creating": "Creating...",
+    "noData": "No data found",
+    "error": "An error occurred",
+    "partnerSelect": "Please select a partner"
+  },
+  "confirm": {
+    "deleteTitle": "Delete branch",
+    "deleteMessage": "Are you sure you want to delete branch {{name}}?",
+    "deleteWarning": "Deleted data cannot be restored.",
+    "yes": "Yes, delete",
+    "no": "No"
+  },
+  "status": {
+    "active": "Active",
+    "inactive": "Inactive",
+    "label": "Status: {{status}}"
+  },
+  "pagination": {
+    "total": "Total: {{count}}",
+    "perPage": "Per page",
+    "previous": "Previous",
+    "next": "Next"
+  },
+  "map": {
+    "myLocation": "My location",
+    "selectedLocation": "Selected location:",
+    "resolvingAddress": "Resolving address...",
+    "selectFromMap": "Select an address on the map.",
+    "geolocationError": "Failed to get geolocation."
+  },
+  "tooltips": {
+    "superAdminNoPermission": "Not allowed for Super Admin"
+  }
+}

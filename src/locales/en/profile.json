@@ -1,0 +1,50 @@
+{
+  "title": "Profile information",
+  "subtitle": "View and update your personal information",
+  "kicker": "Profile",
+  "form": {
+    "name": "First name",
+    "surname": "Last name",
+    "phoneNumber": "Phone number",
+    "gender": "Gender",
+    "image": "Profile photo"
+  },
+  "placeholders": {
+    "name": "Your first name",
+    "surname": "Your last name",
+    "phoneNumber": "Phone number",
+    "gender": "Select gender"
+  },
+  "gender": {
+    "male": "Male",
+    "female": "Female",
+    "other": "Other"
+  },
+  "buttons": {
+    "save": "Save",
+    "cancel": "Cancel",
+    "close": "Close",
+    "uploadImage": "Select image",
+    "changeImage": "Change image",
+    "removeImage": "Remove"
+  },
+  "validation": {
+    "required": "Required field",
+    "invalidPhone": "Invalid phone number",
+    "imageOnly": "Only image files can be uploaded",
+    "attachmentIdMissing": "Image uploaded, but attachment ID was not returned",
+    "imageUploadError": "Failed to upload image"
+  },
+  "toast": {
+    "updated": "Profile updated successfully",
+    "updateError": "Failed to save profile",
+    "imageUploaded": "Image uploaded successfully",
+    "imageRemoved": "Image removed"
+  },
+  "states": {
+    "loading": "Loading...",
+    "saving": "Saving...",
+    "error": "Something went wrong",
+    "noData": "No data found"
+  }
+}

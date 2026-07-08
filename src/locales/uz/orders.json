@@ -1,0 +1,123 @@
+{
+  "title": "Buyurtmalar",
+  "subtitle": "Buyurtmalarni holatlar bo'yicha boshqaring",
+  "search": {
+    "placeholder": "Buyurtma qidiruv..."
+  },
+  "filters": {
+    "status": "Holat",
+    "branch": "Filial",
+    "organization": "Tashkilot",
+    "date": "Sana",
+    "customer": "Mijoz",
+    "allStatuses": "Barcha holatlar",
+    "dateFrom": "Boshlanish",
+    "dateTo": "Tugash"
+  },
+  "tabs": {
+    "active": "Jarayondagi buyurtmalar",
+    "history": "Tarix"
+  },
+  "cards": {
+    "newOrders": "Yangi",
+    "acceptedOrders": "Qabul qilinganlar",
+    "cookingOrders": "Jarayondagilar",
+    "completedOrders": "Tayyor"
+  },
+  "table": {
+    "orderNumber": "Buyurtma",
+    "customer": "Mijoz",
+    "phone": "Telefon",
+    "branch": "Filial",
+    "products": "Mahsulot",
+    "totalPrice": "Summa",
+    "createdAt": "Vaqt",
+    "status": "Holat",
+    "actions": "Amallar",
+    "itemsCount": "{{count}} ta"
+  },
+  "buttons": {
+    "accept": "Qabul qilish",
+    "startCooking": "Jarayonga o'tkazish",
+    "complete": "Bajarildi",
+    "view": "Ko'rish",
+    "close": "Yopish",
+    "cancel": "Bekor qilish",
+    "search": "Qidirish",
+    "refresh": "Yangilash",
+    "apply": "Qo'llash",
+    "clear": "Tozalash"
+  },
+  "modal": {
+    "details": "Buyurtma tafsilotlari",
+    "confirm": "Tasdiqlash",
+    "kicker": "BUYURTMA"
+  },
+  "status": {
+    "new": "Yangi",
+    "accepted": "Qabul qilingan",
+    "cooking": "Tayyorlanmoqda",
+    "completed": "Tayyor",
+    "cancelled": "Bekor qilingan",
+    "ready": "Tayyor",
+    "delivering": "Yetkazilmoqda",
+    "delivered": "Yetkazildi",
+    "rejected": "Rad etildi"
+  },
+  "timer": {
+    "remaining": "{{time}} qoldi",
+    "expired": "Vaqt tugadi"
+  },
+  "details": {
+    "customer": "Mijoz",
+    "phone": "Telefon",
+    "branch": "Filial",
+    "address": "Manzil",
+    "comment": "Izoh",
+    "products": "Mahsulotlar",
+    "quantity": "Miqdor",
+    "price": "Narx",
+    "total": "Jami",
+    "totalAmount": "Jami summa",
+    "discount": "Chegirma",
+    "itemsMore": "+{{count}} ta"
+  },
+  "validation": {
+    "required": "Majburiy maydonni to'ldiring"
+  },
+  "toast": {
+    "accepted": "{{order}} qabul qilindi",
+    "cookingStarted": "{{order}} tayyorlashga o'tkazildi",
+    "completed": "{{order}} tayyor bo'ldi",
+    "updated": "Buyurtma yangilandi"
+  },
+  "notifications": {
+    "newOrder": "Yangi buyurtma",
+    "accepted": "Qabul qilindi",
+    "cooking": "Jarayonda",
+    "statusUpdated": "Buyurtma yangilandi"
+  },
+  "states": {
+    "loading": "Yuklanmoqda...",
+    "noData": "Ma'lumot yo'q",
+    "error": "Xatolik yuz berdi",
+    "columnEmpty": "Buyurtma yo'q",
+    "historyEmpty": "Tarixda buyurtmalar yo'q",
+    "partnerSelect": "Iltimos, hamkorni tanlang"
+  },
+  "confirm": {
+    "acceptTitle": "Buyurtmani qabul qilish",
+    "acceptMessage": "Buyurtmani qabul qilmoqchimisiz?",
+    "completeTitle": "Buyurtmani yakunlash",
+    "completeMessage": "Buyurtma tayyor deb belgilansinmi?",
+    "yes": "Ha",
+    "no": "Yo'q"
+  },
+  "pagination": {
+    "total": "Jami: {{count}} ta",
+    "previous": "Oldingi",
+    "next": "Keyingi",
+    "page": "Sahifa",
+    "rowsPerPage": "Sahifada"
+  }
+}

@@ -1,4 +1,6 @@
+import { useTranslation } from "react-i18next";
 import { X, MapPin, Phone, Building2 } from "lucide-react";
+import { ORDERS_NAMESPACE } from "@/i18n/namespaces";
 import {
   formatSom,
   getItemKey,
@@ -19,6 +21,8 @@ import {
 } from "./OrderMockData";
 
 export default function OrderDetailsModal({ open, order, onClose }) {
+  const { t } = useTranslation(ORDERS_NAMESPACE);
+
   if (!open || !order) return null;
 
   const name = getOrderCustomerName(order);
@@ -34,13 +38,18 @@ export default function OrderDetailsModal({ open, order, onClose }) {
       >
         <header className="orders-modal-header">
           <div>
-            <span className="orders-modal-kicker">BUYURTMA</span>
+            <span className="orders-modal-kicker">{t("modal.kicker")}</span>
             <h2>{getOrderNumber(order)}</h2>
             <span className="orders-detail-time">
               {getOrderDateTimeLabel(order)}
             </span>
           </div>
-          <button type="button" className="orders-modal-close" onClick={onClose}>
+          <button
+            type="button"
+            className="orders-modal-close"
+            onClick={onClose}
+            aria-label={t("buttons.close")}
+          >
             <X size={18} />
           </button>
         </header>
@@ -64,7 +73,7 @@ export default function OrderDetailsModal({ open, order, onClose }) {
           </div>
 
           <div className="orders-detail-section">
-            <h4>Mahsulotlar</h4>
+            <h4>{t("details.products")}</h4>
             <ul className="orders-detail-items">
               {items.map((item, index) => (
                 <li key={getItemKey(item, index)}>
@@ -84,7 +93,7 @@ export default function OrderDetailsModal({ open, order, onClose }) {
 
           <div className="orders-detail-box">
             <span className="orders-detail-label">
-              <Building2 size={13} /> Filial
+              <Building2 size={13} /> {t("details.branch")}
             </span>
             <p>{getOrderBranchName(order)}</p>
             <span className="orders-detail-branch-line">
@@ -98,12 +107,12 @@ export default function OrderDetailsModal({ open, order, onClose }) {
           <div className="orders-detail-total-group">
             {discount > 0 && (
               <div className="orders-detail-subline">
-                <span>Chegirma</span>
+                <span>{t("details.discount")}</span>
                 <span>-{formatSom(discount)}</span>
               </div>
             )}
             <div className="orders-detail-total">
-              <span>Jami summa</span>
+              <span>{t("details.totalAmount")}</span>
               <strong>{formatSom(getOrderTotalAmount(order))}</strong>
             </div>
           </div>
@@ -111,7 +120,7 @@ export default function OrderDetailsModal({ open, order, onClose }) {
 
         <footer className="orders-modal-footer">
           <button type="button" className="orders-btn ghost" onClick={onClose}>
-            Yopish
+            {t("buttons.close")}
           </button>
         </footer>
       </div>

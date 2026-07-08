@@ -5,6 +5,8 @@ import {
   ChevronRight,
   X,
 } from "lucide-react";
+import { useTranslation } from "react-i18next";
+import { PROMOTIONS_NAMESPACE } from "@/i18n/namespaces";
 import "./PromotionModals.css";
 import { merchantProductApi } from "../../../../../api/modules/merchantProductApi";
 
@@ -19,23 +21,6 @@ const initialForm = {
   productId: "",
   productName: "",
 };
-
-const months = [
-  "Yanvar",
-  "Fevral",
-  "Mart",
-  "Aprel",
-  "May",
-  "Iyun",
-  "Iyul",
-  "Avgust",
-  "Sentabr",
-  "Oktabr",
-  "Noyabr",
-  "Dekabr",
-];
-
-const weekDays = ["Du", "Se", "Ch", "Pa", "Ju", "Sh", "Ya"];
 
 const formatDate = (date) => {
   const day = String(date.getDate()).padStart(2, "0");
@@ -115,6 +100,7 @@ function CustomDatePicker({
   onClose,
   onChange,
 }) {
+  const { t } = useTranslation(PROMOTIONS_NAMESPACE);
   const today = new Date();
   const selectedDate = parseDate(value);
 
@@ -192,7 +178,7 @@ const [yearOpen, setYearOpen] = useState(false);
         onClick={() => onOpen(pickerName)}
       >
         <CalendarDays size={14} />
-        <span>{value || "Muddat tanlang"}</span>
+        <span>{value || t("form.selectDate")}</span>
       </button>
 
       {isOpen && (
@@ -226,12 +212,12 @@ const [yearOpen, setYearOpen] = useState(false);
         setYearOpen(false);
       }}
     >
-      {months[viewMonth]}
+      {t(`calendar.months.${viewMonth}`)}
     </button>
 
     {monthOpen && (
       <div className="promo-dd-list">
-        {months.map((m, i) => (
+        {Array.from({ length: 12 }).map((_, i) => (
           <button
             key={`${pickerName}-month-${i}`}
             className={`promo-dd-item ${i === viewMonth ? "active" : ""}`}
@@ -240,7 +226,7 @@ const [yearOpen, setYearOpen] = useState(false);
               setMonthOpen(false);
             }}
           >
-            {m}
+            {t(`calendar.months.${i}`)}
           </button>
         ))}
       </div>
@@ -288,8 +274,8 @@ const [yearOpen, setYearOpen] = useState(false);
             </div>
 
             <div className="promo-calendar-weekdays">
-              {weekDays.map((day) => (
-                <span key={day}>{day}</span>
+              {Array.from({ length: 7 }).map((_, index) => (
+                <span key={index}>{t(`calendar.weekdays.${index}`)}</span>
               ))}
             </div>
 
@@ -329,6 +315,7 @@ export default function CreatePromotionModal({
   editData,
   getParams = () => ({}),
 }) {
+  const { t } = useTranslation(PROMOTIONS_NAMESPACE);
   const [form, setForm] = useState(initialForm);
   const [activePicker, setActivePicker] = useState(null);
   const [products, setProducts] = useState([]);
@@ -499,13 +486,11 @@ export default function CreatePromotionModal({
           <X size={16} />
         </button>
 
-        <div className="promo-modal-top-label">AKSIYALAR</div>
+        <div className="promo-modal-top-label">{t("modal.labelPromotions")}</div>
 
-        <h2>{editData ? "Aksiyani tahrirlash" : "Yangi aksiya"}</h2>
+        <h2>{editData ? t("modal.edit") : t("modal.create")}</h2>
         <p>
-          {editData
-            ? "Aksiya ma’lumotlarini o‘zgartiring"
-            : "Yangi aksiya yarating"}
+          {editData ? t("modal.editSubtitle") : t("modal.createSubtitle")}
         </p>
 
         <div
@@ -513,13 +498,13 @@ export default function CreatePromotionModal({
             productDropdownOpen ? "promo-dropdown-open" : ""
           }`}
         >
-          <label>Mahsulot</label>
+          <label>{t("form.products")}</label>
 
           <div className="product-search-wrapper" ref={productSearchRef}>
             <input
               type="text"
               className="product-search-input"
-              placeholder="Mahsulot qidirish..."
+              placeholder={t("form.productSearch")}
               value={productSearch}
               onFocus={() => setProductDropdownOpen(true)}
               onChange={(e) => handleProductSearchChange(e.target.value)}
@@ -528,11 +513,11 @@ export default function CreatePromotionModal({
             {productDropdownOpen && (
               <div className="product-search-dropdown">
                 {productsLoading && (
-                  <div className="product-search-empty">Yuklanmoqda...</div>
+                  <div className="product-search-empty">{t("states.loading")}</div>
                 )}
 
                 {!productsLoading && filteredProducts.length === 0 && (
-                  <div className="product-search-empty">Mahsulot topilmadi</div>
+                  <div className="product-search-empty">{t("states.noProducts")}</div>
                 )}
 
                 {!productsLoading &&
@@ -558,13 +543,13 @@ export default function CreatePromotionModal({
         </div>
 
         <div className="promo-form-block">
-          <div className="promo-form-title">Asosiy ma’lumotlar</div>
+          <div className="promo-form-title">{t("form.basicInfo")}</div>
 
           <div className="promo-form-group">
-            <label>Aksiya nomi</label>
+            <label>{t("form.name")}</label>
             <input
               type="text"
-              placeholder="Masalan: Kuzgi chegirma"
+              placeholder={t("form.placeholders.name")}
               value={form.name}
               onChange={(e) => handleChange("name", e.target.value)}
             />
@@ -572,10 +557,10 @@ export default function CreatePromotionModal({
 
           <div className="promo-form-grid two">
             <div className="promo-form-group">
-              <label>Turi</label>
+              <label>{t("form.discountType")}</label>
               <input
                 type="text"
-                value={form.type}
+                value={t("form.typeReadonly")}
                 readOnly
                 tabIndex={-1}
                 className="promo-readonly-input"
@@ -583,13 +568,13 @@ export default function CreatePromotionModal({
             </div>
 
             <div className="promo-form-group">
-              <label>Qiymat (%)</label>
+              <label>{t("form.valuePercent")}</label>
               <div className="promo-percent-input-wrap">
                 <input
                   type="text"
                   inputMode="numeric"
                   className="promo-percent-input"
-                  placeholder="Masalan: 20"
+                  placeholder={t("form.placeholders.value")}
                   value={form.value}
                   onChange={(e) => {
                     let value = e.target.value.replace(/\D/g, "").slice(0, 3);
@@ -614,11 +599,11 @@ export default function CreatePromotionModal({
         </div>
 
         <div className="promo-form-block">
-          <div className="promo-form-title">Amal qilish muddati</div>
+          <div className="promo-form-title">{t("form.validityPeriod")}</div>
 
           <div className="promo-form-grid two">
             <CustomDatePicker
-              label="Boshlanish"
+              label={t("form.startDate")}
               value={form.startDate}
               pickerName="startDate"
               activePicker={activePicker}
@@ -628,7 +613,7 @@ export default function CreatePromotionModal({
             />
 
             <CustomDatePicker
-              label="Tugashi"
+              label={t("form.endDate")}
               value={form.endDate}
               pickerName="endDate"
               activePicker={activePicker}
@@ -640,13 +625,13 @@ export default function CreatePromotionModal({
         </div>
 
         <div className="promo-form-block">
-          <div className="promo-form-title">Qo‘shimcha</div>
+          <div className="promo-form-title">{t("form.additional")}</div>
 
           <div className="promo-form-group">
-            <label>Izoh</label>
+            <label>{t("form.description")}</label>
             <textarea
               rows="4"
-              placeholder="Aksiya haqida qisqacha izoh"
+              placeholder={t("form.placeholders.description")}
               value={form.description}
               onChange={(e) => handleChange("description", e.target.value)}
             />
@@ -654,8 +639,8 @@ export default function CreatePromotionModal({
 
           <div className="promo-form-toggle">
             <div>
-              <strong>Darhol faollashtirish</strong>
-              <span>Aksiya yaratilgandan so‘ng darhol ishlaydi</span>
+              <strong>{t("form.activateNow")}</strong>
+              <span>{t("form.activateNowHint")}</span>
             </div>
 
             <label className="promo-switch">
@@ -671,7 +656,7 @@ export default function CreatePromotionModal({
 
         <div className="promo-modal-footer">
           <button type="button" className="promo-cancel-btn" onClick={onClose}>
-            Bekor qilish
+            {t("buttons.cancel")}
           </button>
 
           <button
@@ -679,7 +664,7 @@ export default function CreatePromotionModal({
             className="promo-submit-btn"
             onClick={handleSubmit}
           >
-            {editData ? "Saqlash" : "Aksiya yaratish"}
+            {editData ? t("buttons.save") : t("buttons.create")}
           </button>
         </div>
       </div>

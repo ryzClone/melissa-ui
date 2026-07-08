@@ -14,7 +14,10 @@ export {
   markServerUnavailableRedirect,
 } from "@/services/serverStatus";
 
-const HEALTH_CHECK_META = { skipServerUnavailableHandling: true };
+const HEALTH_CHECK_META = {
+  skipServerUnavailableHandling: true,
+  skipErrorNotification: true,
+};
 
 function isServerReachableError(error) {
   if (error?.response) return true;

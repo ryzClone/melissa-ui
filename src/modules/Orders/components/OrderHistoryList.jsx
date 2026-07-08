@@ -1,7 +1,9 @@
 import { useMemo } from "react";
+import { useTranslation } from "react-i18next";
 import { Eye } from "lucide-react";
 import GlobalTable from "@/components/GlobalTable/GlobalTable";
 import StatusBadge from "@/components/StatusBadge/StatusBadge";
+import { ORDERS_NAMESPACE } from "@/i18n/namespaces";
 import {
   formatSom,
   getOrderBranchName,
@@ -22,49 +24,51 @@ export default function OrderHistoryList({
   onOpenDetails,
   loading = false,
 }) {
+  const { t } = useTranslation(ORDERS_NAMESPACE);
+
   const columns = useMemo(
     () => [
       {
         key: "orderNumber",
-        title: "Buyurtma",
+        title: t("table.orderNumber"),
         render: (row) => getOrderNumber(row),
       },
       {
         key: "customer",
-        title: "Mijoz",
+        title: t("table.customer"),
         className: "name-cell",
         render: (row) => getOrderCustomerName(row),
       },
       {
         key: "phone",
-        title: "Telefon",
+        title: t("table.phone"),
         render: (row) => getOrderPhone(row),
       },
       {
         key: "branch",
-        title: "Filial",
+        title: t("table.branch"),
         className: "address-cell",
         render: (row) => getOrderBranchName(row),
       },
       {
         key: "items",
-        title: "Mahsulot",
+        title: t("table.products"),
         render: (row) => {
           const itemsCount = getOrderItems(row).reduce(
             (sum, item) => sum + getProductQuantity(item),
             0
           );
-          return `${itemsCount} ta`;
+          return t("table.itemsCount", { count: itemsCount });
         },
       },
       {
         key: "total",
-        title: "Summa",
+        title: t("table.totalPrice"),
         render: (row) => formatSom(getOrderTotalAmount(row)),
       },
       {
         key: "status",
-        title: "Holat",
+        title: t("table.status"),
         render: (row) => {
           const status = getOrderStatus(row);
           const badge = getStatusBadge(status);
@@ -72,30 +76,41 @@ export default function OrderHistoryList({
           return (
             <StatusBadge
               variant={getOrderStatusVariant(status)}
-              label={badge.label}
+              label={badge.labelKey ? t(badge.labelKey) : badge.fallback}
             />
           );
         },
       },
       {
         key: "time",
-        title: "Vaqt",
+        title: t("table.createdAt"),
         render: (row) => getOrderDateTimeLabel(row),
       },
     ],
-    []
+    [t]
   );
 
   const actions = useMemo(
     () => [
       {
-        label: "Ko'rish",
+        label: t("buttons.view"),
         icon: <Eye size={16} />,
         variant: "view",
         onClick: (row) => onOpenDetails?.(row),
       },
     ],
-    [onOpenDetails]
+    [onOpenDetails, t]
+  );
+
+  const paginationLabels = useMemo(
+    () => ({
+      total: (count) => t("pagination.total", { count }),
+      perPage: t("pagination.rowsPerPage"),
+      previous: t("pagination.previous"),
+      next: t("pagination.next"),
+      actions: t("table.actions"),
+    }),
+    [t]
   );
 
   return (
@@ -104,7 +119,9 @@ export default function OrderHistoryList({
       columns={columns}
       data={orders}
       loading={loading}
-      emptyText="Tarixda buyurtmalar yo'q"
+      loadingText={t("states.loading")}
+      emptyText={t("states.historyEmpty")}
+      paginationLabels={paginationLabels}
       rowKey={(row, index) => row?.id ?? row?.orderId ?? `history-${index}`}
       actions={actions}
       pagination={{ client: true }}

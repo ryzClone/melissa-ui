@@ -1,0 +1,24 @@
+{
+  "welcome": {
+    "title": "Welcome!",
+    "greeting": "Hello, {{name}}. {{message}}",
+    "message": "Have a productive day. Follow news and important messages here.",
+    "defaultUserName": "team member"
+  },
+  "news": {
+    "title": "News",
+    "subtitle": "Important platform announcements and updates",
+    "readMore": "Read more"
+  },
+  "messages": {
+    "title": "Important messages",
+    "subtitle": "Maintenance, internal notices, and alerts"
+  },
+  "branches": {
+    "title": "Top branches",
+    "subtitle": "Branch ranking"
+  },
+  "modal": {
+    "close": "Close"
+  }
+}

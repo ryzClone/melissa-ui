@@ -1,0 +1,212 @@
+{
+  "title": "Aksiyalar",
+  "subtitle": "Kuponlar va chegirmalarni boshqarish",
+  "tabs": {
+    "promotions": "Aksiyalar",
+    "discounts": "Chegirmalar",
+    "promoCodes": "Promokod"
+  },
+  "search": {
+    "placeholder": "Qidiruv..."
+  },
+  "filters": {
+    "status": "Holat",
+    "type": "Turi",
+    "dateFrom": "Boshlanish sanasi",
+    "dateTo": "Tugash sanasi",
+    "organization": "Tashkilot"
+  },
+  "table": {
+    "listTitle": "Aksiyalar ro'yxati",
+    "promoCodesListTitle": "Promokodlar ro'yxati",
+    "name": "Nomi",
+    "description": "Tavsif",
+    "code": "Kod",
+    "type": "Turi",
+    "discount": "Chegirma",
+    "startDate": "Boshlanish",
+    "endDate": "Tugash",
+    "status": "Holat",
+    "createdAt": "Yaratilgan sana",
+    "actions": "Amallar",
+    "id": "ID",
+    "minOrder": "Min. buyurtma",
+    "orderCount": "Buyurtmalar soni",
+    "usageCount": "Ishlatilgan",
+    "product": "Mahsulot"
+  },
+  "buttons": {
+    "add": "Yangi aksiya",
+    "addPromoCode": "Yangi promokod",
+    "edit": "Tahrirlash",
+    "view": "Ko'rish",
+    "delete": "O'chirish",
+    "save": "Saqlash",
+    "cancel": "Bekor qilish",
+    "close": "Yopish",
+    "search": "Qidirish",
+    "apply": "Qo'llash",
+    "clear": "Tozalash",
+    "download": "Yuklab olish",
+    "create": "Aksiya yaratish",
+    "createPromoCode": "Promokod yaratish",
+    "generate": "Generate"
+  },
+  "modal": {
+    "create": "Yangi aksiya",
+    "createSubtitle": "Yangi aksiya yarating",
+    "edit": "Aksiyani tahrirlash",
+    "editSubtitle": "Aksiya ma'lumotlarini o'zgartiring",
+    "view": "Aksiya ma'lumotlari",
+    "viewSubtitle": "Tanlangan aksiya tafsilotlari",
+    "delete": "Aksiyani o'chirish",
+    "createPromoCode": "Yangi promokod",
+    "createPromoCodeSubtitle": "Yangi promokod yarating",
+    "editPromoCode": "Promokodni tahrirlash",
+    "editPromoCodeSubtitle": "Promokod ma'lumotlarini o'zgartiring",
+    "viewPromoCode": "Promokod ma'lumotlari",
+    "viewPromoCodeSubtitle": "Tanlangan promokod tafsilotlari",
+    "labelPromotions": "AKSIYALAR",
+    "labelPromoCode": "PROMOKODLAR",
+    "labelPromotion": "Aksiya",
+    "labelPromoCodeSingle": "Promokod"
+  },
+  "form": {
+    "name": "Aksiya nomi",
+    "promoCodeName": "Promokod nomi",
+    "promoCodeCode": "Promokod kodi",
+    "description": "Izoh",
+    "discount": "Chegirma",
+    "discountType": "Turi",
+    "startDate": "Boshlanish",
+    "endDate": "Tugashi",
+    "status": "Holat",
+    "image": "Rasm",
+    "products": "Mahsulot",
+    "branches": "Filiallar",
+    "productSearch": "Mahsulot qidirish...",
+    "basicInfo": "Asosiy ma'lumotlar",
+    "validityPeriod": "Amal qilish muddati",
+    "additional": "Qo'shimcha",
+    "conditions": "Shartlar",
+    "valuePercent": "Qiymat (%)",
+    "percentValue": "Foiz qiymati (%)",
+    "fixedAmount": "Chegirma summasi (UZS)",
+    "orderCount": "Buyurtmalar soni",
+    "minOrder": "Minimal buyurtma",
+    "activateNow": "Darhol faollashtirish",
+    "activateNowHint": "Aksiya yaratilgandan so'ng darhol ishlaydi",
+    "activatePromoNowHint": "Promokod yaratilgandan so'ng darhol ishlaydi",
+    "selectDate": "Muddat tanlang",
+    "typeReadonly": "Foiz (%)",
+    "typePercentage": "Foiz (%)",
+    "typeFixed": "Qiymat (UZS)",
+    "preview": "PREVIEW",
+    "previewPlaceholder": "PROMOKOD",
+    "placeholders": {
+      "name": "Masalan: Kuzgi chegirma",
+      "promoCodeName": "Masalan: Yangi yil chegirmasi",
+      "promoCodeCode": "Masalan: WELCOME10",
+      "value": "Masalan: 20",
+      "percent": "Masalan: 10",
+      "fixedAmount": "Masalan: 50000",
+      "orderCount": "Masalan: 1",
+      "minOrder": "Masalan: 100000",
+      "description": "Aksiya haqida qisqacha izoh"
+    }
+  },
+  "types": {
+    "percentage": "Foiz",
+    "fixed": "Qiymat",
+    "percentageFull": "Foiz (%)",
+    "fixedFull": "Qiymat (UZS)"
+  },
+  "status": {
+    "active": "Faol",
+    "inactive": "Nofaol",
+    "expired": "Muddati tugagan",
+    "draft": "Qoralama",
+    "pending": "Kutilmoqda"
+  },
+  "validation": {
+    "required": "Majburiy maydonni to'ldiring",
+    "invalidDate": "Noto'g'ri sana",
+    "endDateAfterStart": "Tugash sanasi boshlanishdan keyin bo'lishi kerak",
+    "invalidDiscount": "Noto'g'ri chegirma qiymati",
+    "promoNameRequired": "Promokod nomi majburiy",
+    "promoCodeRequired": "Promokod kodi majburiy",
+    "startDateRequired": "Boshlanish sanasi majburiy",
+    "endDateRequired": "Tugash sanasi majburiy",
+    "percentRequired": "Foiz qiymatini kiriting",
+    "fixedAmountRequired": "Chegirma summasini kiriting"
+  },
+  "toast": {
+    "created": "Muvaffaqiyatli yaratildi",
+    "updated": "Muvaffaqiyatli yangilandi",
+    "deleted": "Muvaffaqiyatli o'chirildi"
+  },
+  "states": {
+    "loading": "Yuklanmoqda...",
+    "noData": "Ma'lumot topilmadi",
+    "error": "Xatolik yuz berdi",
+    "noProducts": "Mahsulot topilmadi",
+    "partnerSelect": "Iltimos, hamkorni tanlang"
+  },
+  "confirm": {
+    "deleteTitle": "Aksiyani o'chirish",
+    "deleteMessage": "Haqiqatan ham o'chirmoqchimisiz?",
+    "yes": "Ha, o'chirish",
+    "no": "Yo'q"
+  },
+  "pagination": {
+    "total": "Jami: {{count}} ta",
+    "previous": "Oldingi",
+    "next": "Keyingi",
+    "page": "Sahifa",
+    "rowsPerPage": "Sahifada"
+  },
+  "stats": {
+    "totalPromotions": "Jami aksiyalar",
+    "totalPromotionsDesc": "Barcha aksiyalar",
+    "activePromotions": "Faol aksiyalar",
+    "activePromotionsDesc": "Hozir faol",
+    "pendingPromotions": "Kutilmoqda",
+    "pendingPromotionsDesc": "Hali boshlanmagan",
+    "avgDiscount": "O'rtacha chegirma",
+    "activeCoupons": "Faol kuponlar",
+    "totalSavings": "Jami tejash",
+    "expiringSoon": "Tugayotgan",
+    "countUnit": "{{count}} ta"
+  },
+  "preview": {
+    "discountPercent": "{{value}}% chegirma",
+    "discountFixed": "{{value}} UZS chegirma",
+    "discountZeroPercent": "0% chegirma",
+    "discountZeroFixed": "0 UZS chegirma"
+  },
+  "calendar": {
+    "months": {
+      "0": "Yanvar",
+      "1": "Fevral",
+      "2": "Mart",
+      "3": "Aprel",
+      "4": "May",
+      "5": "Iyun",
+      "6": "Iyul",
+      "7": "Avgust",
+      "8": "Sentabr",
+      "9": "Oktabr",
+      "10": "Noyabr",
+      "11": "Dekabr"
+    },
+    "weekdays": {
+      "0": "Du",
+      "1": "Se",
+      "2": "Ch",
+      "3": "Pa",
+      "4": "Ju",
+      "5": "Sh",
+      "6": "Ya"
+    }
+  }
+}

@@ -1,0 +1,132 @@
+{
+  "title": "Filiallar",
+  "subtitle": "Barcha filiallarni boshqaring",
+  "search": {
+    "placeholder": "Qidiruv..."
+  },
+  "filters": {
+    "city": "Shahar",
+    "region": "Viloyat",
+    "status": "Holat"
+  },
+  "table": {
+    "listTitle": "Filial ro'yxati",
+    "name": "Filial nomi",
+    "phone": "Telefon",
+    "address": "Manzil",
+    "status": "Holat",
+    "createdAt": "Yaratilgan sana",
+    "actions": "Amallar"
+  },
+  "buttons": {
+    "add": "Yangi filial",
+    "edit": "Tahrirlash",
+    "view": "Ko'rish",
+    "delete": "O'chirish",
+    "save": "Saqlash",
+    "cancel": "Bekor qilish",
+    "close": "Yopish",
+    "search": "Qidirish",
+    "create": "Yaratish",
+    "download": "Yuklab olish",
+    "confirm": "Tasdiqlash"
+  },
+  "modal": {
+    "create": "Yangi filial qo'shish",
+    "createSubtitle": "Yangi filial ma'lumotlarini kiriting",
+    "edit": "Filialni tahrirlash",
+    "editSubtitle": "Filial ma'lumotlarini yangilang",
+    "view": "Filial ma'lumotlari",
+    "viewSubtitle": "Filialning to'liq tafsilotlari",
+    "delete": "Filialni o'chirish",
+    "deleteSubtitle": "Bu amalni ortga qaytarib bo'lmaydi"
+  },
+  "form": {
+    "name": "Filial nomi",
+    "phone": "Telefon raqam",
+    "address": "Manzil",
+    "fullAddress": "To'liq manzil",
+    "latitude": "Latitude",
+    "longitude": "Longitude",
+    "status": "Holat",
+    "city": "Shahar",
+    "region": "Viloyat / Region",
+    "country": "Mamlakat",
+    "district": "Tuman",
+    "street": "Ko'cha",
+    "house": "Uy",
+    "entrance": "Kirish yo'lagi",
+    "floor": "Qavat",
+    "apartment": "Xona / Kvartira",
+    "comment": "Izoh",
+    "placeId": "Place ID",
+    "title": "Sarlavha",
+    "id": "ID",
+    "sectionAddress": "Manzil",
+    "selectPlaceholder": "Tanlang",
+    "selectRegionFirst": "Avval region tanlang",
+    "selectCityFirst": "Avval shahar tanlang",
+    "noOptions": "Variant yo'q",
+    "mapPick": "Mapdan tanlash",
+    "placeholders": {
+      "name": "Masalan: Melissa Chilonzor",
+      "phone": "+998",
+      "fullAddress": "Masalan: Toshkent, Chilonzor, Bunyodkor ko'chasi",
+      "latitude": "Latitude",
+      "longitude": "Longitude",
+      "country": "Uzbekistan",
+      "street": "Bunyodkor",
+      "house": "12",
+      "entrance": "1",
+      "floor": "1",
+      "apartment": "101",
+      "placeId": "Google place id",
+      "comment": "Filial haqida qo'shimcha ma'lumot..."
+    }
+  },
+  "validation": {
+    "required": "Filial nomini kiriting",
+    "invalidPhone": "Telefon raqamni to'g'ri kiriting (+998 99 999 99 99)"
+  },
+  "toast": {
+    "created": "Filial muvaffaqiyatli yaratildi",
+    "updated": "Filial muvaffaqiyatli yangilandi",
+    "deleted": "Filial muvaffaqiyatli o'chirildi"
+  },
+  "states": {
+    "loading": "Yuklanmoqda...",
+    "saving": "Saqlanmoqda...",
+    "creating": "Yaratilmoqda...",
+    "noData": "Ma'lumot topilmadi",
+    "error": "Xatolik yuz berdi",
+    "partnerSelect": "Iltimos, hamkorni tanlang"
+  },
+  "confirm": {
+    "deleteTitle": "Filialni o'chirish",
+    "deleteMessage": "Haqiqatan ham {{name}} filialini o'chirmoqchimisiz?",
+    "deleteWarning": "O'chirsangiz, ushbu ma'lumotlar qayta tiklanmaydi.",
+    "yes": "Ha, o'chirish",
+    "no": "Yo'q"
+  },
+  "status": {
+    "active": "Aktiv",
+    "inactive": "No aktiv",
+    "label": "Holat: {{status}}"
+  },
+  "pagination": {
+    "total": "Jami: {{count}} ta",
+    "perPage": "Sahifada",
+    "previous": "Oldingi",
+    "next": "Keyingi"
+  },
+  "map": {
+    "myLocation": "Mening joylashuvim",
+    "selectedLocation": "Tanlangan joy:",
+    "resolvingAddress": "Manzil aniqlanmoqda...",
+    "selectFromMap": "Xaritadan manzilni tanlang.",
+    "geolocationError": "Geolokatsiya olishda xatolik."
+  },
+  "tooltips": {
+    "superAdminNoPermission": "Super Admin uchun ruxsat yo'q"
+  }
+}

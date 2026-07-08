@@ -1,0 +1,136 @@
+/**
+ * Global UI stacking layers (low → high).
+ *
+ * App content → Sidebar → Header → LanguageDropdown → Modal overlay → Modal content
+ *
+ * Modals inside `.layout-content` sit below `.header-container` unless the content
+ * layer is elevated while a modal is open (`:has()` below).
+ */
+:root {
+  --z-app: 0;
+  --z-sidebar: 100;
+  --z-header: 200;
+  --z-language-dropdown: 250;
+  --z-modal-overlay: 10000;
+  --z-modal-content: 10001;
+  --z-toast: 20000;
+  --z-tooltip: 20001;
+}
+
+/* ── App chrome (normal state) ──────────────────────────────── */
+
+.sidebar {
+  position: relative;
+  z-index: var(--z-sidebar);
+}
+
+.header-container {
+  position: relative;
+  z-index: var(--z-header);
+}
+
+.language-dropdown,
+.language-dropdown--fixed,
+.language-dropdown--inline {
+  z-index: var(--z-language-dropdown) !important;
+}
+
+/* ── Modal / drawer overlays ────────────────────────────────── */
+
+.profile-modal-overlay,
+.product-modal-overlay,
+.users-modal-overlay,
+.admin-modal-overlay,
+.dashboard-news-modal-overlay,
+.addbranch-modal-overlay,
+.promo-modal-overlay,
+.promo-code-overlay,
+.promo-calendar-backdrop,
+.orders-modal-overlay,
+.branch-modal-overlay,
+.role-modal-overlay,
+.pm-overlay,
+.finance-report-overlay,
+.notif-overlay,
+[class$="-modal-overlay"] {
+  position: fixed;
+  z-index: var(--z-modal-overlay) !important;
+}
+
+.notif-drawer {
+  z-index: var(--z-modal-content) !important;
+}
+
+/* Modal panels above their overlay when explicitly layered */
+.profile-modal,
+.product-modal,
+.users-modal,
+.admin-modal,
+.branch-modal,
+.addbranch-modal,
+.orders-modal,
+.promo-modal,
+.promo-code-modal,
+.role-modal,
+.pm-modal {
+  position: relative;
+  z-index: var(--z-modal-content);
+}
+
+/* ── Modal open: elevate page content above header/sidebar chrome ─ */
+.layout-right:has(
+    .profile-modal-overlay,
+    .product-modal-overlay,
+    .users-modal-overlay,
+    .admin-modal-overlay,
+    .dashboard-news-modal-overlay,
+    .addbranch-modal-overlay,
+    .promo-modal-overlay,
+    .promo-code-overlay,
+    .promo-calendar-backdrop,
+    .orders-modal-overlay,
+    .branch-modal-overlay,
+    .role-modal-overlay,
+    .pm-overlay,
+    .finance-report-overlay,
+    [class$="-modal-overlay"]
+  )
+  .layout-content {
+  position: relative;
+  z-index: var(--z-modal-overlay);
+  isolation: isolate;
+}
+
+/* Modal open: force app chrome behind modal layer */
+body:has(
+    .profile-modal-overlay,
+    .product-modal-overlay,
+    .users-modal-overlay,
+    .admin-modal-overlay,
+    .dashboard-news-modal-overlay,
+    .addbranch-modal-overlay,
+    .promo-modal-overlay,
+    .promo-code-overlay,
+    .promo-calendar-backdrop,
+    .orders-modal-overlay,
+    .branch-modal-overlay,
+    .role-modal-overlay,
+    .pm-overlay,
+    .finance-report-overlay,
+    .notif-overlay,
+    [class$="-modal-overlay"]
+  )
+  :is(
+    .sidebar,
+    .header-container,
+    .language-dropdown,
+    .language-dropdown--fixed,
+    .language-dropdown--inline,
+    .profile-dropdown,
+    .header-icon-btn,
+    .header-search,
+    .top-filial-selector,
+    .top-filial-menu
+  ) {
+  z-index: var(--z-app) !important;
+}

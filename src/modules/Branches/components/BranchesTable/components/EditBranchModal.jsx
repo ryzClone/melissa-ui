@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 import { MapPin, X } from "lucide-react";
+import { useTranslation } from "react-i18next";
+import { BRANCHES_NAMESPACE } from "@/i18n/namespaces";
 import AddBranchMapModal from "../../BranchesHeader/components/AddBranchMapModal";
 import "../../BranchesHeader/components/AddBranchMapModal.css";
 import "./BranchModal.css";
@@ -85,17 +87,17 @@ export function buildBranchUpdatePayload(form) {
 }
 
 const ADDRESS_FIELDS = [
-  { name: "address.latitude", label: "Latitude", type: "number" },
-  { name: "address.longitude", label: "Longitude", type: "number" },
-  { name: "address.country", label: "Mamlakat", type: "text" },
-  { name: "address.city", label: "Shahar", type: "text" },
-  { name: "address.region", label: "Viloyat", type: "text" },
-  { name: "address.district", label: "Tuman", type: "text" },
-  { name: "address.street", label: "Ko'cha", type: "text" },
-  { name: "address.house", label: "Uy", type: "text" },
-  { name: "address.entrance", label: "Kirish", type: "text" },
-  { name: "address.floor", label: "Qavat", type: "text" },
-  { name: "address.apartment", label: "Xona", type: "text" },
+  { name: "address.latitude", labelKey: "form.latitude", type: "number" },
+  { name: "address.longitude", labelKey: "form.longitude", type: "number" },
+  { name: "address.country", labelKey: "form.country", type: "text" },
+  { name: "address.city", labelKey: "form.city", type: "text" },
+  { name: "address.region", labelKey: "form.region", type: "text" },
+  { name: "address.district", labelKey: "form.district", type: "text" },
+  { name: "address.street", labelKey: "form.street", type: "text" },
+  { name: "address.house", labelKey: "form.house", type: "text" },
+  { name: "address.entrance", labelKey: "form.entrance", type: "text" },
+  { name: "address.floor", labelKey: "form.floor", type: "text" },
+  { name: "address.apartment", labelKey: "form.apartment", type: "text" },
 ];
 
 export default function EditBranchModal({
@@ -105,6 +107,7 @@ export default function EditBranchModal({
   onClose,
   onSave,
 }) {
+  const { t } = useTranslation(BRANCHES_NAMESPACE);
   const [form, setForm] = useState(EMPTY_FORM);
   const [showMap, setShowMap] = useState(false);
 
@@ -177,8 +180,8 @@ export default function EditBranchModal({
       <div className="branch-modal" onClick={(e) => e.stopPropagation()}>
         <div className="branch-modal-header">
           <div>
-            <h3>Filialni tahrirlash</h3>
-            <p>Filial ma&apos;lumotlarini yangilang</p>
+            <h3>{t("modal.edit")}</h3>
+            <p>{t("modal.editSubtitle")}</p>
           </div>
           <button
             type="button"
@@ -194,7 +197,7 @@ export default function EditBranchModal({
           <div className="branch-modal-form">
           <div className="branch-form-grid">
             <div className="branch-form-group">
-              <label htmlFor="branch-name">Filial nomi</label>
+              <label htmlFor="branch-name">{t("form.name")}</label>
               <input
                 id="branch-name"
                 name="name"
@@ -206,7 +209,7 @@ export default function EditBranchModal({
             </div>
 
             <div className="branch-form-group">
-              <label htmlFor="branch-phone">Telefon</label>
+              <label htmlFor="branch-phone">{t("form.phone")}</label>
               <input
                 id="branch-phone"
                 name="phoneNumber"
@@ -216,12 +219,12 @@ export default function EditBranchModal({
               />
             </div>
 
-            <p className="branch-form-section-title">Manzil</p>
+            <p className="branch-form-section-title">{t("form.sectionAddress")}</p>
 
             <div className="branch-form-group branch-form-group-full">
               <div className="branch-address-label-row">
                 <label htmlFor="address.formattedAddress">
-                  To&apos;liq manzil
+                  {t("form.fullAddress")}
                   <span style={{ color: "var(--red, #dc2626)" }}>*</span>
                 </label>
 
@@ -232,7 +235,7 @@ export default function EditBranchModal({
                   disabled={loading}
                 >
                   <MapPin size={16} />
-                  Mapdan tanlash
+                  {t("form.mapPick")}
                 </button>
               </div>
 
@@ -245,7 +248,7 @@ export default function EditBranchModal({
                 maxLength={255}
                 required
                 disabled={loading}
-                placeholder="Masalan: Toshkent, Chilonzor, Bunyodkor ko‘chasi"
+                placeholder={t("form.placeholders.fullAddress")}
               />
             </div>
 
@@ -271,7 +274,7 @@ export default function EditBranchModal({
                 key={field.name}
                 className={`branch-form-group${field.full ? " branch-form-group-full" : ""}`}
               >
-                <label htmlFor={field.name}>{field.label}</label>
+                <label htmlFor={field.name}>{t(field.labelKey)}</label>
                 <input
                   id={field.name}
                   name={field.name}
@@ -285,7 +288,7 @@ export default function EditBranchModal({
             ))}
 
             <div className="branch-form-group branch-form-group-full">
-              <label htmlFor="address.comment">Izoh</label>
+              <label htmlFor="address.comment">{t("form.comment")}</label>
               <textarea
                 id="address.comment"
                 name="address.comment"
@@ -297,7 +300,7 @@ export default function EditBranchModal({
             </div>
 
             <div className="branch-form-group branch-form-group-full">
-              <label htmlFor="address.placeId">Place ID</label>
+              <label htmlFor="address.placeId">{t("form.placeId")}</label>
               <input
                 id="address.placeId"
                 name="address.placeId"
@@ -309,7 +312,13 @@ export default function EditBranchModal({
             </div>
 
             <div className="branch-status-card">
-              <span>Holat: {form.active ? "Aktiv" : "No aktiv"}</span>
+              <span>
+                {t("status.label", {
+                  status: form.active
+                    ? t("status.active")
+                    : t("status.inactive"),
+                })}
+              </span>
 
               <button
                 type="button"
@@ -331,14 +340,14 @@ export default function EditBranchModal({
               onClick={onClose}
               disabled={loading}
             >
-              Bekor qilish
+              {t("buttons.cancel")}
             </button>
             <button
               type="submit"
               className="branch-primary-btn"
               disabled={loading}
             >
-              {loading ? "Saqlanmoqda..." : "Saqlash"}
+              {loading ? t("states.saving") : t("buttons.save")}
             </button>
           </div>
         </form>

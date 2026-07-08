@@ -4,6 +4,8 @@ import { useNavigate } from "react-router-dom";
 
 import { AuthContext } from "@/core/auth/AuthContext";
 
+import LanguageDropdown from "@/components/LanguageDropdown/LanguageDropdown";
+
 import { useProfile } from "@/context/ProfileContext";
 
 import {
@@ -27,6 +29,8 @@ import {
   CreditCard,
 
   Users,
+
+  Settings,
 
 } from "lucide-react";
 
@@ -132,7 +136,11 @@ export default function Header() {
 
   const unreadCount = notifications.filter((item) => item.unread).length;
 
-
+  const avatarLetter = (
+    displayName?.trim()?.[0] ||
+    avatarInitials?.[0] ||
+    "U"
+  ).toUpperCase();
 
   const handleLogout = () => {
     setMenuOpen(false);
@@ -150,7 +158,28 @@ export default function Header() {
 
   };
 
+  const handleOpenSettings = () => {
+    setMenuOpen(false);
+    navigate("/settings");
+  };
 
+  const renderAvatar = (sizeClass, showInitials = false) => {
+    if (avatarUrl && !avatarError) {
+      return (
+        <img
+          src={avatarUrl}
+          alt={displayName}
+          onError={() => setAvatarError(true)}
+        />
+      );
+    }
+
+    return (
+      <span className="profile-avatar-letter">
+        {showInitials ? avatarInitials : avatarLetter}
+      </span>
+    );
+  };
 
   useEffect(() => {
 
@@ -244,6 +273,8 @@ export default function Header() {
 
         <div className="header-right">
 
+          <LanguageDropdown variant="inline" />
+
           <button
 
             type="button"
@@ -292,49 +323,27 @@ export default function Header() {
 
               type="button"
 
-              className="profile-trigger"
+              className={`profile-trigger ${menuOpen ? "is-open" : ""}`}
 
               onClick={() => setMenuOpen((prev) => !prev)}
 
+              aria-expanded={menuOpen}
+
+              aria-haspopup="menu"
+
             >
 
-              <div className="profile-text">
+              <div className="profile-avatar profile-avatar--sm">
 
-                <h4 className="profile-name">{displayName}</h4>
-
-                <p className="profile-role">{userRole}</p>
+                {renderAvatar("profile-avatar--sm")}
 
               </div>
 
+              <span className="profile-name" title={displayName}>
 
+                {displayName}
 
-              <div className="profile-avatar">
-
-                {avatarUrl && !avatarError ? (
-
-                  <img
-
-                    src={avatarUrl}
-
-                    alt={displayName}
-
-                    onError={() => setAvatarError(true)}
-
-                  />
-
-                ) : (
-
-                  <span className="profile-avatar-initials">
-
-                    {avatarInitials}
-
-                  </span>
-
-                )}
-
-              </div>
-
-
+              </span>
 
               <ChevronDown
 
@@ -350,7 +359,31 @@ export default function Header() {
 
             {menuOpen && (
 
-              <div className="profile-dropdown">
+              <div className="profile-dropdown" role="menu">
+
+                <div className="profile-dropdown-head">
+
+                  <div className="profile-avatar profile-avatar--lg">
+
+                    {renderAvatar("profile-avatar--lg", true)}
+
+                  </div>
+
+                  <div className="profile-dropdown-meta">
+
+                    <strong className="profile-dropdown-name" title={displayName}>
+
+                      {displayName}
+
+                    </strong>
+
+                    <span className="profile-dropdown-role">{userRole}</span>
+
+                  </div>
+
+                </div>
+
+                <div className="profile-dropdown-divider" />
 
                 <button
 
@@ -358,23 +391,43 @@ export default function Header() {
 
                   className="profile-dropdown-item"
 
+                  role="menuitem"
+
                   onClick={handleOpenProfile}
 
                 >
 
                   <User size={16} />
 
-                  <span>Profil</span>
+                  <span>Profile</span>
 
                 </button>
 
+                <button
 
+                  type="button"
+
+                  className="profile-dropdown-item"
+
+                  role="menuitem"
+
+                  onClick={handleOpenSettings}
+
+                >
+
+                  <Settings size={16} />
+
+                  <span>Settings</span>
+
+                </button>
 
                 <button
 
                   type="button"
 
                   className="profile-dropdown-item logout"
+
+                  role="menuitem"
 
                   onClick={handleLogout}
 

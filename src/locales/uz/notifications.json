@@ -1,0 +1,34 @@
+{
+  "common": {
+    "success": "Muvaffaqiyatli",
+    "error": "Xatolik",
+    "warning": "Ogohlantirish",
+    "info": "Ma'lumot",
+    "infoLoaded": "Ma'lumot yuklandi"
+  },
+  "crud": {
+    "created": "Muvaffaqiyatli yaratildi",
+    "updated": "Muvaffaqiyatli yangilandi",
+    "deleted": "Muvaffaqiyatli o'chirildi",
+    "saved": "Muvaffaqiyatli saqlandi"
+  },
+  "auth": {
+    "loginSuccess": "Tizimga muvaffaqiyatli kirildi",
+    "loginError": "Login yoki parol noto'g'ri",
+    "sessionExpired": "Sessiya muddati tugadi. Qaytadan kiring",
+    "logoutSuccess": "Tizimdan chiqildi"
+  },
+  "errors": {
+    "default": "Xatolik yuz berdi",
+    "network": "Server bilan aloqa yo'q",
+    "server": "Serverda xatolik yuz berdi",
+    "forbidden": "Ruxsat yo'q",
+    "notFound": "Ma'lumot topilmadi",
+    "validation": "Ma'lumotlarni tekshiring",
+    "badRequest": "Noto'g'ri so'rov"
+  },
+  "actions": {
+    "completed": "Amal muvaffaqiyatli bajarildi",
+    "failed": "Amalni bajarib bo'lmadi"
+  }
+}

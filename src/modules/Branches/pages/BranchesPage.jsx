@@ -1,13 +1,15 @@
 import { useCallback, useEffect, useState } from "react";
 import { Search } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { api } from "@/api";
 import PageWrapper from "@/components/PageWrapper/PageWrapper";
 import FilterBar, { FilterItem } from "@/components/FilterBar/FilterBar";
 import PagePartnerFilter from "@/components/PagePartnerFilter/PagePartnerFilter";
-import { useScopedPartnerParams, PARTNER_SELECT_MESSAGE } from "@/hooks/useScopedPartnerParams";
+import { useScopedPartnerParams } from "@/hooks/useScopedPartnerParams";
 import { useDebouncedValue } from "@/hooks/useDebouncedValue";
 import { useLatestRequest } from "@/hooks/useLatestRequest";
 import { useAuth } from "@/core/hooks/useAuth";
+import { BRANCHES_NAMESPACE } from "@/i18n/namespaces";
 import "../branches.css";
 import BranchesHeader from "../components/BranchesHeader/BranchesHeader";
 import BranchesTable from "@/modules/Branches/components/BranchesTable/BranchesTable";
@@ -24,6 +26,7 @@ function normalizeBranchList(response) {
 }
 
 export default function BranchesPage() {
+  const { t } = useTranslation(BRANCHES_NAMESPACE);
   const [branches, setBranches] = useState([]);
   const [loading, setLoading] = useState(false);
   const [search, setSearch] = useState("");
@@ -89,7 +92,7 @@ export default function BranchesPage() {
               <Search size={16} />
               <input
                 type="text"
-                placeholder="Qidiruv..."
+                placeholder={t("search.placeholder")}
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
               />
@@ -101,7 +104,7 @@ export default function BranchesPage() {
           data={branches}
           loading={loading}
           onRefresh={fetchBranches}
-          emptyText={canFetch ? "Ma'lumot topilmadi" : PARTNER_SELECT_MESSAGE}
+          emptyText={canFetch ? t("states.noData") : t("states.partnerSelect")}
         />
       </div>
     </PageWrapper>

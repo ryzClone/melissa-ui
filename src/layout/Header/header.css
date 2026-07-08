@@ -144,66 +144,91 @@
 .header-user-menu,
 .profile-menu {
   position: relative;
+  flex-shrink: 0;
 }
 
 .profile-trigger {
-  height: 54px;
-  padding: 6px 12px 6px 16px;
-  border-radius: 18px;
-  background: rgba(255, 255, 255, 0.035);
+  height: 44px;
+  padding: 6px 10px 6px 6px;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.04);
   border: 1px solid rgba(255, 255, 255, 0.08);
-  display: flex;
+  display: inline-flex;
   align-items: center;
-  gap: 10px;
+  gap: 0;
   cursor: pointer;
   transition: all 0.2s ease;
 }
 
 .profile-trigger:hover {
-  background: rgba(255, 255, 255, 0.05);
-  border-color: rgba(139, 61, 255, 0.22);
+  background: rgba(139, 61, 255, 0.14);
+  border-color: rgba(139, 61, 255, 0.55);
 }
 
-.profile-text {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  line-height: 1;
+.profile-trigger.is-open {
+  border-color: #8b3dff;
+  background: rgba(139, 61, 255, 0.12);
+  box-shadow: 0 0 0 3px rgba(139, 61, 255, 0.16);
+}
+
+.profile-trigger.is-open:hover {
+  background: rgba(139, 61, 255, 0.16);
+  border-color: #8b3dff;
+}
+
+.profile-trigger:active {
+  transform: scale(0.98);
+}
+
+.profile-trigger:hover .profile-avatar--sm,
+.profile-trigger.is-open .profile-avatar--sm {
+  border-color: rgba(255, 255, 255, 0.22);
+  box-shadow:
+    0 0 0 2px rgba(139, 61, 255, 0.16),
+    0 0 16px rgba(139, 61, 255, 0.32);
 }
 
 .profile-name {
-  margin: 0;
+  flex: 0 1 auto;
+  min-width: 0;
+  max-width: 110px;
+  margin: 0 0 0 10px;
   color: #fff;
   font-size: 14px;
-  font-weight: 700;
-  line-height: 1.1;
-}
-
-.profile-role {
-  margin: 4px 0 0;
-  color: #a9a0b8;
-  font-size: 12px;
   font-weight: 600;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  line-height: 1;
+  line-height: 1.2;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-align: left;
 }
 
 .profile-avatar {
-  width: 38px;
-  height: 38px;
-  border-radius: 14px;
   overflow: hidden;
   flex-shrink: 0;
   position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+.profile-avatar--sm {
+  width: 34px;
+  height: 34px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #8b3dff, #5b21b6);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  transition:
+    box-shadow 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.profile-avatar--lg {
+  width: 48px;
+  height: 48px;
+  border-radius: 14px;
   background: linear-gradient(180deg, #2b1a3d 0%, #1a1225 100%);
-  border: 1px solid rgba(130, 84, 255, 0.35);
-  box-shadow:
-    0 0 0 2px rgba(111, 54, 220, 0.12),
-    0 0 18px rgba(111, 54, 220, 0.14);
+  border: 1px solid rgba(139, 61, 255, 0.42);
 }
 
 .profile-avatar img {
@@ -213,58 +238,124 @@
   display: block;
 }
 
-.profile-avatar-initials {
-  color: #d9c2ff;
-  font-size: 13px;
+.profile-avatar-letter {
+  color: #fff;
   font-weight: 700;
-  letter-spacing: 0.04em;
+  letter-spacing: 0;
+  line-height: 1;
 }
 
-.profile-avatar-initials.hidden {
-  display: none;
+.profile-avatar--sm .profile-avatar-letter {
+  font-size: 15px;
+}
+
+.profile-avatar--lg .profile-avatar-letter {
+  font-size: 16px;
+  color: #d9c2ff;
 }
 
 .header-chevron {
-  color: rgba(255, 255, 255, 0.5);
-  transition: transform 0.2s ease;
+  width: 16px;
+  height: 16px;
+  margin-left: 8px;
+  opacity: 0.9;
+  flex-shrink: 0;
+  color: rgba(255, 255, 255, 0.88);
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.profile-trigger:hover .header-chevron {
+  opacity: 1;
+}
+
+.profile-trigger:hover .header-chevron:not(.open) {
+  transform: translateY(2px);
 }
 
 .header-chevron.open {
   transform: rotate(180deg);
 }
 
+.profile-trigger:hover .header-chevron.open {
+  transform: rotate(180deg) translateY(2px);
+}
+
 .profile-dropdown {
   position: absolute;
-  top: calc(100% + 12px);
+  top: calc(100% + 10px);
   right: 0;
-  min-width: 260px;
-  padding: 12px;
-  border-radius: 20px;
-  background: #160c24;
-  border: 1px solid rgba(139, 61, 255, 0.26);
-  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.45);
+  min-width: 240px;
+  width: max-content;
+  max-width: min(280px, calc(100vw - 24px));
+  padding: 10px;
+  border-radius: 16px;
+  background:
+    linear-gradient(180deg, rgba(28, 16, 42, 0.98) 0%, rgba(14, 8, 22, 0.98) 100%),
+    #12081c;
+  border: 1px solid rgba(139, 61, 255, 0.22);
+  box-shadow:
+    0 18px 40px rgba(0, 0, 0, 0.42),
+    0 0 0 1px rgba(255, 255, 255, 0.03);
   z-index: 1000;
+}
+
+.profile-dropdown-head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 6px 8px 10px;
+}
+
+.profile-dropdown-meta {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.profile-dropdown-name {
+  color: #fff;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.25;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.profile-dropdown-role {
+  color: rgba(255, 255, 255, 0.52);
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.2;
+  letter-spacing: 0.02em;
+}
+
+.profile-dropdown-divider {
+  height: 1px;
+  margin: 2px 0 8px;
+  background: rgba(255, 255, 255, 0.08);
 }
 
 .profile-dropdown-item {
   width: 100%;
-  height: 52px;
+  height: 44px;
   border: none;
-  border-radius: 14px;
+  border-radius: 12px;
   background: transparent;
-  color: #fff;
+  color: rgba(255, 255, 255, 0.92);
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 0 16px;
+  gap: 10px;
+  padding: 0 12px;
   font-size: 14px;
   font-weight: 500;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: background 0.2s ease, color 0.2s ease;
 }
 
 .profile-dropdown-item:hover {
-  background: rgba(139, 61, 255, 0.16);
+  background: rgba(139, 61, 255, 0.14);
 }
 
 .profile-dropdown-item.logout:hover {
@@ -277,6 +368,11 @@
   height: 16px;
   stroke-width: 2;
   flex-shrink: 0;
+  color: rgba(255, 255, 255, 0.72);
+}
+
+.profile-dropdown-item:hover svg {
+  color: currentColor;
 }
 
 /* NOTIFICATION OVERLAY */
@@ -475,11 +571,23 @@
 }
 
 .header-icon-btn:focus-visible,
-.profile-trigger:focus-visible,
 .profile-dropdown-item:focus-visible,
 .notif-close-btn:focus-visible,
 .notif-item:focus-visible {
   box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.15);
+}
+
+.profile-trigger:focus-visible {
+  outline: none;
+  border-color: rgba(139, 61, 255, 0.72);
+  box-shadow: 0 0 0 3px rgba(139, 61, 255, 0.28);
+}
+
+.profile-trigger.is-open:focus-visible {
+  border-color: #8b3dff;
+  box-shadow:
+    0 0 0 3px rgba(139, 61, 255, 0.16),
+    0 0 0 5px rgba(139, 61, 255, 0.24);
 }
 
 /* 🔥 DEFAULT HAMMA JOYDA */
@@ -507,12 +615,27 @@
     width: 220px;
   }
 
-  .profile-text {
-    display: none;
+  .profile-name {
+    max-width: 88px;
+    margin-left: 8px;
+  }
+
+  .profile-trigger {
+    padding: 6px 8px 6px 6px;
+  }
+
+  .header-chevron {
+    margin-left: 6px;
   }
 
   .notif-drawer {
     width: 100%;
     max-width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .profile-name {
+    max-width: 72px;
   }
 }

@@ -158,6 +158,28 @@
   background: rgba(255, 255, 255, 0.08);
 }
 
+.orders-history-filter-bar {
+  margin-bottom: 16px;
+}
+
+.orders-history-date-field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+}
+
+.orders-history-date-field span {
+  color: rgba(255, 255, 255, 0.55);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.orders-history-date-field .catalog-filter-input {
+  width: 100%;
+  min-width: 180px;
+}
+
 /* ===== Status badge (history) ===== */
 
 .orders-status-badge {
@@ -654,7 +676,6 @@
 .orders-modal-overlay {
   position: fixed;
   inset: 0;
-  z-index: 1000;
   background: rgba(8, 6, 12, 0.6);
   backdrop-filter: blur(6px);
   -webkit-backdrop-filter: blur(6px);

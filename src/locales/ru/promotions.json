@@ -1,0 +1,212 @@
+{
+  "title": "Акции",
+  "subtitle": "Управление купонами и скидками",
+  "tabs": {
+    "promotions": "Акции",
+    "discounts": "Скидки",
+    "promoCodes": "Промокод"
+  },
+  "search": {
+    "placeholder": "Поиск..."
+  },
+  "filters": {
+    "status": "Статус",
+    "type": "Тип",
+    "dateFrom": "Дата начала",
+    "dateTo": "Дата окончания",
+    "organization": "Организация"
+  },
+  "table": {
+    "listTitle": "Список акций",
+    "promoCodesListTitle": "Список промокодов",
+    "name": "Название",
+    "description": "Описание",
+    "code": "Код",
+    "type": "Тип",
+    "discount": "Скидка",
+    "startDate": "Начало",
+    "endDate": "Окончание",
+    "status": "Статус",
+    "createdAt": "Дата создания",
+    "actions": "Действия",
+    "id": "ID",
+    "minOrder": "Мин. заказ",
+    "orderCount": "Кол-во заказов",
+    "usageCount": "Использовано",
+    "product": "Продукт"
+  },
+  "buttons": {
+    "add": "Добавить акцию",
+    "addPromoCode": "Новый промокод",
+    "edit": "Редактировать",
+    "view": "Просмотр",
+    "delete": "Удалить",
+    "save": "Сохранить",
+    "cancel": "Отмена",
+    "close": "Закрыть",
+    "search": "Поиск",
+    "apply": "Применить",
+    "clear": "Очистить",
+    "download": "Скачать",
+    "create": "Создать акцию",
+    "createPromoCode": "Создать промокод",
+    "generate": "Generate"
+  },
+  "modal": {
+    "create": "Новая акция",
+    "createSubtitle": "Создайте новую акцию",
+    "edit": "Редактировать акцию",
+    "editSubtitle": "Измените данные акции",
+    "view": "Данные акции",
+    "viewSubtitle": "Подробная информация о выбранной акции",
+    "delete": "Удалить акцию",
+    "createPromoCode": "Новый промокод",
+    "createPromoCodeSubtitle": "Создайте новый промокод",
+    "editPromoCode": "Редактировать промокод",
+    "editPromoCodeSubtitle": "Измените данные промокода",
+    "viewPromoCode": "Данные промокода",
+    "viewPromoCodeSubtitle": "Подробная информация о выбранном промокоде",
+    "labelPromotions": "АКЦИИ",
+    "labelPromoCode": "ПРОМОКОДЫ",
+    "labelPromotion": "Акция",
+    "labelPromoCodeSingle": "Промокод"
+  },
+  "form": {
+    "name": "Название акции",
+    "promoCodeName": "Название промокода",
+    "promoCodeCode": "Код промокода",
+    "description": "Комментарий",
+    "discount": "Скидка",
+    "discountType": "Тип",
+    "startDate": "Начало",
+    "endDate": "Окончание",
+    "status": "Статус",
+    "image": "Изображение",
+    "products": "Продукт",
+    "branches": "Филиалы",
+    "productSearch": "Поиск продукта...",
+    "basicInfo": "Основные данные",
+    "validityPeriod": "Срок действия",
+    "additional": "Дополнительно",
+    "conditions": "Условия",
+    "valuePercent": "Значение (%)",
+    "percentValue": "Процент (%)",
+    "fixedAmount": "Сумма скидки (UZS)",
+    "orderCount": "Кол-во заказов",
+    "minOrder": "Мин. заказ",
+    "activateNow": "Активировать сразу",
+    "activateNowHint": "Акция начнёт работать сразу после создания",
+    "activatePromoNowHint": "Промокод начнёт работать сразу после создания",
+    "selectDate": "Выберите дату",
+    "typeReadonly": "Процент (%)",
+    "typePercentage": "Процент (%)",
+    "typeFixed": "Сумма (UZS)",
+    "preview": "PREVIEW",
+    "previewPlaceholder": "ПРОМОКОД",
+    "placeholders": {
+      "name": "Например: Осенние скидки",
+      "promoCodeName": "Например: Новогодняя скидка",
+      "promoCodeCode": "Например: WELCOME10",
+      "value": "Например: 20",
+      "percent": "Например: 10",
+      "fixedAmount": "Например: 50000",
+      "orderCount": "Например: 1",
+      "minOrder": "Например: 100000",
+      "description": "Краткое описание акции"
+    }
+  },
+  "types": {
+    "percentage": "Процент",
+    "fixed": "Сумма",
+    "percentageFull": "Процент (%)",
+    "fixedFull": "Сумма (UZS)"
+  },
+  "status": {
+    "active": "Активен",
+    "inactive": "Неактивен",
+    "expired": "Истёк",
+    "draft": "Черновик",
+    "pending": "Ожидает"
+  },
+  "validation": {
+    "required": "Заполните обязательное поле",
+    "invalidDate": "Неверная дата",
+    "endDateAfterStart": "Дата окончания должна быть позже даты начала",
+    "invalidDiscount": "Неверное значение скидки",
+    "promoNameRequired": "Название промокода обязательно",
+    "promoCodeRequired": "Код промокода обязателен",
+    "startDateRequired": "Дата начала обязательна",
+    "endDateRequired": "Дата окончания обязательна",
+    "percentRequired": "Введите процент",
+    "fixedAmountRequired": "Введите сумму скидки"
+  },
+  "toast": {
+    "created": "Успешно создано",
+    "updated": "Успешно обновлено",
+    "deleted": "Успешно удалено"
+  },
+  "states": {
+    "loading": "Загрузка...",
+    "noData": "Данные не найдены",
+    "error": "Произошла ошибка",
+    "noProducts": "Продукты не найдены",
+    "partnerSelect": "Пожалуйста, выберите партнёра"
+  },
+  "confirm": {
+    "deleteTitle": "Удалить акцию",
+    "deleteMessage": "Вы действительно хотите удалить?",
+    "yes": "Да, удалить",
+    "no": "Нет"
+  },
+  "pagination": {
+    "total": "Всего: {{count}}",
+    "previous": "Назад",
+    "next": "Далее",
+    "page": "Страница",
+    "rowsPerPage": "На странице"
+  },
+  "stats": {
+    "totalPromotions": "Всего акций",
+    "totalPromotionsDesc": "Все акции",
+    "activePromotions": "Активные акции",
+    "activePromotionsDesc": "Сейчас активны",
+    "pendingPromotions": "Ожидают",
+    "pendingPromotionsDesc": "Ещё не начались",
+    "avgDiscount": "Средняя скидка",
+    "activeCoupons": "Активные купоны",
+    "totalSavings": "Общая экономия",
+    "expiringSoon": "Скоро истекают",
+    "countUnit": "{{count}} шт."
+  },
+  "preview": {
+    "discountPercent": "{{value}}% скидка",
+    "discountFixed": "{{value}} UZS скидка",
+    "discountZeroPercent": "0% скидка",
+    "discountZeroFixed": "0 UZS скидка"
+  },
+  "calendar": {
+    "months": {
+      "0": "Январь",
+      "1": "Февраль",
+      "2": "Март",
+      "3": "Апрель",
+      "4": "Май",
+      "5": "Июнь",
+      "6": "Июль",
+      "7": "Август",
+      "8": "Сентябрь",
+      "9": "Октябрь",
+      "10": "Ноябрь",
+      "11": "Декабрь"
+    },
+    "weekdays": {
+      "0": "Пн",
+      "1": "Вт",
+      "2": "Ср",
+      "3": "Чт",
+      "4": "Пт",
+      "5": "Сб",
+      "6": "Вс"
+    }
+  }
+}

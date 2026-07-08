@@ -1,10 +1,20 @@
-import { Wallet, ShoppingBasket, ReceiptText } from "lucide-react";
+import {
+  Building2,
+  Package,
+  ShoppingBasket,
+  TrendingDown,
+  TrendingUp,
+  Wallet,
+} from "lucide-react";
 import "./StatsGrid.css";
 
 const ICONS = {
-  wallet: Wallet,
   orders: ShoppingBasket,
-  receipt: ReceiptText,
+  branches: Building2,
+  products: Package,
+  revenue: Wallet,
+  wallet: Wallet,
+  receipt: Wallet,
 };
 
 export default function StatsGrid({ stats = [] }) {
@@ -14,9 +24,10 @@ export default function StatsGrid({ stats = [] }) {
     <div className="dashboard-stats">
       {stats.map((item) => {
         const Icon = ICONS[item.icon] || Wallet;
+        const TrendIcon = item.positive ? TrendingUp : TrendingDown;
 
         return (
-          <div className="dashboard-stat-card" key={item.title}>
+          <article className="dashboard-stat-card" key={item.title}>
             <div className="dashboard-stat-top">
               <div className="dashboard-stat-icon">
                 <Icon size={18} />
@@ -27,7 +38,8 @@ export default function StatsGrid({ stats = [] }) {
                   item.positive ? "positive" : "negative"
                 }`}
               >
-                {item.trend}
+                <TrendIcon size={13} />
+                <span>{item.trend}</span>
               </div>
             </div>
 
@@ -35,9 +47,13 @@ export default function StatsGrid({ stats = [] }) {
 
             <div className="dashboard-stat-value-row">
               <h3>{item.value}</h3>
-              <span>{item.suffix}</span>
+              {item.suffix ? <span>{item.suffix}</span> : null}
             </div>
-          </div>
+
+            {item.description ? (
+              <p className="dashboard-stat-description">{item.description}</p>
+            ) : null}
+          </article>
         );
       })}
     </div>

@@ -1,8 +1,9 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { ChevronDown, ImagePlus, Trash2, X } from "lucide-react";
-import { useGlobalNotification } from "@/hooks/useGlobalNotification";
 import { useScopedPartnerParams } from "@/hooks/useScopedPartnerParams";
 import { useAuth } from "@/core/hooks/useAuth";
+import { CATALOG_NAMESPACE } from "@/i18n/namespaces";
 import { attachmentApi } from "@/api/modules/attachmentApi";
 import { merchantCategoryApi } from "@/api/modules/merchantCategoryApi";
 import { merchantProductApi } from "@/api/modules/merchantProductApi";
@@ -142,6 +143,7 @@ function ProductToggleSwitch({ label, description, checked, disabled, onChange }
 /* ---------- Category dropdown ---------- */
 
 function CategoryDropdown({ value, options, loading, disabled, onChange }) {
+  const { t } = useTranslation(CATALOG_NAMESPACE);
   const [open, setOpen] = useState(false);
   const ref = useRef(null);
 
@@ -162,8 +164,8 @@ function CategoryDropdown({ value, options, loading, disabled, onChange }) {
   const label = selected
     ? selected.name
     : loading
-      ? "Yuklanmoqda..."
-      : "Kategoriya tanlang";
+      ? t("states.loading")
+      : t("placeholders.category");
 
   const isDisabled = disabled || loading;
 
@@ -184,7 +186,7 @@ function CategoryDropdown({ value, options, loading, disabled, onChange }) {
       {open && !isDisabled && (
         <ul className="pm-custom-select-menu">
           {options.length === 0 ? (
-            <li className="pm-custom-select-empty">Kategoriya topilmadi</li>
+            <li className="pm-custom-select-empty">{t("states.noCategories")}</li>
           ) : (
             options.map((category) => (
               <li key={category.id}>
@@ -219,7 +221,7 @@ export default function ProductModal({
   onClose,
   onSuccess,
 }) {
-  const { success } = useGlobalNotification();
+  const { t } = useTranslation(CATALOG_NAMESPACE);
   const { isSuperAdmin } = useAuth();
   const { canFetch, getParams } = useScopedPartnerParams();
   const [form, setForm] = useState(initialForm);
@@ -352,13 +354,17 @@ export default function ProductModal({
       const payload = res?.data?.data || res?.data || null;
 
       if (!payload) {
-        throw new Error("Product topilmadi");
+        throw new Error("productNotFound");
       }
 
       applyProductToForm(payload);
     } catch (err) {
       console.error(err);
-      setError("Product ma'lumotlarini yuklashda xatolik yuz berdi");
+      setError(
+        err?.message === "productNotFound"
+          ? t("states.productNotFound")
+          : t("states.productLoadError")
+      );
     } finally {
       setLoading(false);
     }
@@ -370,6 +376,7 @@ export default function ProductModal({
     isSuperAdmin,
     initialProduct,
     applyProductToForm,
+    t,
   ]);
 
   useEffect(() => {
@@ -426,7 +433,7 @@ export default function ProductModal({
     if (!file) return;
 
     if (!file.type.startsWith("image/")) {
-      setError("Faqat rasm fayllar yuklash mumkin");
+      setError(t("validation.imageOnly"));
       return;
     }
 
@@ -454,9 +461,7 @@ export default function ProductModal({
           "Attachment ID topilmadi, faqat lokal preview ko‘rinadi. Raw response:",
           res?.data
         );
-        setError(
-          "Rasm yuklandi, lekin backend attachment ID qaytarmadi. Backend response shape’ini tekshiring (console’ga log qildim)."
-        );
+        setError(t("validation.attachmentIdMissing"));
         // Keep local preview, clear attachment
         setForm((prev) => ({
           ...prev,
@@ -482,7 +487,7 @@ export default function ProductModal({
         err?.response?.data?.errorMessage ||
           err?.response?.data?.message ||
           err?.message ||
-          "Rasm yuklashda xatolik yuz berdi"
+          t("validation.imageUploadError")
       );
 
       setForm((prev) => ({
@@ -558,22 +563,22 @@ export default function ProductModal({
     if (isViewMode || isSuperAdmin) return;
 
     if (uploadingImage) {
-      setError("Rasm yuklanishini kuting");
+      setError(t("validation.waitForUpload"));
       return;
     }
 
     if (!form.nameUz.trim()) {
-      setError("O‘zbekcha nom kiriting");
+      setError(t("validation.nameUzRequired"));
       return;
     }
 
     if (!form.categoryId) {
-      setError("Kategoriya tanlang");
+      setError(t("validation.selectCategory"));
       return;
     }
 
     if (form.price === "" || Number(form.price) < 0) {
-      setError("Narxni to‘g‘ri kiriting");
+      setError(t("validation.invalidPrice"));
       return;
     }
 
@@ -585,10 +590,8 @@ export default function ProductModal({
 
       if (isEditMode) {
         await productApi.update(productId, payload);
-        success("Muvaffaqiyatli yangilandi");
       } else {
         await productApi.create(payload);
-        success("Muvaffaqiyatli yaratildi");
       }
 
       await onSuccess?.();
@@ -603,12 +606,12 @@ export default function ProductModal({
   /* ----- Render ----- */
 
   const headerTitle = isCreateMode
-    ? "Yangi product"
+    ? t("modal.createProduct")
     : isEditMode
-      ? "Productni tahrirlash"
-      : "Product tafsiloti";
+      ? t("modal.editProduct")
+      : t("modal.viewProduct");
 
-  const submitLabel = isCreateMode ? "Product yaratish" : "Saqlash";
+  const submitLabel = isCreateMode ? t("buttons.createProduct") : t("buttons.save");
 
   return (
     <div className="product-modal-overlay" onClick={onClose}>
@@ -618,14 +621,14 @@ export default function ProductModal({
       >
         <div className="product-modal-header">
           <div>
-            <div className="product-modal-kicker">KATALOG</div>
+            <div className="product-modal-kicker">{t("modal.kicker")}</div>
             <h2>{headerTitle}</h2>
           </div>
           <button
             type="button"
             className="product-modal-close"
             onClick={onClose}
-            title="Yopish"
+            title={t("buttons.close")}
           >
             <X size={18} />
           </button>
@@ -633,16 +636,16 @@ export default function ProductModal({
 
         {loading && !isCreateMode && !form.nameUz && !form.nameRu ? (
           <div className="product-modal-loading">
-            Ma'lumot yuklanmoqda...
+            {t("states.loading")}
           </div>
         ) : (
           <form className="product-modal-body" onSubmit={handleSubmit}>
             {/* ===== Asosiy ma'lumotlar ===== */}
             <section className="product-section">
-              <h3 className="product-section-title">Asosiy ma'lumotlar</h3>
+              <h3 className="product-section-title">{t("form.basicInfo")}</h3>
               <div className="product-form-grid">
                 <div className="product-form-group product-form-full">
-                  <label>Kategoriya *</label>
+                  <label>{t("form.category")} *</label>
                   <CategoryDropdown
                     value={form.categoryId}
                     options={categories}
@@ -653,46 +656,46 @@ export default function ProductModal({
                 </div>
 
                 <div className="product-form-group">
-                  <label>Nomi (UZ) *</label>
+                  <label>{t("form.nameUz")} *</label>
                   <input
                     type="text"
                     value={form.nameUz}
                     onChange={(e) => handleChange("nameUz", e.target.value)}
-                    placeholder="Mahsulot nomi"
+                    placeholder={t("placeholders.name")}
                     disabled={isViewMode || isBusy}
                   />
                 </div>
 
                 <div className="product-form-group">
-                  <label>Nomi (RU)</label>
+                  <label>{t("form.nameRu")}</label>
                   <input
                     type="text"
                     value={form.nameRu}
                     onChange={(e) => handleChange("nameRu", e.target.value)}
-                    placeholder="Название"
+                    placeholder={t("placeholders.nameRu")}
                     disabled={isViewMode || isBusy}
                   />
                 </div>
 
                 <div className="product-form-group">
-                  <label>Nomi (EN)</label>
+                  <label>{t("form.nameEn")}</label>
                   <input
                     type="text"
                     value={form.nameEn}
                     onChange={(e) => handleChange("nameEn", e.target.value)}
-                    placeholder="Name"
+                    placeholder={t("placeholders.nameEn")}
                     disabled={isViewMode || isBusy}
                   />
                 </div>
 
                 <div className="product-form-group">
-                  <label>Narxi *</label>
+                  <label>{t("form.price")} *</label>
                   <input
                     type="number"
                     min="0"
                     value={form.price}
                     onChange={(e) => handleChange("price", e.target.value)}
-                    placeholder="0"
+                    placeholder={t("placeholders.price")}
                     disabled={isViewMode || isBusy}
                   />
                 </div>
@@ -701,13 +704,13 @@ export default function ProductModal({
 
             {/* ===== Rasm ===== */}
             <section className="product-section">
-              <h3 className="product-section-title">Rasm</h3>
+              <h3 className="product-section-title">{t("form.image")}</h3>
               <div className="product-image-upload-card">
                 <div className="product-image-preview">
                   {imagePreview ? (
                     <img
                       src={imagePreview}
-                      alt="Product"
+                      alt={t("image.alt")}
                       onError={() => {
                         console.error("Image load failed:", imagePreview);
                         setImagePreview(null);
@@ -716,14 +719,14 @@ export default function ProductModal({
                   ) : (
                     <div className="product-image-placeholder">
                       <ImagePlus size={28} />
-                      <span>Rasm yo‘q</span>
+                      <span>{t("image.noImage")}</span>
                     </div>
                   )}
                 </div>
 
                 <div className="product-image-info">
-                  <h4>Product rasmi</h4>
-                  <p>PNG, JPG yoki WEBP formatda rasm yuklang</p>
+                  <h4>{t("form.productImage")}</h4>
+                  <p>{t("image.hint")}</p>
 
                   {!isViewMode && (
                     <div className="product-image-actions">
@@ -742,10 +745,10 @@ export default function ProductModal({
                         disabled={uploadingImage}
                       >
                         {uploadingImage
-                          ? "Yuklanmoqda..."
+                          ? t("states.loading")
                           : imagePreview
-                            ? "Rasmni almashtirish"
-                            : "Rasm tanlash"}
+                            ? t("buttons.changeImage")
+                            : t("buttons.selectImage")}
                       </button>
 
                       {imagePreview && (
@@ -756,7 +759,7 @@ export default function ProductModal({
                           disabled={uploadingImage}
                         >
                           <Trash2 size={14} />
-                          <span>O‘chirish</span>
+                          <span>{t("buttons.removeImage")}</span>
                         </button>
                       )}
                     </div>
@@ -767,10 +770,10 @@ export default function ProductModal({
 
             {/* ===== Tavsiflar ===== */}
             <section className="product-section">
-              <h3 className="product-section-title">Tavsiflar</h3>
+              <h3 className="product-section-title">{t("form.descriptions")}</h3>
               <div className="product-form-grid">
                 <div className="product-form-group product-form-full">
-                  <label>Tavsif (UZ)</label>
+                  <label>{t("form.descriptionUz")}</label>
                   <textarea
                     rows={3}
                     value={form.descriptionUz}
@@ -782,7 +785,7 @@ export default function ProductModal({
                 </div>
 
                 <div className="product-form-group product-form-full">
-                  <label>Tavsif (RU)</label>
+                  <label>{t("form.descriptionRu")}</label>
                   <textarea
                     rows={3}
                     value={form.descriptionRu}
@@ -794,7 +797,7 @@ export default function ProductModal({
                 </div>
 
                 <div className="product-form-group product-form-full">
-                  <label>Tavsif (EN)</label>
+                  <label>{t("form.descriptionEn")}</label>
                   <textarea
                     rows={3}
                     value={form.descriptionEn}
@@ -809,10 +812,10 @@ export default function ProductModal({
 
             {/* ===== Product attribute ===== */}
             <section className="product-section">
-              <h3 className="product-section-title">Product attribute</h3>
+              <h3 className="product-section-title">{t("form.attributes")}</h3>
               <div className="product-form-grid">
                 <div className="product-form-group">
-                  <label>Measure</label>
+                  <label>{t("attributes.measure")}</label>
                   <input
                     type="number"
                     step="any"
@@ -824,20 +827,20 @@ export default function ProductModal({
                 </div>
 
                 <div className="product-form-group">
-                  <label>Measure Unit</label>
+                  <label>{t("attributes.measureUnit")}</label>
                   <input
                     type="text"
                     value={form.measureUnit}
                     onChange={(e) =>
                       handleChange("measureUnit", e.target.value)
                     }
-                    placeholder="kg, g, ml..."
+                    placeholder={t("placeholders.measureUnit")}
                     disabled={isViewMode || isBusy}
                   />
                 </div>
 
                 <div className="product-form-group">
-                  <label>Calories</label>
+                  <label>{t("attributes.calories")}</label>
                   <input
                     type="text"
                     value={form.calories}
@@ -848,7 +851,7 @@ export default function ProductModal({
                 </div>
 
                 <div className="product-form-group">
-                  <label>Carbohydrates</label>
+                  <label>{t("attributes.carbohydrates")}</label>
                   <input
                     type="text"
                     value={form.carbohydrates}
@@ -861,7 +864,7 @@ export default function ProductModal({
                 </div>
 
                 <div className="product-form-group">
-                  <label>Fat</label>
+                  <label>{t("attributes.fat")}</label>
                   <input
                     type="text"
                     value={form.fat}
@@ -872,7 +875,7 @@ export default function ProductModal({
                 </div>
 
                 <div className="product-form-group">
-                  <label>Proteins</label>
+                  <label>{t("attributes.proteins")}</label>
                   <input
                     type="text"
                     value={form.proteins}
@@ -883,7 +886,7 @@ export default function ProductModal({
                 </div>
 
                 <div className="product-form-group">
-                  <label>MXIK Code (UZ)</label>
+                  <label>{t("attributes.mxikCode")}</label>
                   <input
                     type="text"
                     value={form.mxikCodeUz}
@@ -896,7 +899,7 @@ export default function ProductModal({
                 </div>
 
                 <div className="product-form-group">
-                  <label>Package Code (UZ)</label>
+                  <label>{t("attributes.packageCode")}</label>
                   <input
                     type="text"
                     value={form.packageCodeUz}
@@ -909,7 +912,7 @@ export default function ProductModal({
                 </div>
 
                 <div className="product-form-group">
-                  <label>VAT</label>
+                  <label>{t("attributes.vat")}</label>
                   <input
                     type="number"
                     step="any"
@@ -921,7 +924,7 @@ export default function ProductModal({
                 </div>
 
                 <div className="product-form-group">
-                  <label>Weight Quantum</label>
+                  <label>{t("attributes.weightQuantum")}</label>
                   <input
                     type="number"
                     step="any"
@@ -944,7 +947,7 @@ export default function ProductModal({
                       }
                       disabled={isViewMode || isBusy}
                     />
-                    <span>Catch Weight</span>
+                    <span>{t("attributes.catchWeight")}</span>
                   </label>
 
                   <label className="product-form-checkbox">
@@ -956,7 +959,7 @@ export default function ProductModal({
                       }
                       disabled={isViewMode || isBusy}
                     />
-                    <span>Need Marking</span>
+                    <span>{t("attributes.needMarking")}</span>
                   </label>
 
                   <label className="product-form-checkbox">
@@ -968,7 +971,7 @@ export default function ProductModal({
                       }
                       disabled={isViewMode || isBusy}
                     />
-                    <span>Deactivated</span>
+                    <span>{t("attributes.deactivated")}</span>
                   </label>
                 </div>
               </div>
@@ -977,17 +980,17 @@ export default function ProductModal({
             {/* ===== Filiallar ===== */}
             <section className="product-form-section">
               <div className="product-section-header">
-                <h3>Filiallar</h3>
-                <p>Product qaysi filiallarda ishlashini tanlang</p>
+                <h3>{t("form.branches")}</h3>
+                <p>{t("form.branchesHint")}</p>
               </div>
 
               {branchesLoading ? (
                 <div className="product-branch-empty">
-                  Filiallar yuklanmoqda...
+                  {t("states.branchesLoading")}
                 </div>
               ) : branches.length === 0 ? (
                 <div className="product-branch-empty">
-                  Filiallar topilmadi
+                  {t("states.noBranches")}
                 </div>
               ) : (
                 <div className="product-branch-grid">
@@ -1040,18 +1043,18 @@ export default function ProductModal({
 
             {!isViewMode && (
               <section className="product-status-section">
-                <h3 className="product-status-title">Ko‘rinish va sotuv</h3>
+                <h3 className="product-status-title">{t("form.visibilityAndSale")}</h3>
                 <div className="product-switch-grid">
                   <ProductToggleSwitch
-                    label="Ko‘rsatish"
-                    description="Ilovada mahsulotni ko‘rsatish"
+                    label={t("form.show")}
+                    description={t("form.showHint")}
                     checked={Boolean(form.visible)}
                     disabled={isBusy}
                     onChange={(value) => handleChange("visible", value)}
                   />
                   <ProductToggleSwitch
-                    label="Sotuvga ochiq"
-                    description="Buyurtma qilishga ruxsat berish"
+                    label={t("form.openForSale")}
+                    description={t("form.openForSaleHint")}
                     checked={Boolean(form.active)}
                     disabled={isBusy || !form.visible}
                     onChange={(value) => handleChange("active", value)}
@@ -1062,18 +1065,18 @@ export default function ProductModal({
 
             {isViewMode && (
               <section className="product-status-section">
-                <h3 className="product-status-title">Ko‘rinish va sotuv</h3>
+                <h3 className="product-status-title">{t("form.visibilityAndSale")}</h3>
                 <div className="product-switch-grid">
                   <ProductToggleSwitch
-                    label="Ko‘rsatish"
-                    description="Ilovada mahsulotni ko‘rsatish"
+                    label={t("form.show")}
+                    description={t("form.showHint")}
                     checked={Boolean(form.visible)}
                     disabled
                     onChange={() => {}}
                   />
                   <ProductToggleSwitch
-                    label="Sotuvga ochiq"
-                    description="Buyurtma qilishga ruxsat berish"
+                    label={t("form.openForSale")}
+                    description={t("form.openForSaleHint")}
                     checked={Boolean(form.active)}
                     disabled
                     onChange={() => {}}
@@ -1092,7 +1095,7 @@ export default function ProductModal({
             className="product-cancel-btn"
             onClick={onClose}
           >
-            {isViewMode ? "Yopish" : "Bekor qilish"}
+            {isViewMode ? t("buttons.close") : t("buttons.cancel")}
           </button>
           {!isViewMode && (
             <button
@@ -1101,7 +1104,7 @@ export default function ProductModal({
               onClick={handleSubmit}
               disabled={isBusy}
             >
-              {loading ? "Saqlanmoqda..." : submitLabel}
+              {loading ? t("states.saving") : submitLabel}
             </button>
           )}
         </div>

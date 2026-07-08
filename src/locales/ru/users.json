@@ -1,0 +1,149 @@
+{
+  "title": "Пользователи",
+  "subtitle": "Управление пользователями и правами доступа",
+  "tabs": {
+    "users": "Пользователи",
+    "roles": "Роли и разрешения"
+  },
+  "search": {
+    "placeholder": "Поиск..."
+  },
+  "filters": {
+    "role": "Роль",
+    "status": "Статус",
+    "organization": "Организация",
+    "branch": "Филиал"
+  },
+  "table": {
+    "listTitle": "Список пользователей",
+    "fullName": "Имя",
+    "name": "Имя",
+    "surname": "Фамилия",
+    "username": "Username",
+    "usernamePhone": "Username / Телефон",
+    "phone": "Телефон",
+    "role": "Роль",
+    "branch": "Филиал",
+    "status": "Статус",
+    "createdAt": "Дата создания",
+    "actions": "Действия"
+  },
+  "buttons": {
+    "add": "Новый пользователь",
+    "addUser": "Новый пользователь",
+    "addRole": "Новая роль",
+    "edit": "Редактировать",
+    "view": "Просмотр",
+    "delete": "Удалить",
+    "save": "Сохранить",
+    "cancel": "Отмена",
+    "close": "Закрыть",
+    "search": "Поиск",
+    "assignRole": "Назначить роль",
+    "removeRole": "Удалить роль",
+    "download": "Скачать",
+    "createUser": "Создать пользователя"
+  },
+  "modal": {
+    "create": "Новый пользователь",
+    "createSubtitle": "Добавьте нового пользователя в систему",
+    "edit": "Редактировать пользователя",
+    "view": "Данные пользователя",
+    "viewSubtitle": "Подробная информация о выбранном пользователе",
+    "delete": "Удалить пользователя",
+    "assignRole": "Назначить роль"
+  },
+  "form": {
+    "name": "Имя",
+    "surname": "Фамилия",
+    "fullName": "Имя и фамилия",
+    "username": "Username",
+    "password": "Пароль",
+    "phone": "Номер телефона",
+    "role": "Роль",
+    "roles": "Роли",
+    "branch": "Филиал",
+    "organization": "Организация",
+    "status": "Статус",
+    "profileId": "Profile ID",
+    "profilePhoto": "Фото профиля",
+    "profilePhotoHint": "Загрузите изображение в формате PNG, JPG или WEBP. Если не загрузить, attachmentId будет null.",
+    "placeholders": {
+      "username": "Username",
+      "password": "Пароль",
+      "name": "Имя",
+      "surname": "Фамилия",
+      "phone": "+998 99 123 45 67"
+    },
+    "avatar": {
+      "noImage": "Нет изображения",
+      "select": "Выбрать изображение",
+      "replace": "Заменить изображение",
+      "remove": "Удалить",
+      "previewAlt": "Предпросмотр аватара"
+    },
+    "branch": {
+      "selectPartnerFirst": "Сначала выберите партнёра",
+      "loading": "Загрузка...",
+      "notFound": "Филиалы не найдены",
+      "select": "Выберите филиал"
+    }
+  },
+  "roles": {
+    "title": "Роль",
+    "selectRole": "Выберите роль",
+    "noRoles": "Роли не найдены",
+    "assignedRoles": "Назначенные роли",
+    "availableRoles": "Доступные роли",
+    "loading": "Загрузка..."
+  },
+  "status": {
+    "active": "Активен",
+    "inactive": "Неактивен",
+    "blocked": "Заблокирован"
+  },
+  "validation": {
+    "required": "Заполните обязательное поле",
+    "fillRequired": "Заполните все обязательные поля",
+    "invalidPhone": "Введите полный номер телефона",
+    "invalidUsername": "Введите username",
+    "passwordMin": "Введите пароль",
+    "nameRequired": "Введите имя",
+    "surnameRequired": "Введите фамилию",
+    "roleRequired": "Выберите роль",
+    "branchRequired": "Выберите филиал",
+    "imageOnly": "Можно загружать только файлы изображений",
+    "imageUploadError": "Ошибка при загрузке изображения",
+    "attachmentIdMissing": "Attachment ID отсутствует"
+  },
+  "toast": {
+    "created": "Пользователь успешно создан",
+    "updated": "Пользователь успешно обновлён",
+    "deleted": "Пользователь успешно удалён",
+    "roleAssigned": "Роль успешно назначена",
+    "roleRemoved": "Роль успешно удалена"
+  },
+  "states": {
+    "loading": "Загрузка...",
+    "creating": "Создание...",
+    "noData": "Данные не найдены",
+    "error": "Произошла ошибка",
+    "noRoles": "Роли не найдены",
+    "noUsers": "Пользователи не найдены",
+    "partnerSelect": "Пожалуйста, выберите партнёра",
+    "rolesLoadError": "Ошибка при загрузке ролей"
+  },
+  "confirm": {
+    "deleteTitle": "Удалить пользователя",
+    "deleteMessage": "Вы действительно хотите удалить пользователя?",
+    "yes": "Да, удалить",
+    "no": "Нет"
+  },
+  "pagination": {
+    "total": "Всего: {{count}}",
+    "previous": "Назад",
+    "next": "Далее",
+    "page": "Страница",
+    "rowsPerPage": "На странице"
+  }
+}

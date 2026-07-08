@@ -1,4 +1,6 @@
 import { X } from "lucide-react";
+import { useTranslation } from "react-i18next";
+import { USERS_NAMESPACE } from "@/i18n/namespaces";
 import "./AddUserModal.css";
 
 function Field({ label, value }) {
@@ -23,6 +25,8 @@ function formatRoles(user) {
 }
 
 export default function ViewUserModal({ isOpen, user, onClose }) {
+  const { t } = useTranslation(USERS_NAMESPACE);
+
   if (!isOpen || !user) return null;
 
   const fullName = `${user?.name || ""} ${user?.surname || ""}`.trim();
@@ -36,19 +40,22 @@ export default function ViewUserModal({ isOpen, user, onClose }) {
         </button>
 
         <div className="users-modal-header">
-          <h2>Foydalanuvchi ma&apos;lumotlari</h2>
-          <p>Tanlangan foydalanuvchi tafsilotlari</p>
+          <h2>{t("modal.view")}</h2>
+          <p>{t("modal.viewSubtitle")}</p>
         </div>
 
         <div className="users-view-modal-body">
           <div className="users-form-grid two">
-            <Field label="Ism va familiya" value={fullName || "-"} />
-            <Field label="Username" value={user?.username} />
-            <Field label="Telefon" value={user?.phoneNumber} />
-            <Field label="Holat" value={isActive ? "Aktiv" : "Nofaol"} />
-            <Field label="Rol" value={formatRoles(user)} />
+            <Field label={t("form.fullName")} value={fullName || "-"} />
+            <Field label={t("form.username")} value={user?.username} />
+            <Field label={t("form.phone")} value={user?.phoneNumber} />
+            <Field
+              label={t("form.status")}
+              value={isActive ? t("status.active") : t("status.inactive")}
+            />
+            <Field label={t("form.role")} value={formatRoles(user)} />
             {user?.profileId != null && user?.profileId !== "" ? (
-              <Field label="Profile ID" value={user.profileId} />
+              <Field label={t("form.profileId")} value={user.profileId} />
             ) : null}
           </div>
 
@@ -58,7 +65,7 @@ export default function ViewUserModal({ isOpen, user, onClose }) {
               className="users-cancel-btn"
               onClick={onClose}
             >
-              Yopish
+              {t("buttons.close")}
             </button>
           </div>
         </div>

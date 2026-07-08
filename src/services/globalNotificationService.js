@@ -1,33 +1,46 @@
-let handler = null;
+import {
+  showError,
+  showInfo,
+  showNotification,
+  showSuccess,
+  showWarning,
+  resolveToastMessage,
+} from "@/services/notificationI18n";
+
+export {
+  showError,
+  showInfo,
+  showNotification,
+  showSuccess,
+  showWarning,
+  resolveToastMessage,
+};
 
 export const globalNotificationService = {
-  setNotificationHandler(nextHandler) {
-    handler = nextHandler;
+  showNotification(message, type = "info", options) {
+    showNotification(message, type, options);
   },
 
-  showNotification(message, type = "info") {
-    handler?.showNotification?.(message, type);
+  notifySuccess(message, options) {
+    showSuccess(message, options);
   },
 
-  notifySuccess(message) {
-    handler?.success?.(message);
+  notifyError(message, options) {
+    showError(message, options);
   },
 
-  notifyError(message) {
-    handler?.error?.(message);
+  notifyWarning(message, options) {
+    showWarning(message, options);
   },
 
-  notifyWarning(message) {
-    handler?.warning?.(message);
+  notifyInfo(message, options) {
+    showInfo(message, options);
   },
 
-  notifyInfo(message) {
-    handler?.info?.(message);
-  },
-
-  removeNotification(id) {
-    handler?.removeNotification?.(id);
-  },
+  showSuccess,
+  showError,
+  showWarning,
+  showInfo,
 };
 
 export default globalNotificationService;

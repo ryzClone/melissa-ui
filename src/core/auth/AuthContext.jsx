@@ -113,8 +113,6 @@ export function AuthProvider({ children }) {
         logAuthTokenDebug(refreshToken, "Login refresh");
       }
 
-      console.log("[Login] API response:", data);
-
       return { success: true };
     } catch (error) {
       const message =

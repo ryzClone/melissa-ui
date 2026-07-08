@@ -1,4 +1,5 @@
 export {
-  useGlobalNotification as default,
   useGlobalNotification,
+  useGlobalNotification as default,
+  useNotification,
 } from "@/hooks/useGlobalNotification";

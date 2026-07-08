@@ -1,14 +1,16 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Search } from "lucide-react";
 import PageWrapper from "@/components/PageWrapper/PageWrapper";
 import FilterBar, { FilterItem } from "@/components/FilterBar/FilterBar";
 import CustomDropdown from "@/components/CustomDropdown/CustomDropdown";
 import PagePartnerFilter from "@/components/PagePartnerFilter/PagePartnerFilter";
-import { useScopedPartnerParams, PARTNER_SELECT_MESSAGE } from "@/hooks/useScopedPartnerParams";
+import { useScopedPartnerParams } from "@/hooks/useScopedPartnerParams";
 import { useDebouncedValue } from "@/hooks/useDebouncedValue";
 import { useLatestRequest } from "@/hooks/useLatestRequest";
 import { usePartner } from "@/context/PartnerContext";
 import { useAuth } from "@/core/hooks/useAuth";
+import { ORDERS_NAMESPACE } from "@/i18n/namespaces";
 import OrderColumn from "./components/OrderColumn";
 import OrderHistoryList from "./components/OrderHistoryList";
 import OrderDetailsModal from "./components/OrderDetailsModal";
@@ -24,6 +26,12 @@ import {
   getOrderStatus,
 } from "./components/OrderMockData";
 import { orderApi } from "./api/orderApi";
+import {
+  extractHistoryOrders,
+  getDefaultHistoryDateRange,
+  isValidHistoryDateRange,
+  normalizeHistoryDateRange,
+} from "./utils/orderHistoryUtils";
 import "./OrdersPage.css";
 
 const MODAL = {
@@ -36,13 +44,7 @@ const TAB = {
   HISTORY: "history",
 };
 
-const ORDER_STATUS_FILTERS = [
-  { value: "", label: "Barcha holatlar" },
-  { value: "NEW", label: "Yangi" },
-  { value: "ACCEPTED", label: "Qabul qilingan" },
-  { value: "COOKING", label: "Tayyorlanmoqda" },
-  { value: "DONE", label: "Bajarilgan" },
-];
+const STATUS_FILTER_VALUES = ["", "NEW", "ACCEPTED", "COOKING", "DONE"];
 
 const extractOrders = (res) => {
   const list =
@@ -58,10 +60,13 @@ const extractOrders = (res) => {
 };
 
 function OrdersPageContent() {
+  const { t } = useTranslation(ORDERS_NAMESPACE);
   const { notifyNewOrder, notifyAccepted, notifyCooking, notifyStatusChange } =
     useOrderNotification();
   const [orders, setOrders] = useState([]);
-  const [, setLoading] = useState(false);
+  const [historyOrders, setHistoryOrders] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [historyLoading, setHistoryLoading] = useState(false);
   const [activeTab, setActiveTab] = useState(TAB.ACTIVE);
   const [now, setNow] = useState(() => Date.now());
 
@@ -71,9 +76,30 @@ function OrdersPageContent() {
   const { partnerId } = usePartner();
   const { canFetch, getParams, getOrganizationParams } = useScopedPartnerParams();
   const { beginRequest, isLatestRequest } = useLatestRequest();
+  const {
+    beginRequest: beginHistoryRequest,
+    isLatestRequest: isLatestHistoryRequest,
+  } = useLatestRequest();
   const [statusFilter, setStatusFilter] = useState("");
   const [search, setSearch] = useState("");
   const debouncedSearch = useDebouncedValue(search, 3000);
+  const [historyFromDate, setHistoryFromDate] = useState(
+    () => getDefaultHistoryDateRange().fromDate
+  );
+  const [historyToDate, setHistoryToDate] = useState(
+    () => getDefaultHistoryDateRange().toDate
+  );
+
+  const statusFilterOptions = useMemo(
+    () =>
+      STATUS_FILTER_VALUES.map((value) => ({
+        value,
+        label: value
+          ? t(`status.${value === "DONE" ? "completed" : value.toLowerCase()}`)
+          : t("filters.allStatuses"),
+      })),
+    [t]
+  );
 
   const knownOrderIdsRef = useRef(new Set());
   const isInitialFetchRef = useRef(true);
@@ -112,6 +138,38 @@ function OrdersPageContent() {
     return Number.isFinite(id) ? id : null;
   }, [isSuperAdmin, partnerId]);
 
+  const buildListParams = useCallback(
+    () => ({
+      status: statusFilter || undefined,
+      search: debouncedSearch.trim() || undefined,
+    }),
+    [statusFilter, debouncedSearch]
+  );
+
+  const buildHistoryParams = useCallback(
+    () => ({
+      fromDate: historyFromDate,
+      toDate: historyToDate,
+    }),
+    [historyFromDate, historyToDate]
+  );
+
+  const handleHistoryFromDateChange = useCallback((value) => {
+    setHistoryFromDate(value);
+    setHistoryToDate((prev) => {
+      const normalized = normalizeHistoryDateRange(value, prev);
+      return normalized.toDate;
+    });
+  }, []);
+
+  const handleHistoryToDateChange = useCallback((value) => {
+    setHistoryToDate(value);
+    setHistoryFromDate((prev) => {
+      const normalized = normalizeHistoryDateRange(prev, value);
+      return normalized.fromDate;
+    });
+  }, []);
+
   const fetchOrders = useCallback(
     async ({ silent = false, skipAlerts = false } = {}) => {
       if (!canFetch) {
@@ -128,10 +186,7 @@ function OrdersPageContent() {
 
       try {
         if (!silent) setLoading(true);
-        const listParams = {
-          status: statusFilter || undefined,
-          search: debouncedSearch.trim() || undefined,
-        };
+        const listParams = buildListParams();
         const res = await orderApi.getCurrentOrders(
           isSuperAdmin
             ? getOrganizationParams(listParams)
@@ -170,8 +225,63 @@ function OrdersPageContent() {
       organizationId,
       statusFilter,
       debouncedSearch,
+      buildListParams,
       beginRequest,
       isLatestRequest,
+    ]
+  );
+
+  const fetchHistoryOrders = useCallback(
+    async ({ silent = false } = {}) => {
+      if (!canFetch) {
+        setHistoryOrders([]);
+        return;
+      }
+
+      if (isSuperAdmin && organizationId == null) {
+        setHistoryOrders([]);
+        return;
+      }
+
+      if (!isValidHistoryDateRange(historyFromDate, historyToDate)) {
+        setHistoryOrders([]);
+        return;
+      }
+
+      const requestId = beginHistoryRequest();
+
+      try {
+        if (!silent) setHistoryLoading(true);
+        const res = await orderApi.getOrderHistory(
+          isSuperAdmin
+            ? getOrganizationParams(buildHistoryParams())
+            : getParams(buildHistoryParams())
+        );
+
+        if (!isLatestHistoryRequest(requestId)) return;
+
+        setHistoryOrders(extractHistoryOrders(res));
+      } catch (error) {
+        if (!isLatestHistoryRequest(requestId)) return;
+        console.error("Order history fetch error:", error);
+        setHistoryOrders([]);
+      } finally {
+        if (!silent && isLatestHistoryRequest(requestId)) {
+          setHistoryLoading(false);
+        }
+      }
+    },
+    [
+      canFetch,
+      getParams,
+      getOrganizationParams,
+      isSuperAdmin,
+      organizationId,
+      historyFromDate,
+      historyToDate,
+      buildHistoryParams,
+      beginHistoryRequest,
+      isLatestHistoryRequest,
     ]
   );
 
@@ -182,6 +292,10 @@ function OrdersPageContent() {
     }, 30000);
     return () => clearInterval(intervalId);
   }, [fetchOrders]);
+
+  useEffect(() => {
+    fetchHistoryOrders({ silent: activeTab !== TAB.HISTORY });
+  }, [fetchHistoryOrders, activeTab]);
 
   useEffect(() => {
     isInitialFetchRef.current = true;
@@ -195,11 +309,6 @@ function OrdersPageContent() {
 
   const activeOrders = useMemo(
     () => orders.filter((order) => ACTIVE_STATUSES.includes(getOrderStatus(order))),
-    [orders]
-  );
-
-  const historyOrders = useMemo(
-    () => orders.filter((order) => !ACTIVE_STATUSES.includes(getOrderStatus(order))),
     [orders]
   );
 
@@ -235,36 +344,37 @@ function OrdersPageContent() {
       try {
         if (action === "accept") {
           await orderApi.acceptOrder(id);
-          notifyAccepted(`${orderLabel} qabul qilindi`);
+          notifyAccepted(t("toast.accepted", { order: orderLabel }));
         } else if (action === "process") {
           await orderApi.startCooking(id);
-          notifyCooking(`${orderLabel} tayyorlashga o'tkazildi`);
+          notifyCooking(t("toast.cookingStarted", { order: orderLabel }));
         } else if (action === "complete") {
           await orderApi.readyOrder(id);
-          notifyStatusChange(`${orderLabel} tayyor bo'ldi`);
+          notifyStatusChange(t("toast.completed", { order: orderLabel }));
         }
 
         await fetchOrders({ silent: true, skipAlerts: true });
+        await fetchHistoryOrders({ silent: true });
       } catch (error) {
         console.error("Order action error:", error);
       }
     },
-    [fetchOrders, isSuperAdmin, notifyAccepted, notifyCooking, notifyStatusChange]
+    [fetchOrders, fetchHistoryOrders, isSuperAdmin, notifyAccepted, notifyCooking, notifyStatusChange, t]
   );
 
   return (
     <div className="orders-kanban-page">
       <div className="orders-kanban-top page-actions">
         <div>
-          <h1>Buyurtmalar</h1>
-          <p>Buyurtmalarni holatlar bo'yicha boshqaring</p>
+          <h1>{t("title")}</h1>
+          <p>{t("subtitle")}</p>
         </div>
       </div>
 
       {isSuperAdmin && (
         <FilterBar>
           <FilterItem>
-            <PagePartnerFilter />
+            <PagePartnerFilter partnerLabel={t("filters.organization")} />
           </FilterItem>
         </FilterBar>
       )}
@@ -275,7 +385,7 @@ function OrdersPageContent() {
             <Search size={16} />
             <input
               type="text"
-              placeholder="Buyurtma qidiruv..."
+              placeholder={t("search.placeholder")}
               value={search}
               onChange={(e) => setSearch(e.target.value)}
             />
@@ -286,9 +396,9 @@ function OrdersPageContent() {
           <CustomDropdown
             value={statusFilter}
             onChange={setStatusFilter}
-            placeholder="Barcha holatlar"
+            placeholder={t("filters.allStatuses")}
             clearable
-            options={ORDER_STATUS_FILTERS}
+            options={statusFilterOptions}
           />
         </FilterItem>
       </FilterBar>
@@ -299,7 +409,7 @@ function OrdersPageContent() {
           className={`orders-tab ${activeTab === TAB.ACTIVE ? "active" : ""}`}
           onClick={() => setActiveTab(TAB.ACTIVE)}
         >
-          Jarayondagi buyurtmalar
+          {t("tabs.active")}
           <span className="orders-tab-count">{activeOrders.length}</span>
         </button>
         <button
@@ -307,20 +417,20 @@ function OrdersPageContent() {
           className={`orders-tab ${activeTab === TAB.HISTORY ? "active" : ""}`}
           onClick={() => setActiveTab(TAB.HISTORY)}
         >
-          History
+          {t("tabs.history")}
           <span className="orders-tab-count">{historyOrders.length}</span>
         </button>
       </div>
 
       {activeTab === TAB.ACTIVE ? (
         !canFetch ? (
-          <div className="orders-partner-empty">{PARTNER_SELECT_MESSAGE}</div>
+          <div className="orders-partner-empty">{t("states.partnerSelect")}</div>
         ) : (
         <div className="orders-board">
           {ORDER_COLUMNS.map((column) => (
             <OrderColumn
               key={column.status}
-              label={column.label}
+              label={t(column.labelKey)}
               accent={column.accent}
               orders={ordersByStatus[column.status] || []}
               now={now}
@@ -332,9 +442,42 @@ function OrdersPageContent() {
         </div>
         )
       ) : !canFetch ? (
-        <div className="orders-partner-empty">{PARTNER_SELECT_MESSAGE}</div>
+        <div className="orders-partner-empty">{t("states.partnerSelect")}</div>
       ) : (
-        <OrderHistoryList orders={historyOrders} onOpenDetails={openDetails} />
+        <>
+          <FilterBar className="orders-history-filter-bar">
+            <FilterItem auto>
+              <label className="orders-history-date-field">
+                <span>{t("filters.dateFrom")}</span>
+                <input
+                  type="date"
+                  className="catalog-filter-input"
+                  value={historyFromDate}
+                  onChange={(e) => handleHistoryFromDateChange(e.target.value)}
+                />
+              </label>
+            </FilterItem>
+
+            <FilterItem auto>
+              <label className="orders-history-date-field">
+                <span>{t("filters.dateTo")}</span>
+                <input
+                  type="date"
+                  className="catalog-filter-input"
+                  value={historyToDate}
+                  min={historyFromDate}
+                  onChange={(e) => handleHistoryToDateChange(e.target.value)}
+                />
+              </label>
+            </FilterItem>
+          </FilterBar>
+
+          <OrderHistoryList
+            orders={historyOrders}
+            loading={historyLoading}
+            onOpenDetails={openDetails}
+          />
+        </>
       )}
 
       <OrderDetailsModal

@@ -1,4 +1,6 @@
-import { NavLink } from "react-router-dom";
+import { useCallback, useEffect, useState } from "react";
+import { NavLink, useLocation } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import {
   Home,
   Building2,
@@ -9,49 +11,76 @@ import {
   MessageSquareText,
   ClipboardList,
   Settings,
+  Shield,
+  ChevronDown,
 } from "lucide-react";
+import { SIDEBAR_NAMESPACE } from "@/i18n/namespaces";
+import { ADMIN_MENU_ITEMS, isAdminRoute } from "../config/adminMenu";
 import "../sidebar.css";
 
-const COMING_SOON_BADGE = "Tez orada";
-
 export default function Sidebar() {
+  const { t } = useTranslation(SIDEBAR_NAMESPACE);
+  const location = useLocation();
+  const [adminOpen, setAdminOpen] = useState(false);
+
+  const onAdminRoute = isAdminRoute(location.pathname);
+
+  useEffect(() => {
+    setAdminOpen(onAdminRoute);
+  }, [onAdminRoute]);
+
+  const closeAdminMenu = useCallback(() => {
+    setAdminOpen(false);
+  }, []);
+
+  const toggleAdminMenu = useCallback(() => {
+    setAdminOpen((value) => !value);
+  }, []);
+
+  const openAdminMenu = useCallback(() => {
+    setAdminOpen(true);
+  }, []);
+
   const topMenu = [
-    { to: "/", label: "Bosh sahifa", icon: <Home size={18} /> },
-    { to: "/branches", label: "Filiallar", icon: <Building2 size={18} /> },
-    { to: "/users", label: "Foydalanuvchilar", icon: <Users size={18} /> },
-    { to: "/sales", label: "Aksiyalar", icon: <Tag size={18} /> },
-    { to: "/catalog", label: "Katalog", icon: <Package size={18} /> },
-    { to: "/finance", label: "Moliyaviy", icon: <CreditCard size={18} /> },
+    { to: "/", labelKey: "dashboard", icon: <Home size={18} /> },
+    { to: "/branches", labelKey: "branches", icon: <Building2 size={18} /> },
+    { to: "/users", labelKey: "users", icon: <Users size={18} /> },
+    { to: "/sales", labelKey: "promotions", icon: <Tag size={18} /> },
+    { to: "/catalog", labelKey: "catalog", icon: <Package size={18} /> },
+    { to: "/finance", labelKey: "finance", icon: <CreditCard size={18} /> },
     {
       to: "/chat",
-      label: "Chat nazorati",
+      labelKey: "chatMonitoring",
       icon: <MessageSquareText size={18} />,
-      badge: COMING_SOON_BADGE,
+      badgeKey: "comingSoon",
     },
-    { to: "/orders", label: "Order", icon: <ClipboardList size={18} /> },
+    { to: "/orders", labelKey: "orders", icon: <ClipboardList size={18} /> },
   ];
 
   const bottomMenu = [
     {
       to: "/settings",
-      label: "Sozlamalar",
+      labelKey: "settings",
       icon: <Settings size={18} />,
-      badge: COMING_SOON_BADGE,
+      badgeKey: "comingSoon",
     },
   ];
 
   const renderItem = (item) => (
     <NavLink
-      key={item.label}
+      key={item.to}
       to={item.to}
       end={item.to === "/"}
+      onClick={closeAdminMenu}
       className={({ isActive }) =>
         isActive ? "sidebar-item active" : "sidebar-item"
       }
     >
       <span className="sidebar-icon">{item.icon}</span>
-      <span className="sidebar-label">{item.label}</span>
-      {item.badge && <span className="sidebar-badge">{item.badge}</span>}
+      <span className="sidebar-label">{t(item.labelKey)}</span>
+      {item.badgeKey && (
+        <span className="sidebar-badge">{t(item.badgeKey)}</span>
+      )}
     </NavLink>
   );
 
@@ -63,7 +92,47 @@ export default function Sidebar() {
           <p>MANAGEMENT</p>
         </div>
 
-        <nav className="sidebar-menu">{topMenu.map(renderItem)}</nav>
+        <nav className="sidebar-menu">
+          {topMenu.map(renderItem)}
+
+          <div
+            className={`sidebar-accordion ${adminOpen ? "open" : ""} ${
+              onAdminRoute ? "active-group" : ""
+            }`}
+          >
+            <button
+              type="button"
+              className={`sidebar-accordion-trigger ${
+                onAdminRoute ? "active" : ""
+              }`}
+              onClick={toggleAdminMenu}
+              aria-expanded={adminOpen}
+            >
+              <span className="sidebar-icon">
+                <Shield size={18} />
+              </span>
+              <span className="sidebar-label">{t("admin")}</span>
+              <ChevronDown size={16} className="sidebar-accordion-chevron" />
+            </button>
+
+            <div className="sidebar-accordion-panel">
+              <div className="sidebar-accordion-panel-inner">
+                {ADMIN_MENU_ITEMS.map((item) => (
+                  <NavLink
+                    key={item.to}
+                    to={item.to}
+                    onClick={openAdminMenu}
+                    className={({ isActive }) =>
+                      isActive ? "sidebar-subitem active" : "sidebar-subitem"
+                    }
+                  >
+                    {t(item.labelKey)}
+                  </NavLink>
+                ))}
+              </div>
+            </div>
+          </div>
+        </nav>
       </div>
 
       <div className="sidebar-bottom">{bottomMenu.map(renderItem)}</div>

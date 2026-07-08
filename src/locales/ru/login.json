@@ -1,0 +1,13 @@
+{
+  "title": "Вход",
+  "subtitle": "Введите логин и пароль для входа в систему",
+  "username": "Логин",
+  "usernamePlaceholder": "Введите логин",
+  "password": "Пароль",
+  "passwordPlaceholder": "Введите пароль",
+  "button": "Войти",
+  "loading": "Вход...",
+  "usernameRequired": "Требуется логин",
+  "passwordRequired": "Требуется пароль",
+  "error": "Неверный логин или пароль"
+}

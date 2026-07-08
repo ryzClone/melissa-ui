@@ -1,0 +1,50 @@
+{
+  "title": "Profil ma'lumotlari",
+  "subtitle": "Shaxsiy ma'lumotlarini ko'ring va yangilang",
+  "kicker": "Profil",
+  "form": {
+    "name": "Ism",
+    "surname": "Familiya",
+    "phoneNumber": "Telefon raqam",
+    "gender": "Jins",
+    "image": "Profil rasmi"
+  },
+  "placeholders": {
+    "name": "Ismingiz",
+    "surname": "Familiyangiz",
+    "phoneNumber": "Telefon raqam",
+    "gender": "Jinsni tanlang"
+  },
+  "gender": {
+    "male": "Erkak",
+    "female": "Ayol",
+    "other": "Boshqa"
+  },
+  "buttons": {
+    "save": "Saqlash",
+    "cancel": "Bekor qilish",
+    "close": "Yopish",
+    "uploadImage": "Rasm tanlash",
+    "changeImage": "Rasmni almashtirish",
+    "removeImage": "O'chirish"
+  },
+  "validation": {
+    "required": "Majburiy maydon",
+    "invalidPhone": "Telefon raqam noto'g'ri",
+    "imageOnly": "Faqat rasm fayllar yuklash mumkin",
+    "attachmentIdMissing": "Rasm yuklandi, lekin attachment ID qaytarmadi",
+    "imageUploadError": "Rasm yuklashda xatolik"
+  },
+  "toast": {
+    "updated": "Profil muvaffaqiyatli yangilandi",
+    "updateError": "Profilni saqlashda xatolik",
+    "imageUploaded": "Rasm muvaffaqiyatli yuklandi",
+    "imageRemoved": "Rasm o'chirildi"
+  },
+  "states": {
+    "loading": "Yuklanmoqda...",
+    "saving": "Saqlanmoqda...",
+    "error": "Xatolik yuz berdi",
+    "noData": "Ma'lumot topilmadi"
+  }
+}

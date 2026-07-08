@@ -1,9 +1,11 @@
-import { useEffect, useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Phone, X, MapPin, ChevronDown } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { useGlobalNotification } from "@/hooks/useGlobalNotification";
-import { useScopedPartnerParams, PARTNER_SELECT_MESSAGE } from "@/hooks/useScopedPartnerParams";
+import { useScopedPartnerParams } from "@/hooks/useScopedPartnerParams";
 import { useAuth } from "@/core/hooks/useAuth";
 import { api } from "@/api";
+import { BRANCHES_NAMESPACE } from "@/i18n/namespaces";
 import "./AddBranchModal.css";
 import AddBranchMapModal from "./AddBranchMapModal";
 
@@ -85,11 +87,12 @@ function formatPhoneUz(value) {
 function CustomDropdown({
   label,
   value,
-  placeholder = "Tanlang",
+  placeholder,
   options = [],
   onChange,
   disabled,
   className = "",
+  noOptionsText,
 }) {
   const [open, setOpen] = useState(false);
   const ref = useRef();
@@ -145,7 +148,7 @@ function CustomDropdown({
         <ul className="addbranch-custom-select-menu">
           {options.length === 0 && (
             <li className="addbranch-custom-select-option addbranch-custom-select-nooption">
-              Variant yo'q
+              {noOptionsText}
             </li>
           )}
           {options.map((opt) => (
@@ -167,7 +170,8 @@ function CustomDropdown({
 }
 
 export default function AddBranchModal({ open, onClose, onRefresh }) {
-  const { success, error: notifyError } = useGlobalNotification();
+  const { t } = useTranslation(BRANCHES_NAMESPACE);
+  const { error: notifyError, warning: notifyWarning } = useGlobalNotification();
   const { isSuperAdmin } = useAuth();
   const { canFetch, getOrganizationParams } = useScopedPartnerParams();
   const [form, setForm] = useState(initialForm);
@@ -315,7 +319,7 @@ export default function AddBranchModal({ open, onClose, onRefresh }) {
 
     // Validate branch name
     if (!form.name.trim()) {
-      console.error("Filial nomini kiriting");
+      notifyWarning(t("validation.required"));
       return;
     }
 
@@ -325,7 +329,7 @@ export default function AddBranchModal({ open, onClose, onRefresh }) {
       form.phoneNumber.length !== 17 ||
       !/^\+998 \d{2} \d{3} \d{2} \d{2}$/.test(form.phoneNumber)
     ) {
-      console.error("Telefon raqamni to'g'ri kiriting (+998 99 999 99 99)");
+      notifyWarning(t("validation.invalidPhone"));
       return;
     }
 
@@ -358,13 +362,13 @@ export default function AddBranchModal({ open, onClose, onRefresh }) {
 
       if (isSuperAdmin) {
         if (!canFetch) {
-          notifyError(PARTNER_SELECT_MESSAGE);
+          notifyError(t("states.partnerSelect"));
           return;
         }
 
         const { organizationId } = getOrganizationParams();
         if (!organizationId) {
-          notifyError(PARTNER_SELECT_MESSAGE);
+          notifyError(t("states.partnerSelect"));
           return;
         }
 
@@ -377,14 +381,11 @@ export default function AddBranchModal({ open, onClose, onRefresh }) {
       }
 
       if (res?.errorMessage) {
-        notifyError(res.errorMessage);
         return;
       }
-      success("Muvaffaqiyatli yaratildi");
       onClose();
       if (onRefresh) await onRefresh();
-    } catch (error) {
-      console.error(error?.message || "Filial yaratishda xatolik");
+    } catch {
     } finally {
       setLoading(false);
     }
@@ -417,8 +418,8 @@ export default function AddBranchModal({ open, onClose, onRefresh }) {
       <div className="addbranch-modal" onClick={e => e.stopPropagation()}>
         <div className="addbranch-modal-header">
           <div>
-            <h2>Yangi filial qo‘shish</h2>
-            <p>Yangi filial ma’lumotlarini kiriting</p>
+            <h2>{t("modal.create")}</h2>
+            <p>{t("modal.createSubtitle")}</p>
           </div>
           <button
             type="button"
@@ -432,12 +433,12 @@ export default function AddBranchModal({ open, onClose, onRefresh }) {
         <form className="addbranch-modal-form" onSubmit={handleSubmit}>
           {/* Branch Name */}
           <div className="addbranch-form-group">
-            <label>Filial nomi</label>
+            <label>{t("form.name")}</label>
             <input
               type="text"
               value={form.name}
               maxLength={100}
-              placeholder="Masalan: Melissa Chilonzor"
+              placeholder={t("form.placeholders.name")}
               onChange={e => handleInputChange("name", e.target.value)}
               disabled={loading}
               required
@@ -446,13 +447,13 @@ export default function AddBranchModal({ open, onClose, onRefresh }) {
 
           {/* Phone */}
           <div className="addbranch-form-group">
-            <label>Telefon raqam</label>
+            <label>{t("form.phone")}</label>
             <div className="addbranch-input-icon">
               <Phone size={15} />
               <input
                 className="addbranch-map-phone"
                 type="text"
-                placeholder="+998"
+                placeholder={t("form.placeholders.phone")}
                 value={form.phoneNumber}
                 ref={phoneInputRef}
                 onChange={handlePhoneChange}
@@ -470,17 +471,17 @@ export default function AddBranchModal({ open, onClose, onRefresh }) {
           {/* Address - map picker and modal inside the form, below this group */}
           <div className="addbranch-form-group">
             <label>
-              To‘liq manzil
+              {t("form.fullAddress")}
               <button
                 type="button"
                 className="addbranch-map-link"
                 onClick={() => setShowMap(true)}
-                title="Mapdan tanlash"
+                title={t("form.mapPick")}
                 disabled={loading}
                 tabIndex={0}
               >
                 <MapPin size={16} className="addbranch-map-linkicon" />
-                <span>Mapdan tanlash</span>
+                <span>{t("form.mapPick")}</span>
               </button>
             </label>
             <input
@@ -490,7 +491,7 @@ export default function AddBranchModal({ open, onClose, onRefresh }) {
               maxLength={128}
               onChange={e => handleInputChange("address.formattedAddress", e.target.value)}
               disabled={loading}
-              placeholder="Masalan: Toshkent, Chilonzor, Bunyodkor ko‘chasi"
+              placeholder={t("form.placeholders.fullAddress")}
             />
           </div>
 
@@ -511,7 +512,7 @@ export default function AddBranchModal({ open, onClose, onRefresh }) {
           {/* Lat/Lon */}
           <div className="addbranch-form-row">
             <div className="addbranch-form-group">
-              <label>Latitude</label>
+              <label>{t("form.latitude")}</label>
               <input
                 className="addbranch-map-latitude"
                 type="number"
@@ -521,11 +522,11 @@ export default function AddBranchModal({ open, onClose, onRefresh }) {
                 onFocus={handleLatFocus}
                 onBlur={handleLatBlur}
                 disabled={loading}
-                placeholder="Latitude"
+                placeholder={t("form.placeholders.latitude")}
               />
             </div>
             <div className="addbranch-form-group">
-              <label>Longitude</label>
+              <label>{t("form.longitude")}</label>
               <input
                 className="addbranch-map-longitude"
                 type="number"
@@ -535,7 +536,7 @@ export default function AddBranchModal({ open, onClose, onRefresh }) {
                 onFocus={handleLonFocus}
                 onBlur={handleLonBlur}
                 disabled={loading}
-                placeholder="Longitude"
+                placeholder={t("form.placeholders.longitude")}
               />
             </div>
           </div>
@@ -543,22 +544,23 @@ export default function AddBranchModal({ open, onClose, onRefresh }) {
           {/* Country & Region */}
           <div className="addbranch-form-row">
             <div className="addbranch-form-group">
-              <label>Mamlakat</label>
+              <label>{t("form.country")}</label>
               <input
                 className="addbranch-map-country"
                 type="text"
                 value={form.address.country}
                 readOnly
                 disabled
-                placeholder="Uzbekistan"
+                placeholder={t("form.placeholders.country")}
               />
             </div>
             <div className="addbranch-form-group">
-              <label>Viloyat / Region</label>
+              <label>{t("form.region")}</label>
               <CustomDropdown
                 value={form.address.region}
                 options={regionOptions}
-                placeholder="Tanlang"
+                placeholder={t("form.selectPlaceholder")}
+                noOptionsText={t("form.noOptions")}
                 onChange={(val) => handleInputChange("address.region", val)}
                 disabled={loading}
               />
@@ -568,21 +570,31 @@ export default function AddBranchModal({ open, onClose, onRefresh }) {
           {/* City & District */}
           <div className="addbranch-form-row">
             <div className="addbranch-form-group">
-              <label>Shahar</label>
+              <label>{t("form.city")}</label>
               <CustomDropdown
                 value={form.address.city}
                 options={cityOptions}
-                placeholder={form.address.region ? "Tanlang" : "Avval region tanlang"}
+                placeholder={
+                  form.address.region
+                    ? t("form.selectPlaceholder")
+                    : t("form.selectRegionFirst")
+                }
+                noOptionsText={t("form.noOptions")}
                 onChange={val => handleInputChange("address.city", val)}
                 disabled={loading || !form.address.region}
               />
             </div>
             <div className="addbranch-form-group">
-              <label>Tuman</label>
+              <label>{t("form.district")}</label>
               <CustomDropdown
                 value={form.address.district}
                 options={districtOptions}
-                placeholder={form.address.city ? "Tanlang" : "Avval shahar tanlang"}
+                placeholder={
+                  form.address.city
+                    ? t("form.selectPlaceholder")
+                    : t("form.selectCityFirst")
+                }
+                noOptionsText={t("form.noOptions")}
                 onChange={val => handleInputChange("address.district", val)}
                 disabled={loading || !form.address.city}
               />
@@ -592,7 +604,7 @@ export default function AddBranchModal({ open, onClose, onRefresh }) {
           {/* Street / House */}
           <div className="addbranch-form-row">
             <div className="addbranch-form-group">
-              <label>Ko‘cha</label>
+              <label>{t("form.street")}</label>
               <input
                 className="addbranch-map-street"
                 type="text"
@@ -600,11 +612,11 @@ export default function AddBranchModal({ open, onClose, onRefresh }) {
                 onChange={e => handleInputChange("address.street", e.target.value)}
                 disabled={loading}
                 maxLength={15}
-                placeholder="Bunyodkor"
+                placeholder={t("form.placeholders.street")}
               />
             </div>
             <div className="addbranch-form-group">
-              <label>Uy</label>
+              <label>{t("form.house")}</label>
               <input
                 className="addbranch-map-house"
                 type="text"
@@ -612,7 +624,7 @@ export default function AddBranchModal({ open, onClose, onRefresh }) {
                 onChange={e => handleInputChange("address.house", e.target.value)}
                 disabled={loading}
                 maxLength={15}
-                placeholder="12"
+                placeholder={t("form.placeholders.house")}
               />
             </div>
           </div>
@@ -620,7 +632,7 @@ export default function AddBranchModal({ open, onClose, onRefresh }) {
           {/* Entrance / Floor */}
           <div className="addbranch-form-row">
             <div className="addbranch-form-group">
-              <label>Kirish yo‘lagi</label>
+              <label>{t("form.entrance")}</label>
               <input
                 className="addbranch-map-entrance"
                 type="text"
@@ -633,12 +645,12 @@ export default function AddBranchModal({ open, onClose, onRefresh }) {
                 }
                 disabled={loading}
                 maxLength={15}
-                placeholder="1"
+                placeholder={t("form.placeholders.entrance")}
                 inputMode="text"
               />
             </div>
             <div className="addbranch-form-group">
-              <label>Qavat</label>
+              <label>{t("form.floor")}</label>
               <input
                 className="addbranch-map-floor"
                 type="text"
@@ -651,7 +663,7 @@ export default function AddBranchModal({ open, onClose, onRefresh }) {
                 }
                 disabled={loading}
                 maxLength={15}
-                placeholder="1"
+                placeholder={t("form.placeholders.floor")}
                 inputMode="text"
               />
             </div>
@@ -660,7 +672,7 @@ export default function AddBranchModal({ open, onClose, onRefresh }) {
           {/* Apartment / PlaceId */}
           <div className="addbranch-form-row">
             <div className="addbranch-form-group">
-              <label>Xona / Kvartira</label>
+              <label>{t("form.apartment")}</label>
               <input
                 className="addbranch-map-apartment"
                 type="text"
@@ -668,11 +680,11 @@ export default function AddBranchModal({ open, onClose, onRefresh }) {
                 onChange={e => handleInputChange("address.apartment", e.target.value)}
                 disabled={loading}
                 maxLength={8}
-                placeholder="101"
+                placeholder={t("form.placeholders.apartment")}
               />
             </div>
             <div className="addbranch-form-group">
-              <label>Place ID</label>
+              <label>{t("form.placeId")}</label>
               <input
                 className="addbranch-map-placeid"
                 type="text"
@@ -680,14 +692,14 @@ export default function AddBranchModal({ open, onClose, onRefresh }) {
                 onChange={e => handleInputChange("address.placeId", e.target.value)}
                 disabled={loading}
                 maxLength={64}
-                placeholder="Google place id"
+                placeholder={t("form.placeholders.placeId")}
               />
             </div>
           </div>
 
           {/* Comment */}
           <div className="addbranch-form-group">
-            <label>Izoh</label>
+            <label>{t("form.comment")}</label>
             <textarea
               className="addbranch-map-comment"
               rows="4"
@@ -695,13 +707,17 @@ export default function AddBranchModal({ open, onClose, onRefresh }) {
               onChange={e => handleInputChange("address.comment", e.target.value)}
               disabled={loading}
               maxLength={500}
-              placeholder="Filial haqida qo‘shimcha ma’lumot..."
+              placeholder={t("form.placeholders.comment")}
             />
           </div>
 
           {/* Active Switch */}
           <div className="addbranch-switch-row">
-            <span>Holat: {form.active ? "Aktiv" : "No aktiv"}</span>
+            <span>
+              {t("status.label", {
+                status: form.active ? t("status.active") : t("status.inactive"),
+              })}
+            </span>
             <button
               type="button"
               className={`addbranch-switch ${form.active ? "active" : ""}`}
@@ -720,14 +736,14 @@ export default function AddBranchModal({ open, onClose, onRefresh }) {
               onClick={handleClose}
               disabled={loading}
             >
-              Bekor qilish
+              {t("buttons.cancel")}
             </button>
             <button
               type="submit"
               className="addbranch-submit-btn"
               disabled={loading}
             >
-              {loading ? "Yaratilmoqda..." : "Yaratish"}
+              {loading ? t("states.creating") : t("buttons.create")}
             </button>
           </div>
         </form>

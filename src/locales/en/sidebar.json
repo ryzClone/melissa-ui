@@ -1,0 +1,15 @@
+{
+  "dashboard": "Dashboard",
+  "branches": "Branches",
+  "users": "Users",
+  "promotions": "Promotions",
+  "catalog": "Catalog",
+  "finance": "Finance",
+  "chatMonitoring": "Chat Monitoring",
+  "orders": "Orders",
+  "settings": "Settings",
+  "comingSoon": "Coming Soon",
+  "admin": "Admin",
+  "adminNews": "News",
+  "adminMessages": "Important Messages"
+}

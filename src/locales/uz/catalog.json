@@ -1,0 +1,184 @@
+{
+  "title": "Katalog",
+  "subtitle": "Mahsulotlarni boshqarish ({{count}})",
+  "tabs": {
+    "products": "Mahsulotlar",
+    "categories": "Kategoriyalar"
+  },
+  "search": {
+    "placeholder": "Nomi, tavsif, kategoriya, modifier..."
+  },
+  "filters": {
+    "category": "Kategoriya",
+    "status": "Holat",
+    "branch": "Filial",
+    "organization": "Tashkilot",
+    "allCategories": "Barcha kategoriyalar",
+    "minPrice": "Min narx",
+    "maxPrice": "Max narx",
+    "modifierAll": "Barchasi",
+    "modifierWith": "Modifier bor",
+    "modifierWithout": "Modifier yo'q"
+  },
+  "table": {
+    "image": "Rasm",
+    "name": "Nomi",
+    "description": "Tavsif",
+    "category": "Kategoriya",
+    "price": "Narxi",
+    "measure": "O'lchov",
+    "preparation": "Tayyorlanish",
+    "modifier": "Modifier",
+    "status": "Holat",
+    "show": "Ko'rsatish",
+    "openForSale": "Sotuvga ochiq",
+    "createdAt": "Yaratilgan sana",
+    "actions": "Amallar",
+    "noImage": "Rasm yo'q",
+    "noModifier": "Yo'q",
+    "minutes": "{{count}} daqiqa",
+    "modifierCount": "{{count}} modifier",
+    "currency": "so'm"
+  },
+  "buttons": {
+    "addProduct": "Yangi mahsulot",
+    "addCategory": "Yangi kategoriya",
+    "edit": "Tahrirlash",
+    "view": "Ko'rish",
+    "delete": "O'chirish",
+    "save": "Saqlash",
+    "cancel": "Bekor qilish",
+    "close": "Yopish",
+    "upload": "Yuklash",
+    "changeImage": "Rasmni almashtirish",
+    "removeImage": "O'chirish",
+    "selectImage": "Rasm tanlash",
+    "apply": "Qo'llash",
+    "clear": "Tozalash",
+    "createProduct": "Mahsulot yaratish"
+  },
+  "modal": {
+    "kicker": "KATALOG",
+    "createProduct": "Yangi mahsulot",
+    "editProduct": "Mahsulotni tahrirlash",
+    "viewProduct": "Mahsulot tafsiloti",
+    "deleteProduct": "Mahsulotni o'chirish",
+    "createCategory": "Yangi kategoriya",
+    "editCategory": "Kategoriyani tahrirlash",
+    "deleteCategory": "Kategoriyani o'chirish"
+  },
+  "form": {
+    "name": "Nomi",
+    "nameUz": "Nomi (UZ)",
+    "nameRu": "Nomi (RU)",
+    "nameEn": "Nomi (EN)",
+    "description": "Tavsif",
+    "descriptionUz": "Tavsif (UZ)",
+    "descriptionRu": "Tavsif (RU)",
+    "descriptionEn": "Tavsif (EN)",
+    "price": "Narxi",
+    "category": "Kategoriya",
+    "image": "Rasm",
+    "productImage": "Mahsulot rasmi",
+    "status": "Holat",
+    "show": "Ko'rsatish",
+    "openForSale": "Sotuvga ochiq",
+    "basicInfo": "Asosiy ma'lumotlar",
+    "descriptions": "Tavsiflar",
+    "attributes": "Mahsulot atributlari",
+    "branches": "Filiallar",
+    "branchesHint": "Mahsulot qaysi filiallarda ishlashini tanlang",
+    "visibilityAndSale": "Ko'rinish va sotuv",
+    "showHint": "Ilovada mahsulotni ko'rsatish",
+    "openForSaleHint": "Buyurtma qilishga ruxsat berish",
+    "defaultCategory": "Kategoriya",
+    "defaultBranch": "Filial"
+  },
+  "placeholders": {
+    "name": "Mahsulot nomi",
+    "nameRu": "Название",
+    "nameEn": "Name",
+    "description": "Tavsif",
+    "price": "0",
+    "category": "Kategoriya tanlang",
+    "measureUnit": "kg, g, ml..."
+  },
+  "attributes": {
+    "measure": "Measure",
+    "measureUnit": "Measure Unit",
+    "calories": "Calories",
+    "carbohydrates": "Carbohydrates",
+    "fat": "Fat",
+    "proteins": "Proteins",
+    "mxikCode": "MXIK Code (UZ)",
+    "packageCode": "Package Code (UZ)",
+    "vat": "VAT",
+    "weightQuantum": "Weight Quantum",
+    "catchWeight": "Catch Weight",
+    "needMarking": "Need Marking",
+    "deactivated": "Deactivated"
+  },
+  "status": {
+    "active": "Aktiv",
+    "inactive": "Nofaol",
+    "visible": "Ko'rinadi",
+    "hidden": "Yashirilgan",
+    "available": "Sotuvga ochiq",
+    "unavailable": "Sotuv yopiq"
+  },
+  "validation": {
+    "required": "Majburiy maydonni to'ldiring",
+    "invalidPrice": "Narxni to'g'ri kiriting",
+    "selectCategory": "Kategoriya tanlang",
+    "uploadImage": "Rasm yuklang",
+    "nameUzRequired": "O'zbekcha nom kiriting",
+    "waitForUpload": "Rasm yuklanishini kuting",
+    "imageOnly": "Faqat rasm fayllar yuklash mumkin",
+    "imageUploadError": "Rasm yuklashda xatolik yuz berdi",
+    "attachmentIdMissing": "Rasm yuklandi, lekin backend attachment ID qaytarmadi"
+  },
+  "toast": {
+    "productCreated": "Mahsulot muvaffaqiyatli yaratildi",
+    "productUpdated": "Mahsulot muvaffaqiyatli yangilandi",
+    "productDeleted": "Mahsulot muvaffaqiyatli o'chirildi",
+    "categoryCreated": "Kategoriya muvaffaqiyatli yaratildi",
+    "categoryUpdated": "Kategoriya muvaffaqiyatli yangilandi",
+    "categoryDeleted": "Kategoriya muvaffaqiyatli o'chirildi"
+  },
+  "states": {
+    "loading": "Yuklanmoqda...",
+    "saving": "Saqlanmoqda...",
+    "noData": "Mahsulotlar topilmadi",
+    "error": "Xatolik yuz berdi",
+    "loadError": "Mahsulotlarni yuklashda xatolik yuz berdi",
+    "productLoadError": "Mahsulot ma'lumotlarini yuklashda xatolik yuz berdi",
+    "productNotFound": "Mahsulot topilmadi",
+    "noCategories": "Kategoriya topilmadi",
+    "noBranches": "Filiallar topilmadi",
+    "branchesLoading": "Filiallar yuklanmoqda...",
+    "partnerSelect": "Iltimos, hamkorni tanlang"
+  },
+  "confirm": {
+    "deleteProductTitle": "Mahsulotni o'chirish",
+    "deleteProductMessage": "Mahsulotni o'chirmoqchimisiz?",
+    "deleteCategoryTitle": "Kategoriyani o'chirish",
+    "deleteCategoryMessage": "Kategoriyani o'chirmoqchimisiz?",
+    "yes": "Ha, o'chirish",
+    "no": "Yo'q"
+  },
+  "pagination": {
+    "total": "Jami: {{count}} ta",
+    "previous": "Oldingi",
+    "next": "Keyingi",
+    "page": "Sahifa",
+    "rowsPerPage": "Sahifada"
+  },
+  "tooltips": {
+    "superAdminNoPermission": "Super Admin uchun ruxsat yo'q"
+  },
+  "image": {
+    "hint": "PNG, JPG yoki WEBP formatda rasm yuklang",
+    "alt": "Mahsulot",
+    "noImage": "Rasm yo'q"
+  }
+}

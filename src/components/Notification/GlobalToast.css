@@ -1,8 +1,8 @@
 .global-toast-container {
   position: fixed;
-  top: 24px;
-  right: 24px;
-  z-index: 9999;
+  top: 20px;
+  right: 20px;
+  z-index: 99999;
   display: flex;
   flex-direction: column;
   gap: 12px;
@@ -17,13 +17,16 @@
   align-items: flex-start;
   gap: 12px;
   padding: 14px 14px 14px 16px;
-  background: #ffffff;
+  background: linear-gradient(145deg, #1f1729 0%, #17121f 100%);
   border-radius: 14px;
-  box-shadow: 0 12px 35px rgba(0, 0, 0, 0.14);
-  border: 1px solid rgba(0, 0, 0, 0.04);
+  box-shadow:
+    0 16px 40px rgba(0, 0, 0, 0.45),
+    0 0 0 1px rgba(139, 61, 255, 0.12);
+  border: 1px solid rgba(139, 61, 255, 0.18);
   overflow: hidden;
   pointer-events: auto;
-  animation: global-toast-slide-in 0.32s cubic-bezier(0.22, 1, 0.36, 1);
+  opacity: 1;
+  animation: global-toast-slide-in 0.32s cubic-bezier(0.22, 1, 0.36, 1) forwards;
 }
 
 .global-toast::before {
@@ -41,11 +44,11 @@
 }
 
 .global-toast.success {
-  --global-toast-accent: #16a34a;
+  --global-toast-accent: #22c55e;
 }
 
 .global-toast.error {
-  --global-toast-accent: #dc2626;
+  --global-toast-accent: #ef4444;
 }
 
 .global-toast.warning {
@@ -70,7 +73,7 @@
 
 .global-toast-message {
   margin: 0;
-  color: #111827;
+  color: #f3f4f6;
   font-size: 13px;
   line-height: 1.45;
   font-weight: 600;
@@ -85,8 +88,8 @@
   height: 24px;
   border: 0;
   border-radius: 8px;
-  background: rgba(17, 24, 39, 0.05);
-  color: rgba(17, 24, 39, 0.55);
+  background: rgba(255, 255, 255, 0.06);
+  color: rgba(255, 255, 255, 0.45);
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -95,8 +98,8 @@
 }
 
 .global-toast-close:hover {
-  background: rgba(17, 24, 39, 0.08);
-  color: rgba(17, 24, 39, 0.85);
+  background: rgba(139, 61, 255, 0.18);
+  color: rgba(255, 255, 255, 0.9);
 }
 
 @keyframes global-toast-slide-in {

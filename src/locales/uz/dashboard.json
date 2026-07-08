@@ -1,0 +1,24 @@
+{
+  "welcome": {
+    "title": "Xush kelibsiz!",
+    "greeting": "Salom, {{name}}. {{message}}",
+    "message": "Bugun ham samarali ish kuningiz bo‘lsin. Yangiliklar va muhim xabarlarni shu yerda kuzatib boring.",
+    "defaultUserName": "xodim"
+  },
+  "news": {
+    "title": "Yangiliklar",
+    "subtitle": "Platforma bo‘yicha muhim e’lonlar va yangilanishlar",
+    "readMore": "Batafsil"
+  },
+  "messages": {
+    "title": "Muhim xabarlar",
+    "subtitle": "Texnik ishlar, ichki e’lonlar va ogohlantirishlar"
+  },
+  "branches": {
+    "title": "Top filiallar",
+    "subtitle": "Filiallar reytingi"
+  },
+  "modal": {
+    "close": "Yopish"
+  }
+}

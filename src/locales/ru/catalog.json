@@ -1,0 +1,184 @@
+{
+  "title": "Каталог",
+  "subtitle": "Управление товарами ({{count}})",
+  "tabs": {
+    "products": "Товары",
+    "categories": "Категории"
+  },
+  "search": {
+    "placeholder": "Название, описание, категория, модификатор..."
+  },
+  "filters": {
+    "category": "Категория",
+    "status": "Статус",
+    "branch": "Филиал",
+    "organization": "Организация",
+    "allCategories": "Все категории",
+    "minPrice": "Мин. цена",
+    "maxPrice": "Макс. цена",
+    "modifierAll": "Все",
+    "modifierWith": "С модификатором",
+    "modifierWithout": "Без модификатора"
+  },
+  "table": {
+    "image": "Фото",
+    "name": "Название",
+    "description": "Описание",
+    "category": "Категория",
+    "price": "Цена",
+    "measure": "Ед. изм.",
+    "preparation": "Приготовление",
+    "modifier": "Модификатор",
+    "status": "Статус",
+    "show": "Показ",
+    "openForSale": "В продаже",
+    "createdAt": "Дата создания",
+    "actions": "Действия",
+    "noImage": "Нет фото",
+    "noModifier": "Нет",
+    "minutes": "{{count}} мин.",
+    "modifierCount": "{{count}} модификатор(ов)",
+    "currency": "сум"
+  },
+  "buttons": {
+    "addProduct": "Новый товар",
+    "addCategory": "Новая категория",
+    "edit": "Редактировать",
+    "view": "Просмотр",
+    "delete": "Удалить",
+    "save": "Сохранить",
+    "cancel": "Отмена",
+    "close": "Закрыть",
+    "upload": "Загрузить",
+    "changeImage": "Изменить фото",
+    "removeImage": "Удалить",
+    "selectImage": "Выбрать фото",
+    "apply": "Применить",
+    "clear": "Очистить",
+    "createProduct": "Создать товар"
+  },
+  "modal": {
+    "kicker": "КАТАЛОГ",
+    "createProduct": "Новый товар",
+    "editProduct": "Редактирование товара",
+    "viewProduct": "Детали товара",
+    "deleteProduct": "Удаление товара",
+    "createCategory": "Новая категория",
+    "editCategory": "Редактирование категории",
+    "deleteCategory": "Удаление категории"
+  },
+  "form": {
+    "name": "Название",
+    "nameUz": "Название (UZ)",
+    "nameRu": "Название (RU)",
+    "nameEn": "Название (EN)",
+    "description": "Описание",
+    "descriptionUz": "Описание (UZ)",
+    "descriptionRu": "Описание (RU)",
+    "descriptionEn": "Описание (EN)",
+    "price": "Цена",
+    "category": "Категория",
+    "image": "Фото",
+    "productImage": "Фото товара",
+    "status": "Статус",
+    "show": "Показ",
+    "openForSale": "В продаже",
+    "basicInfo": "Основная информация",
+    "descriptions": "Описания",
+    "attributes": "Атрибуты товара",
+    "branches": "Филиалы",
+    "branchesHint": "Выберите филиалы, где доступен товар",
+    "visibilityAndSale": "Видимость и продажа",
+    "showHint": "Показывать товар в приложении",
+    "openForSaleHint": "Разрешить оформление заказа",
+    "defaultCategory": "Категория",
+    "defaultBranch": "Филиал"
+  },
+  "placeholders": {
+    "name": "Название товара",
+    "nameRu": "Название",
+    "nameEn": "Name",
+    "description": "Описание",
+    "price": "0",
+    "category": "Выберите категорию",
+    "measureUnit": "кг, г, мл..."
+  },
+  "attributes": {
+    "measure": "Measure",
+    "measureUnit": "Measure Unit",
+    "calories": "Calories",
+    "carbohydrates": "Carbohydrates",
+    "fat": "Fat",
+    "proteins": "Proteins",
+    "mxikCode": "MXIK Code (UZ)",
+    "packageCode": "Package Code (UZ)",
+    "vat": "VAT",
+    "weightQuantum": "Weight Quantum",
+    "catchWeight": "Catch Weight",
+    "needMarking": "Need Marking",
+    "deactivated": "Deactivated"
+  },
+  "status": {
+    "active": "Активен",
+    "inactive": "Неактивен",
+    "visible": "Видимый",
+    "hidden": "Скрыт",
+    "available": "В продаже",
+    "unavailable": "Продажа закрыта"
+  },
+  "validation": {
+    "required": "Заполните обязательное поле",
+    "invalidPrice": "Введите корректную цену",
+    "selectCategory": "Выберите категорию",
+    "uploadImage": "Загрузите фото",
+    "nameUzRequired": "Введите название на узбекском",
+    "waitForUpload": "Дождитесь загрузки фото",
+    "imageOnly": "Можно загружать только изображения",
+    "imageUploadError": "Ошибка при загрузке фото",
+    "attachmentIdMissing": "Фото загружено, но backend не вернул attachment ID"
+  },
+  "toast": {
+    "productCreated": "Товар успешно создан",
+    "productUpdated": "Товар успешно обновлён",
+    "productDeleted": "Товар успешно удалён",
+    "categoryCreated": "Категория успешно создана",
+    "categoryUpdated": "Категория успешно обновлена",
+    "categoryDeleted": "Категория успешно удалена"
+  },
+  "states": {
+    "loading": "Загрузка...",
+    "saving": "Сохранение...",
+    "noData": "Товары не найдены",
+    "error": "Произошла ошибка",
+    "loadError": "Ошибка при загрузке товаров",
+    "productLoadError": "Ошибка при загрузке данных товара",
+    "productNotFound": "Товар не найден",
+    "noCategories": "Категории не найдены",
+    "noBranches": "Филиалы не найдены",
+    "branchesLoading": "Загрузка филиалов...",
+    "partnerSelect": "Пожалуйста, выберите партнёра"
+  },
+  "confirm": {
+    "deleteProductTitle": "Удаление товара",
+    "deleteProductMessage": "Вы уверены, что хотите удалить товар?",
+    "deleteCategoryTitle": "Удаление категории",
+    "deleteCategoryMessage": "Вы уверены, что хотите удалить категорию?",
+    "yes": "Да, удалить",
+    "no": "Нет"
+  },
+  "pagination": {
+    "total": "Всего: {{count}}",
+    "previous": "Назад",
+    "next": "Далее",
+    "page": "Страница",
+    "rowsPerPage": "На странице"
+  },
+  "tooltips": {
+    "superAdminNoPermission": "Нет доступа для Super Admin"
+  },
+  "image": {
+    "hint": "Загрузите изображение в формате PNG, JPG или WEBP",
+    "alt": "Товар",
+    "noImage": "Нет фото"
+  }
+}

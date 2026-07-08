@@ -102,33 +102,46 @@
 
 /* ===== Filter bar (Catalog) ===== */
 .catalog-page .catalog-filter-bar {
-  gap: 16px 18px;
-  row-gap: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
   padding: 18px 20px;
   align-items: stretch;
 }
 
 .catalog-page .catalog-filter-bar .filter-item {
-  flex: 1 1 200px;
-  min-width: 180px;
+  min-width: 0;
   max-width: none;
+  flex: none;
 }
 
-.catalog-page .catalog-filter-bar .filter-item-grow {
-  flex: 2.2 1 320px;
-  min-width: 260px;
-  max-width: none;
+.catalog-page .catalog-filter-bar .catalog-filter-row-full {
+  width: 100%;
 }
 
+.catalog-page .catalog-filter-row {
+  display: grid;
+  gap: 14px 18px;
+  width: 100%;
+  min-width: 0;
+}
+
+.catalog-page .catalog-filter-row-prices {
+  grid-template-columns: minmax(0, 2fr) minmax(148px, 200px) minmax(148px, 200px);
+}
+
+.catalog-page .catalog-filter-row-selects {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.catalog-page .catalog-filter-bar .catalog-filter-category,
 .catalog-page .catalog-filter-bar .filter-item-auto {
-  flex: 0 1 168px;
-  min-width: 148px;
-  max-width: 188px;
+  min-width: 0;
 }
 
 .catalog-page .catalog-filter-bar .partner-selector {
-  min-width: 220px;
-  max-width: 320px;
+  min-width: 0;
+  max-width: none;
 }
 
 .catalog-page .catalog-filter-bar .custom-dropdown,
@@ -138,30 +151,20 @@
 }
 
 @media (max-width: 1280px) {
-  .catalog-page .catalog-filter-bar {
-    gap: 14px 16px;
+  .catalog-page .catalog-filter-row-prices {
+    grid-template-columns: minmax(0, 1.6fr) minmax(132px, 180px) minmax(132px, 180px);
+    gap: 12px 14px;
   }
 
-  .catalog-page .catalog-filter-bar .filter-item-grow {
-    flex: 1 1 100%;
-    min-width: 100%;
-  }
-
-  .catalog-page .catalog-filter-bar .filter-item-auto {
-    flex: 1 1 calc(50% - 8px);
-    min-width: 148px;
-    max-width: none;
+  .catalog-page .catalog-filter-row-selects {
+    gap: 12px 14px;
   }
 }
 
 @media (max-width: 768px) {
-  .catalog-page .catalog-filter-bar .filter-item,
-  .catalog-page .catalog-filter-bar .filter-item-grow,
-  .catalog-page .catalog-filter-bar .filter-item-auto,
-  .catalog-page .catalog-filter-bar .partner-selector {
-    min-width: 100%;
-    max-width: 100%;
-    flex: 1 1 100%;
+  .catalog-page .catalog-filter-row-prices,
+  .catalog-page .catalog-filter-row-selects {
+    grid-template-columns: 1fr;
   }
 }
 

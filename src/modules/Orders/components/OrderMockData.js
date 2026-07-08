@@ -20,25 +20,25 @@ export const ORDER_STATUS = {
 };
 
 export const ORDER_COLUMNS = [
-  { status: "NEW", label: "Yangi", accent: "orange" },
-  { status: "ACCEPTED", label: "Qabul qilinganlar", accent: "blue" },
-  { status: "COOKING", label: "Jarayondagilar", accent: "purple" },
+  { status: "NEW", labelKey: "cards.newOrders", accent: "orange" },
+  { status: "ACCEPTED", labelKey: "cards.acceptedOrders", accent: "blue" },
+  { status: "COOKING", labelKey: "cards.cookingOrders", accent: "purple" },
 ];
 
 export const ACTIVE_STATUSES = ["NEW", "ACCEPTED", "COOKING"];
 
 /* ---------- Status labels / badges ---------- */
 
-const STATUS_LABELS = {
-  NEW: "Yangi",
-  ACCEPTED: "Qabul qilingan",
-  COOKING: "Jarayonda",
-  DONE: "Bajarildi",
-  READY: "Tayyor",
-  DELIVERING: "Yetkazilmoqda",
-  DELIVERED: "Yetkazildi",
-  REJECTED: "Rad etildi",
-  CANCELLED: "Bekor qilindi",
+const STATUS_LABEL_KEYS = {
+  NEW: "status.new",
+  ACCEPTED: "status.accepted",
+  COOKING: "status.cooking",
+  DONE: "status.completed",
+  READY: "status.ready",
+  DELIVERING: "status.delivering",
+  DELIVERED: "status.delivered",
+  REJECTED: "status.rejected",
+  CANCELLED: "status.cancelled",
 };
 
 export const getStatusBadge = (status) => {
@@ -47,7 +47,11 @@ export const getStatusBadge = (status) => {
     : ["REJECTED", "CANCELLED"].includes(status)
       ? "red"
       : "amber";
-  return { label: STATUS_LABELS[status] || status || "—", tone };
+  return {
+    labelKey: STATUS_LABEL_KEYS[status] || null,
+    fallback: status || "—",
+    tone,
+  };
 };
 
 export const getOrderStatusVariant = (status) => {

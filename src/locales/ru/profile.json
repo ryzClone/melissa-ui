@@ -1,0 +1,50 @@
+{
+  "title": "Данные профиля",
+  "subtitle": "Просмотр и обновление личных данных",
+  "kicker": "Профиль",
+  "form": {
+    "name": "Имя",
+    "surname": "Фамилия",
+    "phoneNumber": "Номер телефона",
+    "gender": "Пол",
+    "image": "Фото профиля"
+  },
+  "placeholders": {
+    "name": "Ваше имя",
+    "surname": "Ваша фамилия",
+    "phoneNumber": "Номер телефона",
+    "gender": "Выберите пол"
+  },
+  "gender": {
+    "male": "Мужской",
+    "female": "Женский",
+    "other": "Другой"
+  },
+  "buttons": {
+    "save": "Сохранить",
+    "cancel": "Отмена",
+    "close": "Закрыть",
+    "uploadImage": "Выбрать фото",
+    "changeImage": "Изменить фото",
+    "removeImage": "Удалить"
+  },
+  "validation": {
+    "required": "Обязательное поле",
+    "invalidPhone": "Неверный номер телефона",
+    "imageOnly": "Можно загружать только изображения",
+    "attachmentIdMissing": "Фото загружено, но attachment ID не получен",
+    "imageUploadError": "Ошибка при загрузке фото"
+  },
+  "toast": {
+    "updated": "Профиль успешно обновлён",
+    "updateError": "Ошибка при сохранении профиля",
+    "imageUploaded": "Фото успешно загружено",
+    "imageRemoved": "Фото удалено"
+  },
+  "states": {
+    "loading": "Загрузка...",
+    "saving": "Сохранение...",
+    "error": "Произошла ошибка",
+    "noData": "Данные не найдены"
+  }
+}

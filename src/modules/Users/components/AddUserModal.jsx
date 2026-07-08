@@ -1,14 +1,18 @@
 import { useEffect, useRef, useState } from "react";
 import { X, ChevronDown } from "lucide-react";
-import { useGlobalNotification } from "@/hooks/useGlobalNotification";
-import { useScopedPartnerParams, PARTNER_SELECT_MESSAGE } from "@/hooks/useScopedPartnerParams";
+import { useTranslation } from "react-i18next";
+import { useScopedPartnerParams } from "@/hooks/useScopedPartnerParams";
 import { useSuperAdminOrganizationBranches } from "@/hooks/useSuperAdminOrganizationBranches";
 import { useUsersApi } from "@/hooks/useUsersApi";
 import { useAuth } from "@/core/hooks/useAuth";
 import { usePartner } from "@/context/PartnerContext";
 import CustomDropdown from "@/components/CustomDropdown/CustomDropdown";
-import { performLogout } from "@/utils/performLogout";
-import { redirectToLogin } from "@/utils/authSession";
+import { attachmentApi } from "@/api/modules/attachmentApi";
+import {
+  getAttachmentUrl,
+  normalizeAttachmentResponse,
+} from "@/modules/products/attachmentUtils";
+import { USERS_NAMESPACE } from "@/i18n/namespaces";
 import "./AddUserModal.css";
 import { organizationRoleApi } from "../../../api/modules/organizationRoleApi";
 
@@ -43,7 +47,7 @@ const initialForm = {
 };
 
 export default function AddUserModal({ isOpen, onClose, onRefresh }) {
-  const { success } = useGlobalNotification();
+  const { t } = useTranslation(USERS_NAMESPACE);
   const { isSuperAdmin } = useAuth();
   const { partnerId } = usePartner();
   const usersApi = useUsersApi();
@@ -108,7 +112,7 @@ export default function AddUserModal({ isOpen, onClose, onRefresh }) {
       } catch (err) {
         if (cancelled) return;
         console.error(err);
-        setRolesError(err?.message || "Rollarni yuklashda xatolik");
+        setRolesError(err?.message || t("states.rolesLoadError"));
         setRoleOptions([]);
       } finally {
         if (!cancelled) setRolesLoading(false);
@@ -221,7 +225,7 @@ export default function AddUserModal({ isOpen, onClose, onRefresh }) {
     if (!file) return;
   
     if (!file.type.startsWith("image/")) {
-      setError("Faqat rasm fayllar yuklash mumkin");
+      setError(t("validation.imageOnly"));
       setFormData((prev) => ({
         ...prev,
         attachmentId: null,
@@ -234,47 +238,26 @@ export default function AddUserModal({ isOpen, onClose, onRefresh }) {
       setUploadingAvatar(true);
       setError("");
   
-      const uploadFormData = new FormData();
-      uploadFormData.append("file", file);
-  
-      const res = await fetch("https://api.mtechdynamics.uz/api/attachments/upload", {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token") || localStorage.getItem("accessToken")}`,
-        },
-        body: uploadFormData,
-      });
-  
-      if (res.status === 401) {
-        setError("Token vaqti tugadi");
-        performLogout();
-        redirectToLogin();
-        return;
+      const localPreviewUrl = URL.createObjectURL(file);
+      setAvatarPreview(localPreviewUrl);
+
+      const response = await attachmentApi.upload(file);
+      const uploadedAttachment = normalizeAttachmentResponse(response);
+
+      if (!uploadedAttachment.id) {
+        throw new Error(t("validation.attachmentIdMissing"));
       }
-  
-      if (!res.ok) {
-        throw new Error("Upload failed");
-      }
-  
-      const json = await res.json();
-      const data = json?.data || json;
-  
-      const attachmentId = data?.id || data?.attachmentId;
-  
-      if (!attachmentId) {
-        throw new Error("Attachment ID yo‘q");
-      }
-  
+
       setFormData((prev) => ({
         ...prev,
-        attachmentId: Number(attachmentId),
+        attachmentId: Number(uploadedAttachment.id),
       }));
+
+      const backendPreview = getAttachmentUrl(uploadedAttachment);
+      setAvatarPreview(backendPreview || localPreviewUrl);
+    } catch {
   
-      setAvatarPreview(data?.url || URL.createObjectURL(file));
-    } catch (err) {
-      console.error(err);
-  
-      setError("Rasm yuklashda xatolik");
+      setError(t("validation.imageUploadError"));
   
       setFormData((prev) => ({
         ...prev,
@@ -316,44 +299,44 @@ export default function AddUserModal({ isOpen, onClose, onRefresh }) {
     e.preventDefault();
 
     if (!canFetch) {
-      setError(PARTNER_SELECT_MESSAGE);
+      setError(t("states.partnerSelect"));
       return;
     }
 
     if (!formData.username.trim()) {
-      setError("Username kiriting");
+      setError(t("validation.invalidUsername"));
       return;
     }
 
     if (!formData.password.trim()) {
-      setError("Parol kiriting");
+      setError(t("validation.passwordMin"));
       return;
     }
 
     if (!formData.name.trim()) {
-      setError("Ism kiriting");
+      setError(t("validation.nameRequired"));
       return;
     }
 
     if (!formData.surname.trim()) {
-      setError("Familiya kiriting");
+      setError(t("validation.surnameRequired"));
       return;
     }
 
     const phoneForPayload = getPayloadPhoneNumber();
 
     if (phoneForPayload.length !== 9) {
-      setError("Telefon raqamni to‘liq kiriting");
+      setError(t("validation.invalidPhone"));
       return;
     }
 
     if (!formData.roleIds.length) {
-      setError("Rol tanlang");
+      setError(t("validation.roleRequired"));
       return;
     }
 
     if (isSuperAdmin && !formData.branchId) {
-      setError("Filial tanlang");
+      setError(t("validation.branchRequired"));
       return;
     }
 
@@ -384,7 +367,6 @@ export default function AddUserModal({ isOpen, onClose, onRefresh }) {
 
       await usersApi.create(payload, getParams());
 
-      success("Muvaffaqiyatli yaratildi");
       setFormData(initialForm);
       setAvatarPreview(null);
 
@@ -423,8 +405,8 @@ export default function AddUserModal({ isOpen, onClose, onRefresh }) {
         </button>
 
         <div className="users-modal-header">
-          <h2>Yangi foydalanuvchi</h2>
-          <p>Tizimga yangi foydalanuvchi qo‘shing</p>
+          <h2>{t("modal.create")}</h2>
+          <p>{t("modal.createSubtitle")}</p>
         </div>
 
         <form className="users-modal-form" onSubmit={handleSubmit}>
@@ -432,10 +414,10 @@ export default function AddUserModal({ isOpen, onClose, onRefresh }) {
 
           <div className="users-form-grid two">
             <div className="users-form-group">
-              <label>Username *</label>
+              <label>{t("form.username")} *</label>
               <input
                 type="text"
-                placeholder="Username"
+                placeholder={t("form.placeholders.username")}
                 value={formData.username}
                 onChange={(e) => handleChange("username", e.target.value)}
                 disabled={isBusy}
@@ -444,10 +426,10 @@ export default function AddUserModal({ isOpen, onClose, onRefresh }) {
             </div>
 
             <div className="users-form-group">
-              <label>Parol *</label>
+              <label>{t("form.password")} *</label>
               <input
                 type="password"
-                placeholder="Parol"
+                placeholder={t("form.placeholders.password")}
                 value={formData.password}
                 onChange={(e) => handleChange("password", e.target.value)}
                 disabled={isBusy}
@@ -458,10 +440,10 @@ export default function AddUserModal({ isOpen, onClose, onRefresh }) {
 
           <div className="users-form-grid two">
             <div className="users-form-group">
-              <label>Ism *</label>
+              <label>{t("form.name")} *</label>
               <input
                 type="text"
-                placeholder="Ism"
+                placeholder={t("form.placeholders.name")}
                 value={formData.name}
                 onChange={(e) => handleChange("name", e.target.value)}
                 disabled={isBusy}
@@ -470,10 +452,10 @@ export default function AddUserModal({ isOpen, onClose, onRefresh }) {
             </div>
 
             <div className="users-form-group">
-              <label>Familiya *</label>
+              <label>{t("form.surname")} *</label>
               <input
                 type="text"
-                placeholder="Familiya"
+                placeholder={t("form.placeholders.surname")}
                 value={formData.surname}
                 onChange={(e) => handleChange("surname", e.target.value)}
                 disabled={isBusy}
@@ -484,11 +466,11 @@ export default function AddUserModal({ isOpen, onClose, onRefresh }) {
 
           <div className="users-form-grid two">
             <div className="users-form-group">
-              <label>Telefon raqam *</label>
+              <label>{t("form.phone")} *</label>
               <input
                 type="text"
                 inputMode="numeric"
-                placeholder="+998 99 123 45 67"
+                placeholder={t("form.placeholders.phone")}
                 value={formData.phoneNumber}
                 onChange={handlePhoneChange}
                 disabled={isBusy}
@@ -498,7 +480,7 @@ export default function AddUserModal({ isOpen, onClose, onRefresh }) {
             </div>
 
             <div className="users-form-group">
-              <label>Rol *</label>
+              <label>{t("form.role")} *</label>
 
               <div className="users-custom-select" ref={dropdownRef}>
                 <button
@@ -511,8 +493,8 @@ export default function AddUserModal({ isOpen, onClose, onRefresh }) {
                 >
                   <span>
                     {rolesLoading
-                      ? "Loading..."
-                      : selectedRole?.name || "Rol tanlang"}
+                      ? t("roles.loading")
+                      : selectedRole?.name || t("roles.selectRole")}
                   </span>
                   <ChevronDown size={16} />
                 </button>
@@ -521,13 +503,13 @@ export default function AddUserModal({ isOpen, onClose, onRefresh }) {
                   <div className="users-custom-select-menu">
                     {rolesLoading && (
                       <div className="users-custom-select-option" aria-disabled>
-                        Loading...
+                        {t("roles.loading")}
                       </div>
                     )}
 
                     {!rolesLoading && roleOptions.length === 0 && (
                       <div className="users-custom-select-option" aria-disabled>
-                        Roles not found
+                        {t("roles.noRoles")}
                       </div>
                     )}
 
@@ -566,22 +548,22 @@ export default function AddUserModal({ isOpen, onClose, onRefresh }) {
           {isSuperAdmin && (
             <div className="users-form-grid one">
               <div className="users-form-group">
-                <label>Filial *</label>
+                <label>{t("form.branch")} *</label>
                 <CustomDropdown
                   value={formData.branchId}
                   onChange={(value) => handleChange("branchId", value)}
                   disabled={isBusy || branchesLoading || !canFetch}
                   placeholder={
                     !canFetch
-                      ? "Avval partner tanlang"
+                      ? t("form.branch.selectPartnerFirst")
                       : branchesLoading
-                        ? "Yuklanmoqda..."
+                        ? t("form.branch.loading")
                         : branches.length === 0
-                          ? "Filiallar topilmadi"
-                          : "Filial tanlang"
+                          ? t("form.branch.notFound")
+                          : t("form.branch.select")
                   }
                   options={branches.map((branch) => ({
-                    label: branch.name || branch.title || "Filial",
+                    label: branch.name || branch.title || t("form.branch"),
                     value: String(branch.id),
                   }))}
                   menuPortal
@@ -592,25 +574,22 @@ export default function AddUserModal({ isOpen, onClose, onRefresh }) {
 
           <div className="users-form-grid one">
             <div className="users-form-group">
-              <label>Profil rasmi</label>
+              <label>{t("form.profilePhoto")}</label>
 
               <div className="users-avatar-upload-card">
                 <div className="users-avatar-preview">
                   {avatarPreview ? (
-                    <img src={avatarPreview} alt="Avatar preview" />
+                    <img src={avatarPreview} alt={t("form.avatar.previewAlt")} />
                   ) : (
                     <div className="users-avatar-placeholder">
-                      <span>Rasm yo‘q</span>
+                      <span>{t("form.avatar.noImage")}</span>
                     </div>
                   )}
                 </div>
 
                 <div className="users-avatar-info">
-                  <h4>Profil rasmi</h4>
-                  <p>
-                    PNG, JPG yoki WEBP formatda rasm yuklang. Yuklanmasa
-                    attachmentId null bo‘lib ketadi.
-                  </p>
+                  <h4>{t("form.profilePhoto")}</h4>
+                  <p>{t("form.profilePhotoHint")}</p>
 
                   <div className="users-avatar-actions">
                     <input
@@ -629,10 +608,10 @@ export default function AddUserModal({ isOpen, onClose, onRefresh }) {
                       disabled={isBusy}
                     >
                       {uploadingAvatar
-                        ? "Yuklanmoqda..."
+                        ? t("states.loading")
                         : avatarPreview
-                        ? "Rasmni almashtirish"
-                        : "Rasm tanlash"}
+                        ? t("form.avatar.replace")
+                        : t("form.avatar.select")}
                     </button>
 
                     {avatarPreview && (
@@ -642,7 +621,7 @@ export default function AddUserModal({ isOpen, onClose, onRefresh }) {
                         onClick={handleRemoveAvatar}
                         disabled={isBusy}
                       >
-                        O‘chirish
+                        {t("form.avatar.remove")}
                       </button>
                     )}
                   </div>
@@ -658,11 +637,11 @@ export default function AddUserModal({ isOpen, onClose, onRefresh }) {
               onClick={handleClose}
               disabled={isBusy}
             >
-              Bekor qilish
+              {t("buttons.cancel")}
             </button>
 
             <button type="submit" className="users-submit-btn" disabled={isBusy}>
-              {loading ? "Yaratilmoqda..." : "Foydalanuvchi yaratish"}
+              {loading ? t("states.creating") : t("buttons.createUser")}
             </button>
           </div>
         </form>

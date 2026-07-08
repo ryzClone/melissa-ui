@@ -1,16 +1,18 @@
 import { useMemo, useState, useEffect, useCallback, useRef } from "react";
 import { Search, Pencil, Trash2, Download, Check, X, Eye } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import GlobalTable from "@/components/GlobalTable/GlobalTable";
 import { extractPaginatedResponse } from "@/components/GlobalTable/tablePagination";
 import FilterBar, { FilterItem } from "@/components/FilterBar/FilterBar";
 import PagePartnerFilter from "@/components/PagePartnerFilter/PagePartnerFilter";
-import { useGlobalNotification } from "@/hooks/useGlobalNotification";
-import { useScopedPartnerParams, PARTNER_SELECT_MESSAGE } from "@/hooks/useScopedPartnerParams";
+import { useScopedPartnerParams } from "@/hooks/useScopedPartnerParams";
 import { useDebouncedValue } from "@/hooks/useDebouncedValue";
 import { useLatestRequest } from "@/hooks/useLatestRequest";
 import { useUsersApi } from "@/hooks/useUsersApi";
 import { usePartner } from "@/context/PartnerContext";
 import { useAuth } from "@/core/hooks/useAuth";
+import StatusBadge, { inferStatusVariant } from "@/components/StatusBadge/StatusBadge";
+import { USERS_NAMESPACE } from "@/i18n/namespaces";
 import ViewUserModal from "./ViewUserModal";
 import "./UsersTableSection.css";
 import { organizationRoleApi } from "../../../api/modules/organizationRoleApi";
@@ -37,7 +39,7 @@ function RoleBadge({ role }) {
 const DEFAULT_PAGE_SIZE = 10;
 
 export default function UsersTableSection({ refreshToken = 0 }) {
-  const { success } = useGlobalNotification();
+  const { t } = useTranslation(USERS_NAMESPACE);
   const usersApi = useUsersApi();
   const { isSuperAdmin } = useAuth();
   const { partnerId } = usePartner();
@@ -251,7 +253,7 @@ export default function UsersTableSection({ refreshToken = 0 }) {
       !editForm.phoneNumber.trim() ||
       !editForm.roleIds.length
     ) {
-      alert("Barcha majburiy maydonlarni to'ldiring");
+      alert(t("validation.fillRequired"));
       return;
     }
     try {
@@ -264,7 +266,6 @@ export default function UsersTableSection({ refreshToken = 0 }) {
         roleIds: editForm.roleIds.map(Number),
         attachmentId: 0,
       });
-      success("Muvaffaqiyatli yangilandi");
       setEditingId(null);
       await fetchUsers();
     } catch (error) {
@@ -287,14 +288,12 @@ export default function UsersTableSection({ refreshToken = 0 }) {
 
   const handleDelete = async (id) => {
     if (isSuperAdmin) return;
-    if (!window.confirm("Foydalanuvchini o'chirmoqchimisiz?")) return;
+    if (!window.confirm(t("confirm.deleteMessage"))) return;
     try {
       await usersApi.delete(id);
       if (editingId === id) handleCancel();
       await fetchUsers();
-      success("Muvaffaqiyatli o'chirildi");
-    } catch (error) {
-      console.error(error);
+    } catch {
     }
   };
 
@@ -302,7 +301,7 @@ export default function UsersTableSection({ refreshToken = 0 }) {
     () => [
       {
         key: "name",
-        title: "Ism",
+        title: t("table.fullName"),
         className: "name-cell",
         render: (row) =>
           !isSuperAdmin && editingId === row.id ? (
@@ -310,7 +309,7 @@ export default function UsersTableSection({ refreshToken = 0 }) {
               <input
                 className="users-inline-input"
                 value={editForm.name}
-                placeholder="Ism"
+                placeholder={t("table.name")}
                 onChange={(e) =>
                   setEditForm((p) => ({ ...p, name: e.target.value }))
                 }
@@ -318,7 +317,7 @@ export default function UsersTableSection({ refreshToken = 0 }) {
               <input
                 className="users-inline-input"
                 value={editForm.surname}
-                placeholder="Familiya"
+                placeholder={t("table.surname")}
                 onChange={(e) =>
                   setEditForm((p) => ({ ...p, surname: e.target.value }))
                 }
@@ -330,14 +329,14 @@ export default function UsersTableSection({ refreshToken = 0 }) {
       },
       {
         key: "username",
-        title: "Username / Telefon",
+        title: t("table.usernamePhone"),
         render: (row) =>
           !isSuperAdmin && editingId === row.id ? (
             <div className="users-inline-fields">
               <input
                 className="users-inline-input"
                 value={editForm.username}
-                placeholder="Username"
+                placeholder={t("form.placeholders.username")}
                 onChange={(e) =>
                   setEditForm((p) => ({ ...p, username: e.target.value }))
                 }
@@ -345,7 +344,7 @@ export default function UsersTableSection({ refreshToken = 0 }) {
               <input
                 className="users-inline-input"
                 value={editForm.phoneNumber}
-                placeholder="Telefon"
+                placeholder={t("table.phone")}
                 onChange={(e) =>
                   setEditForm((p) => ({ ...p, phoneNumber: e.target.value }))
                 }
@@ -360,7 +359,7 @@ export default function UsersTableSection({ refreshToken = 0 }) {
       },
       {
         key: "roles",
-        title: "Rol",
+        title: t("table.role"),
         render: (row) =>
           !isSuperAdmin && editingId === row.id ? (
             <CustomDropdown
@@ -374,10 +373,10 @@ export default function UsersTableSection({ refreshToken = 0 }) {
               disabled={rolesLoading}
               placeholder={
                 rolesLoading
-                  ? "Yuklanmoqda..."
+                  ? t("roles.loading")
                   : allRoles.length === 0
-                    ? "Rollar topilmadi"
-                    : "Rol tanlang"
+                    ? t("roles.noRoles")
+                    : t("roles.selectRole")
               }
               options={allRoles.map((role) => ({
                 label: role.name,
@@ -394,16 +393,36 @@ export default function UsersTableSection({ refreshToken = 0 }) {
             "-"
           ),
       },
-      { key: "active", title: "Holat" },
+      {
+        key: "active",
+        title: t("table.status"),
+        render: (row) => (
+          <StatusBadge
+            variant={inferStatusVariant(row.active, "active")}
+            label={row.active ? t("status.active") : t("status.inactive")}
+          />
+        ),
+      },
     ],
-    [editingId, editForm, allRoles, rolesLoading, isSuperAdmin]
+    [t, editingId, editForm, allRoles, rolesLoading, isSuperAdmin]
+  );
+
+  const paginationLabels = useMemo(
+    () => ({
+      total: (count) => t("pagination.total", { count }),
+      perPage: t("pagination.rowsPerPage"),
+      previous: t("pagination.previous"),
+      next: t("pagination.next"),
+      actions: t("table.actions"),
+    }),
+    [t]
   );
 
   const actions = useMemo(() => {
     if (isSuperAdmin) {
       return [
         {
-          label: "Ko'rish",
+          label: t("buttons.view"),
           icon: <Eye size={16} />,
           variant: "view",
           onClick: (row) => handleView(row),
@@ -413,60 +432,64 @@ export default function UsersTableSection({ refreshToken = 0 }) {
 
     return [
       {
-        label: "Saqlash",
+        label: t("buttons.save"),
         icon: <Check size={15} />,
         variant: "success",
         when: (row) => editingId === row.id,
         onClick: () => handleSave(),
       },
       {
-        label: "Bekor qilish",
+        label: t("buttons.cancel"),
         icon: <X size={15} />,
         variant: "cancel",
         when: (row) => editingId === row.id,
         onClick: () => handleCancel(),
       },
       {
-        label: "Tahrirlash",
+        label: t("buttons.edit"),
         icon: <Pencil size={16} />,
         variant: "edit",
         when: (row) => editingId !== row.id,
         onClick: (row) => handleEdit(row),
       },
       {
-        label: "O'chirish",
+        label: t("buttons.delete"),
         icon: <Trash2 size={16} />,
         variant: "delete",
         when: (row) => editingId !== row.id,
         onClick: (row) => handleDelete(row.id),
       },
     ];
-  }, [isSuperAdmin, editingId, handleView, handleDelete, handleEdit, handleSave]);
+  }, [t, isSuperAdmin, editingId, handleView, handleDelete, handleEdit, handleSave]);
 
   return (
     <>
       {isSuperAdmin && (
         <FilterBar>
           <FilterItem>
-            <PagePartnerFilter partnerLabel="Tashkilot" />
+            <PagePartnerFilter partnerLabel={t("filters.organization")} />
           </FilterItem>
         </FilterBar>
       )}
 
       <div className="users-card">
         <div className="users-card-header">
-          <h3>Foydalanuvchilar ro&apos;yxati</h3>
+          <h3>{t("table.listTitle")}</h3>
           <div className="users-card-tools">
             <div className="users-search-box">
               <Search size={16} />
               <input
                 type="text"
-                placeholder="Qidiruv..."
+                placeholder={t("search.placeholder")}
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
               />
             </div>
-            <button className="users-icon-btn" type="button">
+            <button
+              className="users-icon-btn"
+              type="button"
+              title={t("buttons.download")}
+            >
               <Download size={16} />
             </button>
           </div>
@@ -477,9 +500,9 @@ export default function UsersTableSection({ refreshToken = 0 }) {
           columns={columns}
           data={tableUsers}
           loading={loading}
-          emptyText={
-            canFetch ? "Ma'lumot topilmadi" : PARTNER_SELECT_MESSAGE
-          }
+          emptyText={canFetch ? t("states.noData") : t("states.partnerSelect")}
+          loadingText={t("states.loading")}
+          paginationLabels={paginationLabels}
           rowKey="id"
           actions={actions}
           pagination={{

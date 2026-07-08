@@ -1,0 +1,75 @@
+.dashboard-activity-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.dashboard-activity-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 12px 14px;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.025);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  transition:
+    border-color 0.2s ease,
+    background 0.2s ease;
+}
+
+.dashboard-activity-item:hover {
+  background: rgba(255, 255, 255, 0.04);
+  border-color: rgba(139, 61, 255, 0.18);
+}
+
+.dashboard-activity-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 12px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.dashboard-activity-icon.type-order {
+  color: #fbbf24;
+  background: rgba(251, 191, 36, 0.12);
+}
+
+.dashboard-activity-icon.type-branch {
+  color: #60a5fa;
+  background: rgba(96, 165, 250, 0.12);
+}
+
+.dashboard-activity-icon.type-product {
+  color: #c084fc;
+  background: rgba(192, 132, 252, 0.12);
+}
+
+.dashboard-activity-icon.type-user {
+  color: #4ade80;
+  background: rgba(74, 222, 128, 0.12);
+}
+
+.dashboard-activity-content {
+  min-width: 0;
+  flex: 1;
+}
+
+.dashboard-activity-content p {
+  margin: 0 0 4px;
+  color: rgba(255, 255, 255, 0.88);
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.45;
+}
+
+.dashboard-activity-content span {
+  color: rgba(255, 255, 255, 0.42);
+  font-size: 12px;
+  font-weight: 500;
+}

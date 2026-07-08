@@ -1,4 +1,9 @@
 import axios from "axios";
+import "@/services/toastStore";
+import {
+  attachMutationToastHandlers,
+  setupAxiosInterceptors,
+} from "@/api/setupAxiosInterceptors";
 
 const apiClient = axios.create({
   baseURL: "https://dev-api.mtechdynamics.uz",
@@ -7,16 +12,11 @@ const apiClient = axios.create({
   },
 });
 
-apiClient.interceptors.request.use((config) => {
-  const token =
-    localStorage.getItem("accessToken") || localStorage.getItem("token");
-
-  if (token && config.url !== "/api/v1/auth/login") {
-    config.headers = config.headers || {};
-    config.headers.Authorization = `Bearer ${token}`;
-  }
-
-  return config;
+setupAxiosInterceptors(apiClient, {
+  unwrapResponse: false,
+  enableServerOfflineGuard: false,
 });
+
+attachMutationToastHandlers(apiClient);
 
 export default apiClient;

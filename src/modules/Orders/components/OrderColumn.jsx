@@ -1,3 +1,5 @@
+import { useTranslation } from "react-i18next";
+import { ORDERS_NAMESPACE } from "@/i18n/namespaces";
 import OrderCard from "./OrderCard";
 
 export default function OrderColumn({
@@ -9,6 +11,8 @@ export default function OrderColumn({
   onOpenDetails,
   onAction,
 }) {
+  const { t } = useTranslation(ORDERS_NAMESPACE);
+
   return (
     <section className={`orders-column accent-${accent}`}>
       <header className="orders-column-header">
@@ -21,7 +25,7 @@ export default function OrderColumn({
 
       <div className="orders-column-body">
         {orders.length === 0 ? (
-          <div className="orders-column-empty">Buyurtma yo'q</div>
+          <div className="orders-column-empty">{t("states.columnEmpty")}</div>
         ) : (
           orders.map((order) => (
             <OrderCard

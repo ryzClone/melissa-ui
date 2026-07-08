@@ -21,6 +21,9 @@ export const organizationUserApi = {
       headers: {
         "Content-Type": "application/json",
       },
+      meta: {
+        skipSuccessNotification: true,
+      },
     });
   },
 

@@ -1,0 +1,123 @@
+{
+  "title": "Заказы",
+  "subtitle": "Управление заказами по статусам",
+  "search": {
+    "placeholder": "Поиск заказа..."
+  },
+  "filters": {
+    "status": "Статус",
+    "branch": "Филиал",
+    "organization": "Организация",
+    "date": "Дата",
+    "customer": "Клиент",
+    "allStatuses": "Все статусы",
+    "dateFrom": "Начало",
+    "dateTo": "Конец"
+  },
+  "tabs": {
+    "active": "Активные заказы",
+    "history": "История"
+  },
+  "cards": {
+    "newOrders": "Новые",
+    "acceptedOrders": "Принятые",
+    "cookingOrders": "В процессе",
+    "completedOrders": "Готовые"
+  },
+  "table": {
+    "orderNumber": "Заказ",
+    "customer": "Клиент",
+    "phone": "Телефон",
+    "branch": "Филиал",
+    "products": "Товар",
+    "totalPrice": "Сумма",
+    "createdAt": "Время",
+    "status": "Статус",
+    "actions": "Действия",
+    "itemsCount": "{{count}} шт."
+  },
+  "buttons": {
+    "accept": "Принять",
+    "startCooking": "В процесс",
+    "complete": "Готово",
+    "view": "Просмотр",
+    "close": "Закрыть",
+    "cancel": "Отмена",
+    "search": "Поиск",
+    "refresh": "Обновить",
+    "apply": "Применить",
+    "clear": "Очистить"
+  },
+  "modal": {
+    "details": "Информация о заказе",
+    "confirm": "Подтверждение",
+    "kicker": "ЗАКАЗ"
+  },
+  "status": {
+    "new": "Новый",
+    "accepted": "Принят",
+    "cooking": "Готовится",
+    "completed": "Готов",
+    "cancelled": "Отменён",
+    "ready": "Готов",
+    "delivering": "Доставляется",
+    "delivered": "Доставлен",
+    "rejected": "Отклонён"
+  },
+  "timer": {
+    "remaining": "Осталось {{time}}",
+    "expired": "Время истекло"
+  },
+  "details": {
+    "customer": "Клиент",
+    "phone": "Телефон",
+    "branch": "Филиал",
+    "address": "Адрес",
+    "comment": "Комментарий",
+    "products": "Товары",
+    "quantity": "Количество",
+    "price": "Цена",
+    "total": "Итого",
+    "totalAmount": "Общая сумма",
+    "discount": "Скидка",
+    "itemsMore": "+{{count}} шт."
+  },
+  "validation": {
+    "required": "Заполните обязательное поле"
+  },
+  "toast": {
+    "accepted": "{{order}} принят",
+    "cookingStarted": "{{order}} передан в приготовление",
+    "completed": "{{order}} готов",
+    "updated": "Заказ обновлён"
+  },
+  "notifications": {
+    "newOrder": "Новый заказ",
+    "accepted": "Принят",
+    "cooking": "В процессе",
+    "statusUpdated": "Заказ обновлён"
+  },
+  "states": {
+    "loading": "Загрузка...",
+    "noData": "Нет данных",
+    "error": "Произошла ошибка",
+    "columnEmpty": "Нет заказов",
+    "historyEmpty": "В истории нет заказов",
+    "partnerSelect": "Пожалуйста, выберите партнёра"
+  },
+  "confirm": {
+    "acceptTitle": "Принять заказ",
+    "acceptMessage": "Вы уверены, что хотите принять заказ?",
+    "completeTitle": "Завершить заказ",
+    "completeMessage": "Отметить заказ как готовый?",
+    "yes": "Да",
+    "no": "Нет"
+  },
+  "pagination": {
+    "total": "Всего: {{count}}",
+    "previous": "Назад",
+    "next": "Далее",
+    "page": "Страница",
+    "rowsPerPage": "На странице"
+  }
+}

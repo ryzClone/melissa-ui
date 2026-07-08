@@ -49,9 +49,15 @@ export function extractPaginatedResponse(raw) {
   const payload = raw?.data?.data ?? raw?.data ?? raw ?? {};
   const content = Array.isArray(payload?.content)
     ? payload.content
-    : Array.isArray(payload)
-      ? payload
-      : [];
+    : Array.isArray(payload?.products)
+      ? payload.products
+      : Array.isArray(payload?.data?.content)
+        ? payload.data.content
+        : Array.isArray(payload?.data?.products)
+          ? payload.data.products
+          : Array.isArray(payload)
+            ? payload
+            : [];
 
   const totalElements =
     payload?.totalElements ??

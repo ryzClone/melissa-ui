@@ -1,13 +1,16 @@
 import { useState } from "react";
 import { Plus, Download } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import PageWrapper from "@/components/PageWrapper/PageWrapper";
 import { useAuth } from "@/core/hooks/useAuth";
+import { USERS_NAMESPACE } from "@/i18n/namespaces";
 import UsersTableSection from "../components/UsersTableSection";
 import RolesPermissionsSection from "@/modules/RolePermissions/components/RolesPermissionsSection";
 import AddUserModal from "../components/AddUserModal";
 import "../UsersPage.css";
 
 export default function UsersPage() {
+  const { t } = useTranslation(USERS_NAMESPACE);
   const { isSuperAdmin } = useAuth();
   const [activeTab, setActiveTab] = useState("users");
   const [isAddUserOpen, setIsAddUserOpen] = useState(false);
@@ -21,15 +24,15 @@ export default function UsersPage() {
       <div className="users-page">
       <div className="users-page-top">
         <div>
-          <h1>Foydalanuvchilar</h1>
-          <p>Foydalanuvchilar va ruxsatlarni boshqarish</p>
+          <h1>{t("title")}</h1>
+          <p>{t("subtitle")}</p>
         </div>
 
         <div className="users-page-actions">
           {activeTab === "roles" && (
             <button className="users-ghost-btn" type="button">
               <Download size={16} />
-              <span>Yuklab olish</span>
+              <span>{t("buttons.download")}</span>
             </button>
           )}
 
@@ -45,7 +48,9 @@ export default function UsersPage() {
             >
               <Plus size={16} />
               <span>
-                {activeTab === "users" ? "Yangi foydalanuvchi" : "Yangi rol"}
+                {activeTab === "users"
+                  ? t("buttons.addUser")
+                  : t("buttons.addRole")}
               </span>
             </button>
           )}
@@ -58,7 +63,7 @@ export default function UsersPage() {
           className={activeTab === "users" ? "active" : ""}
           onClick={() => setActiveTab("users")}
         >
-          Foydalanuvchilar
+          {t("tabs.users")}
         </button>
 
         <button
@@ -66,7 +71,7 @@ export default function UsersPage() {
           className={activeTab === "roles" ? "active" : ""}
           onClick={() => setActiveTab("roles")}
         >
-          Rollar va ruxsatlar
+          {t("tabs.roles")}
         </button>
       </div>
 

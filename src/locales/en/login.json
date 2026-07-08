@@ -1,0 +1,13 @@
+{
+  "title": "Login",
+  "subtitle": "Enter your username and password to log in",
+  "username": "Username",
+  "usernamePlaceholder": "Enter username",
+  "password": "Password",
+  "passwordPlaceholder": "Enter password",
+  "button": "Login",
+  "loading": "Logging in...",
+  "usernameRequired": "Username is required",
+  "passwordRequired": "Password is required",
+  "error": "Invalid username or password"
+}

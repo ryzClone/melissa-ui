@@ -1,4 +1,6 @@
 import { X } from "lucide-react";
+import { useTranslation } from "react-i18next";
+import { PROMOTIONS_NAMESPACE } from "@/i18n/namespaces";
 import "./PromotionModals.css";
 
 function Field({ label, value }) {
@@ -22,32 +24,34 @@ const toDisplayDate = (value = "") => {
   return `${day}.${month}.${year}`;
 };
 
-const formatPromoType = (type = "") => {
-  if (type === "PERCENTAGE") return "Foiz (%)";
-  if (type === "FIXED_AMOUNT" || type === "FIXED") return "Qiymat (UZS)";
-  return type || "—";
-};
-
-const formatDiscountValue = (promo = {}) => {
-  if (promo.type === "PERCENTAGE") {
-    return `${promo.percentageValue ?? 0}%`;
-  }
-
-  return `${Number(promo.fixedAmount || 0).toLocaleString("uz-UZ")} UZS`;
-};
-
-const formatStatus = (promo = {}) => {
-  if (typeof promo.active === "boolean") {
-    return promo.active ? "Faol" : "Nofaol";
-  }
-
-  if (promo.status) return promo.status;
-
-  return "—";
-};
-
 export default function ViewPromoModal({ open, promo, onClose }) {
+  const { t } = useTranslation(PROMOTIONS_NAMESPACE);
+
   if (!open || !promo) return null;
+
+  const formatPromoType = (type = "") => {
+    if (type === "PERCENTAGE") return t("types.percentageFull");
+    if (type === "FIXED_AMOUNT" || type === "FIXED") return t("types.fixedFull");
+    return type || "—";
+  };
+
+  const formatDiscountValue = (item = {}) => {
+    if (item.type === "PERCENTAGE") {
+      return `${item.percentageValue ?? 0}%`;
+    }
+
+    return `${Number(item.fixedAmount || 0).toLocaleString("uz-UZ")} UZS`;
+  };
+
+  const formatStatus = (item = {}) => {
+    if (typeof item.active === "boolean") {
+      return item.active ? t("status.active") : t("status.inactive");
+    }
+
+    if (item.status) return item.status;
+
+    return "—";
+  };
 
   return (
     <div className="promo-modal-overlay" onClick={onClose}>
@@ -60,45 +64,45 @@ export default function ViewPromoModal({ open, promo, onClose }) {
           <X size={18} />
         </button>
 
-        <div className="promo-modal-top-label">Promokod</div>
-        <h2>Promokod ma&apos;lumotlari</h2>
-        <p>Tanlangan promokod tafsilotlari</p>
+        <div className="promo-modal-top-label">{t("modal.labelPromoCodeSingle")}</div>
+        <h2>{t("modal.viewPromoCode")}</h2>
+        <p>{t("modal.viewPromoCodeSubtitle")}</p>
 
         <div className="promo-form-block">
-          <div className="promo-form-title">Asosiy ma&apos;lumotlar</div>
+          <div className="promo-form-title">{t("form.basicInfo")}</div>
 
           <div className="promo-form-grid two">
-            <Field label="ID" value={promo.id} />
-            <Field label="Nomi" value={promo.name} />
-            <Field label="Kod" value={promo.code} />
-            <Field label="Turi" value={formatPromoType(promo.type)} />
-            <Field label="Chegirma" value={formatDiscountValue(promo)} />
-            <Field label="Holat" value={formatStatus(promo)} />
+            <Field label={t("table.id")} value={promo.id} />
+            <Field label={t("table.name")} value={promo.name} />
+            <Field label={t("table.code")} value={promo.code} />
+            <Field label={t("table.type")} value={formatPromoType(promo.type)} />
+            <Field label={t("table.discount")} value={formatDiscountValue(promo)} />
+            <Field label={t("table.status")} value={formatStatus(promo)} />
           </div>
         </div>
 
         <div className="promo-form-block">
-          <div className="promo-form-title">Shartlar</div>
+          <div className="promo-form-title">{t("form.conditions")}</div>
 
           <div className="promo-form-grid two">
-            <Field label="Min. buyurtma" value={promo.minimumOrderAmount} />
-            <Field label="Buyurtmalar soni" value={promo.numberOfOrder} />
-            <Field label="Ishlatilgan" value={promo.usageCount} />
+            <Field label={t("table.minOrder")} value={promo.minimumOrderAmount} />
+            <Field label={t("table.orderCount")} value={promo.numberOfOrder} />
+            <Field label={t("table.usageCount")} value={promo.usageCount} />
           </div>
         </div>
 
         <div className="promo-form-block">
-          <div className="promo-form-title">Amal qilish muddati</div>
+          <div className="promo-form-title">{t("form.validityPeriod")}</div>
 
           <div className="promo-form-grid two">
-            <Field label="Boshlanish" value={toDisplayDate(promo.startDate)} />
-            <Field label="Tugash" value={toDisplayDate(promo.endDate)} />
+            <Field label={t("table.startDate")} value={toDisplayDate(promo.startDate)} />
+            <Field label={t("table.endDate")} value={toDisplayDate(promo.endDate)} />
           </div>
         </div>
 
         <div className="promo-modal-footer promo-modal-footer--single">
           <button type="button" className="promo-cancel-btn" onClick={onClose}>
-            Yopish
+            {t("buttons.close")}
           </button>
         </div>
       </div>

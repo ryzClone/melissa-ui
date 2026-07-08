@@ -1,4 +1,8 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+
+import { useTranslation } from "react-i18next";
+
+import { extractPaginatedResponse } from "@/components/GlobalTable/tablePagination";
 
 import { Pencil, Search, Trash2 } from "lucide-react";
 
@@ -14,7 +18,7 @@ import CustomDropdown from "@/components/CustomDropdown/CustomDropdown";
 
 import PagePartnerFilter from "@/components/PagePartnerFilter/PagePartnerFilter";
 
-import { useScopedPartnerParams, PARTNER_SELECT_MESSAGE } from "@/hooks/useScopedPartnerParams";
+import { useScopedPartnerParams } from "@/hooks/useScopedPartnerParams";
 
 import { useDebouncedValue } from "@/hooks/useDebouncedValue";
 
@@ -22,7 +26,7 @@ import { useLatestRequest } from "@/hooks/useLatestRequest";
 
 import { useAuth } from "@/core/hooks/useAuth";
 
-import { useGlobalNotification } from "@/hooks/useGlobalNotification";
+import { CATALOG_NAMESPACE } from "@/i18n/namespaces";
 
 import ProductModal from "../components/ProductModal";
 
@@ -33,8 +37,6 @@ import { adminProductApi } from "@/api/modules/adminProductApi";
 import { merchantCategoryApi } from "@/api/modules/merchantCategoryApi";
 
 import { productApi } from "@/api/modules/productApi";
-
-import { buildListParams } from "@/utils/buildListParams";
 
 import { getAttachmentUrl } from "@/modules/products/attachmentUtils";
 
@@ -48,18 +50,6 @@ import {
 
 
 import "./catalogPage.css";
-
-
-
-const MODIFIER_FILTERS = [
-
-  { value: "all", label: "Barchasi" },
-
-  { value: "with", label: "Modifier bor" },
-
-  { value: "without", label: "Modifier yo‘q" },
-
-];
 
 
 
@@ -111,7 +101,7 @@ function getProductStatusBadge(row = {}) {
 
   if (visible === false) {
 
-    return { label: "Yashirilgan", variant: "inactive" };
+    return { labelKey: "status.hidden", variant: "inactive" };
 
   }
 
@@ -119,23 +109,27 @@ function getProductStatusBadge(row = {}) {
 
   if (active === false) {
 
-    return { label: "Sotuv yopiq", variant: "warning" };
+    return { labelKey: "status.unavailable", variant: "warning" };
 
   }
 
 
 
-  return { label: "Aktiv", variant: "active" };
+  return { labelKey: "status.active", variant: "active" };
 
 }
 
 
 
-function buildCatalogApiFilters({
+const CATALOG_PAGE_SIZE = 20;
 
-  categoryId,
+function sanitizeIntegerInput(raw = "") {
+  return String(raw).replace(/\D/g, "");
+}
 
-  modifierFilter,
+function buildCatalogFilterParams({
+
+  categoryIds,
 
   debouncedSearch,
 
@@ -143,50 +137,62 @@ function buildCatalogApiFilters({
 
   debouncedMaxPrice,
 
+  page = 1,
+
+  size = CATALOG_PAGE_SIZE,
+
 }) {
 
-  const parsedCategoryId = categoryId ? Number(categoryId) : undefined;
+  const params = {
+    number: Math.max(0, Number(page) - 1),
+    size: Number(size) || CATALOG_PAGE_SIZE,
+  };
 
-  const parsedMinPrice =
-    debouncedMinPrice !== "" && Number.isFinite(Number(debouncedMinPrice))
-      ? Number(debouncedMinPrice)
-      : undefined;
+  const search = debouncedSearch.trim();
 
-  const parsedMaxPrice =
-    debouncedMaxPrice !== "" && Number.isFinite(Number(debouncedMaxPrice))
-      ? Number(debouncedMaxPrice)
-      : undefined;
+  if (search) {
 
-  return buildListParams({
+    params.search = search;
 
-    page: 0,
+  }
 
-    size: 100,
+  const parsedCategoryIds = (Array.isArray(categoryIds) ? categoryIds : [])
 
-    categoryId:
-      parsedCategoryId != null && Number.isFinite(parsedCategoryId)
-        ? parsedCategoryId
-        : undefined,
+    .map((id) => Number(id))
 
-    search: debouncedSearch.trim() || undefined,
+    .filter((id) => Number.isFinite(id));
 
-    minPrice: parsedMinPrice,
+  if (parsedCategoryIds.length) {
 
-    maxPrice: parsedMaxPrice,
+    params.categoryIds = parsedCategoryIds.join(",");
 
-    modifier:
+  }
 
-      modifierFilter === "with"
+  if (
 
-        ? true
+    debouncedMinPrice !== "" &&
 
-        : modifierFilter === "without"
+    Number.isFinite(Number(debouncedMinPrice))
 
-          ? false
+  ) {
 
-          : undefined,
+    params.minPrice = Number(debouncedMinPrice);
 
-  });
+  }
+
+  if (
+
+    debouncedMaxPrice !== "" &&
+
+    Number.isFinite(Number(debouncedMaxPrice))
+
+  ) {
+
+    params.maxPrice = Number(debouncedMaxPrice);
+
+  }
+
+  return params;
 
 }
 
@@ -194,13 +200,21 @@ function buildCatalogApiFilters({
 
 export default function CatalogPage() {
 
-  const { success } = useGlobalNotification();
+  const { t } = useTranslation(CATALOG_NAMESPACE);
 
   const [products, setProducts] = useState([]);
 
   const [loading, setLoading] = useState(false);
 
   const [error, setError] = useState("");
+
+  const [page, setPage] = useState(1);
+
+  const [size, setSize] = useState(CATALOG_PAGE_SIZE);
+
+  const [totalElements, setTotalElements] = useState(0);
+
+  const [totalPages, setTotalPages] = useState(1);
 
   const { isSuperAdmin } = useAuth();
 
@@ -222,7 +236,7 @@ export default function CatalogPage() {
 
   const [search, setSearch] = useState("");
 
-  const [categoryId, setCategoryId] = useState("");
+  const [categoryIds, setCategoryIds] = useState([]);
 
   const [minPrice, setMinPrice] = useState("");
 
@@ -231,6 +245,15 @@ export default function CatalogPage() {
   const [modifierFilter, setModifierFilter] = useState("all");
 
   const [categories, setCategories] = useState([]);
+
+  const modifierFilterOptions = useMemo(
+    () => [
+      { value: "all", label: t("filters.modifierAll") },
+      { value: "with", label: t("filters.modifierWith") },
+      { value: "without", label: t("filters.modifierWithout") },
+    ],
+    [t]
+  );
 
 
 
@@ -258,11 +281,9 @@ export default function CatalogPage() {
 
     () =>
 
-      buildCatalogApiFilters({
+      buildCatalogFilterParams({
 
-        categoryId,
-
-        modifierFilter,
+        categoryIds,
 
         debouncedSearch,
 
@@ -270,19 +291,25 @@ export default function CatalogPage() {
 
         debouncedMaxPrice,
 
+        page,
+
+        size,
+
       }),
 
     [
 
-      categoryId,
-
-      modifierFilter,
+      categoryIds,
 
       debouncedSearch,
 
       debouncedMinPrice,
 
       debouncedMaxPrice,
+
+      page,
+
+      size,
 
     ]
 
@@ -328,12 +355,13 @@ export default function CatalogPage() {
   useEffect(() => {
     if (!isSuperAdmin) return;
 
-    setCategoryId("");
+    setCategoryIds([]);
     setSearch("");
     setMinPrice("");
     setMaxPrice("");
     setModifierFilter("all");
     setCategories([]);
+    setPage(1);
   }, [organizationId, isSuperAdmin]);
 
 
@@ -343,6 +371,8 @@ export default function CatalogPage() {
     if (!canFetch) {
 
       setProducts([]);
+      setTotalElements(0);
+      setTotalPages(1);
 
       setLoading(false);
 
@@ -357,6 +387,8 @@ export default function CatalogPage() {
       setProducts([]);
 
       setCategories([]);
+      setTotalElements(0);
+      setTotalPages(1);
 
       setLoading(false);
 
@@ -390,11 +422,22 @@ export default function CatalogPage() {
 
 
 
-      const list = isSuperAdmin
-        ? normalizeAdminProductList(res)
-        : normalizeMerchantProductList(res);
+      const paginated = extractPaginatedResponse(res);
+      let list = paginated.content;
+
+      if (!list.length) {
+        list = isSuperAdmin
+          ? normalizeAdminProductList(res)
+          : normalizeMerchantProductList(res);
+      }
 
       setProducts(list);
+      setTotalElements(paginated.totalElements);
+      setTotalPages(paginated.totalPages);
+
+      if (paginated.totalPages > 0 && page > paginated.totalPages) {
+        setPage(paginated.totalPages);
+      }
 
       if (isSuperAdmin) {
         setCategories(extractCategoriesFromCatalogResponse(res, list));
@@ -407,8 +450,10 @@ export default function CatalogPage() {
       console.error(err);
 
       setProducts([]);
+      setTotalElements(0);
+      setTotalPages(1);
 
-      setError("Productlarni yuklashda xatolik yuz berdi");
+      setError("states.loadError");
 
     } finally {
 
@@ -436,15 +481,32 @@ export default function CatalogPage() {
 
     isLatestRequest,
 
+    page,
+
   ]);
 
 
 
+  const filterKeyRef = useRef("");
+
   useEffect(() => {
+    const nextFilterKey = [
+      organizationId,
+      categoryIds.join(","),
+      debouncedSearch,
+      debouncedMinPrice,
+      debouncedMaxPrice,
+    ].join("|");
+    const filtersChanged = filterKeyRef.current !== nextFilterKey;
+    filterKeyRef.current = nextFilterKey;
+
+    if (filtersChanged && page !== 1) {
+      setPage(1);
+      return;
+    }
 
     fetchProducts();
-
-  }, [fetchProducts]);
+  }, [fetchProducts, page]);
 
 
 
@@ -520,7 +582,7 @@ export default function CatalogPage() {
 
       if (isSuperAdmin) return;
 
-      if (!window.confirm("Productni o‘chirmoqchimisiz?")) return;
+      if (!window.confirm(t("confirm.deleteProductMessage"))) return;
 
 
 
@@ -529,18 +591,13 @@ export default function CatalogPage() {
         await productApi.delete(id);
 
         await fetchProducts();
-
-        success("Muvaffaqiyatli o'chirildi");
-
-      } catch (err) {
-
-        console.error(err);
+      } catch {
 
       }
 
     },
 
-    [isSuperAdmin, fetchProducts, success]
+    [isSuperAdmin, fetchProducts, t]
 
   );
 
@@ -568,7 +625,7 @@ export default function CatalogPage() {
 
         key: "attachment",
 
-        title: "Rasm",
+        title: t("table.image"),
 
         width: "56px",
 
@@ -584,7 +641,7 @@ export default function CatalogPage() {
 
               src={imageUrl}
 
-              alt={row?.nameUz || "product"}
+              alt={row?.nameUz || t("image.alt")}
 
               className="catalog-product-img"
 
@@ -598,7 +655,7 @@ export default function CatalogPage() {
 
           ) : (
 
-            <div className="catalog-product-placeholder">No image</div>
+            <div className="catalog-product-placeholder">{t("table.noImage")}</div>
 
           );
 
@@ -610,7 +667,7 @@ export default function CatalogPage() {
 
         key: "nameUz",
 
-        title: "Nomi",
+        title: t("table.name"),
 
         render: (row) => (
 
@@ -624,7 +681,7 @@ export default function CatalogPage() {
 
         key: "descriptionUz",
 
-        title: "Tavsif",
+        title: t("table.description"),
 
         width: "160px",
 
@@ -646,7 +703,7 @@ export default function CatalogPage() {
 
         key: "categoryListDTO",
 
-        title: "Kategoriya",
+        title: t("table.category"),
 
         render: (row) =>
 
@@ -666,15 +723,15 @@ export default function CatalogPage() {
 
         key: "price",
 
-        title: "Narxi",
+        title: t("table.price"),
 
         render: (row) =>
 
           row?.price !== null && row?.price !== undefined
 
-            ? `${Number(row.price).toLocaleString("ru-RU")} so'm`
+            ? `${Number(row.price).toLocaleString("ru-RU")} ${t("table.currency")}`
 
-            : "0 so'm",
+            : `0 ${t("table.currency")}`,
 
       },
 
@@ -682,7 +739,7 @@ export default function CatalogPage() {
 
         key: "measure",
 
-        title: "O‘lchov",
+        title: t("table.measure"),
 
         render: (row) =>
 
@@ -698,7 +755,7 @@ export default function CatalogPage() {
 
         key: "preparationDurationMinutes",
 
-        title: "Tayyorlanish",
+        title: t("table.preparation"),
 
         width: "96px",
 
@@ -708,7 +765,7 @@ export default function CatalogPage() {
 
           row?.preparationDurationMinutes !== undefined
 
-            ? `${row.preparationDurationMinutes} daqiqa`
+            ? t("table.minutes", { count: row.preparationDurationMinutes })
 
             : "-",
 
@@ -718,7 +775,7 @@ export default function CatalogPage() {
 
         key: "modifierGroups",
 
-        title: "Modifier",
+        title: t("table.modifier"),
 
         width: "180px",
 
@@ -734,7 +791,7 @@ export default function CatalogPage() {
 
           if (!groups.length) {
 
-            return <span className="gt-cell-muted">Yo‘q</span>;
+            return <span className="gt-cell-muted">{t("table.noModifier")}</span>;
 
           }
 
@@ -760,9 +817,9 @@ export default function CatalogPage() {
 
                     {Array.isArray(group?.modifiers)
 
-                      ? `${group.modifiers.length} modifier`
+                      ? t("table.modifierCount", { count: group.modifiers.length })
 
-                      : "0 modifier"}
+                      : t("table.modifierCount", { count: 0 })}
 
                   </small>
 
@@ -794,7 +851,7 @@ export default function CatalogPage() {
 
         key: "productStatus",
 
-        title: "Holat",
+        title: t("table.status"),
 
         render: (row) => {
 
@@ -802,7 +859,7 @@ export default function CatalogPage() {
 
           return (
 
-            <StatusBadge variant={status.variant} label={status.label} />
+            <StatusBadge variant={status.variant} label={t(status.labelKey)} />
 
           );
 
@@ -812,8 +869,21 @@ export default function CatalogPage() {
 
     ],
 
-    []
+    [t]
 
+  );
+
+
+
+  const paginationLabels = useMemo(
+    () => ({
+      total: (count) => t("pagination.total", { count }),
+      perPage: t("pagination.rowsPerPage"),
+      previous: t("pagination.previous"),
+      next: t("pagination.next"),
+      actions: t("table.actions"),
+    }),
+    [t]
   );
 
 
@@ -832,13 +902,13 @@ export default function CatalogPage() {
 
       {
 
-        label: "Tahrirlash",
+        label: t("buttons.edit"),
 
         icon: <Pencil size={14} />,
 
         variant: "edit",
 
-        title: "Super Admin uchun ruxsat yo'q",
+        title: t("tooltips.superAdminNoPermission"),
 
         when: () => !isSuperAdmin,
 
@@ -848,13 +918,13 @@ export default function CatalogPage() {
 
       {
 
-        label: "O'chirish",
+        label: t("buttons.delete"),
 
         icon: <Trash2 size={14} />,
 
         variant: "delete",
 
-        title: "Super Admin uchun ruxsat yo'q",
+        title: t("tooltips.superAdminNoPermission"),
 
         when: () => !isSuperAdmin,
 
@@ -864,7 +934,7 @@ export default function CatalogPage() {
 
     ],
 
-    [isSuperAdmin, handleDeleteProduct, handleEditProduct]
+    [isSuperAdmin, handleDeleteProduct, handleEditProduct, t]
 
   );
 
@@ -878,9 +948,9 @@ export default function CatalogPage() {
 
         <div>
 
-          <h1>Catalog</h1>
+          <h1>{t("title")}</h1>
 
-          <p>Productlarni boshqarish ({products.length})</p>
+          <p>{t("subtitle", { count: products.length })}</p>
 
         </div>
 
@@ -898,7 +968,7 @@ export default function CatalogPage() {
 
           >
 
-            Yangi product
+            {t("buttons.addProduct")}
 
           </button>
 
@@ -912,9 +982,9 @@ export default function CatalogPage() {
 
         {isSuperAdmin && (
 
-          <FilterItem>
+          <FilterItem className="catalog-filter-row-full">
 
-            <PagePartnerFilter partnerLabel="Tashkilot" />
+            <PagePartnerFilter partnerLabel={t("filters.organization")} />
 
           </FilterItem>
 
@@ -922,133 +992,147 @@ export default function CatalogPage() {
 
 
 
-        <FilterItem grow>
+        <div className="catalog-filter-row catalog-filter-row-prices">
 
-          <div className="catalog-filter-search">
+          <FilterItem grow>
 
-            <Search size={16} />
+            <div className="catalog-filter-search">
+
+              <Search size={16} />
+
+              <input
+
+                type="text"
+
+                placeholder={t("search.placeholder")}
+
+                value={search}
+
+                disabled={filtersDisabled}
+
+                onChange={(e) => setSearch(e.target.value)}
+
+              />
+
+            </div>
+
+          </FilterItem>
+
+
+
+          <FilterItem auto>
 
             <input
 
               type="text"
 
-              placeholder="Nomi, tavsif, kategoriya, modifier..."
+              inputMode="numeric"
 
-              value={search}
+              pattern="[0-9]*"
+
+              className="catalog-filter-input"
+
+              placeholder={t("filters.minPrice")}
+
+              value={minPrice}
 
               disabled={filtersDisabled}
 
-              onChange={(e) => setSearch(e.target.value)}
+              onChange={(e) => setMinPrice(sanitizeIntegerInput(e.target.value))}
 
             />
 
-          </div>
-
-        </FilterItem>
+          </FilterItem>
 
 
 
-        <FilterItem>
+          <FilterItem auto>
 
-          <CustomDropdown
+            <input
 
-            value={categoryId}
+              type="text"
 
-            onChange={setCategoryId}
+              inputMode="numeric"
 
-            placeholder="Barcha kategoriyalar"
+              pattern="[0-9]*"
 
-            searchable
+              className="catalog-filter-input"
 
-            clearable
+              placeholder={t("filters.maxPrice")}
 
-            disabled={filtersDisabled}
+              value={maxPrice}
 
-            options={[
+              disabled={filtersDisabled}
 
-              { label: "Barcha kategoriyalar", value: "" },
+              onChange={(e) => setMaxPrice(sanitizeIntegerInput(e.target.value))}
 
-              ...categories.map((category) => ({
+            />
+
+          </FilterItem>
+
+        </div>
+
+
+
+        <div className="catalog-filter-row catalog-filter-row-selects">
+
+          <FilterItem className="catalog-filter-category">
+
+            <CustomDropdown
+
+              className="catalog-category-dropdown"
+
+              value={categoryIds}
+
+              onChange={setCategoryIds}
+
+              placeholder={t("filters.allCategories")}
+
+              searchable
+
+              clearable
+
+              multiple
+
+              disabled={filtersDisabled}
+
+              options={categories.map((category) => ({
 
                 label: category.name || "-",
 
                 value: String(category.id),
 
-              })),
+              }))}
 
-            ]}
+            />
 
-          />
-
-        </FilterItem>
+          </FilterItem>
 
 
 
-        <FilterItem auto>
+          <FilterItem className="catalog-filter-modifier">
 
-          <input
+            <CustomDropdown
 
-            type="number"
+              value={modifierFilter}
 
-            className="catalog-filter-input"
+              onChange={setModifierFilter}
 
-            placeholder="Min narx"
+              disabled={filtersDisabled}
 
-            value={minPrice}
+              options={modifierFilterOptions}
 
-            disabled={filtersDisabled}
+            />
 
-            onChange={(e) => setMinPrice(e.target.value)}
+          </FilterItem>
 
-          />
-
-        </FilterItem>
-
-
-
-        <FilterItem auto>
-
-          <input
-
-            type="number"
-
-            className="catalog-filter-input"
-
-            placeholder="Max narx"
-
-            value={maxPrice}
-
-            disabled={filtersDisabled}
-
-            onChange={(e) => setMaxPrice(e.target.value)}
-
-          />
-
-        </FilterItem>
-
-
-
-        <FilterItem>
-
-          <CustomDropdown
-
-            value={modifierFilter}
-
-            onChange={setModifierFilter}
-
-            disabled={filtersDisabled}
-
-            options={MODIFIER_FILTERS}
-
-          />
-
-        </FilterItem>
+        </div>
 
       </FilterBar>
 
 
 
-      {error && <div className="catalog-error">{error}</div>}
+      {error && <div className="catalog-error">{t(error)}</div>}
 
 
 
@@ -1064,13 +1148,24 @@ export default function CatalogPage() {
 
           loading={loading}
 
-          emptyText={canFetch ? "Productlar topilmadi" : PARTNER_SELECT_MESSAGE}
+          loadingText={t("states.loading")}
+
+          emptyText={canFetch ? t("states.noData") : t("states.partnerSelect")}
+
+          paginationLabels={paginationLabels}
 
           rowKey="id"
 
           actions={actions}
 
-          pagination={{ client: true }}
+          pagination={{
+            page,
+            size,
+            totalElements,
+            totalPages,
+          }}
+          onPageChange={setPage}
+          onPageSizeChange={setSize}
 
           // onRowDoubleClick={handleViewProduct}
 

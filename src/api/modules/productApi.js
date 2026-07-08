@@ -8,5 +8,7 @@ export const productApi = {
   delete: (id) => apiClient.delete(`${BASE_URL}/${id}`),
   getById: (id) => apiClient.get(`${BASE_URL}/${id}`),
   pricePreview: (payload) =>
-    apiClient.post(`${BASE_URL}/price-preview`, payload),
+    apiClient.post(`${BASE_URL}/price-preview`, payload, {
+      meta: { skipSuccessNotification: true },
+    }),
 };

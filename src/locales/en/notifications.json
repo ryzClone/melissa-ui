@@ -1,0 +1,34 @@
+{
+  "common": {
+    "success": "Success",
+    "error": "Error",
+    "warning": "Warning",
+    "info": "Information",
+    "infoLoaded": "Data loaded"
+  },
+  "crud": {
+    "created": "Created successfully",
+    "updated": "Updated successfully",
+    "deleted": "Deleted successfully",
+    "saved": "Saved successfully"
+  },
+  "auth": {
+    "loginSuccess": "Logged in successfully",
+    "loginError": "Invalid username or password",
+    "sessionExpired": "Session expired. Please log in again",
+    "logoutSuccess": "Logged out successfully"
+  },
+  "errors": {
+    "default": "Something went wrong",
+    "network": "No connection to server",
+    "server": "Server error",
+    "forbidden": "Access denied",
+    "notFound": "Data not found",
+    "validation": "Please check the entered data",
+    "badRequest": "Bad request"
+  },
+  "actions": {
+    "completed": "Action completed successfully",
+    "failed": "Failed to complete action"
+  }
+}

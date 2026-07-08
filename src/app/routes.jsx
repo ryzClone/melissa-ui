@@ -15,6 +15,8 @@ import RolesPermissionsPage from "@/modules/RolePermissions/pages/RolesPermissio
 import ChatControlPage from "@/modules/ChatControl/pages/ChatControlPage";
 import HelpCenterPage from "@/modules/Help/pages/HelpCenterPage";
 import SettingsPage from "@/modules/Settings/pages/SettingsPage";
+import AdminNewsPage from "@/modules/admin/pages/AdminNewsPage";
+import AdminImportantMessagesPage from "@/modules/admin/pages/AdminImportantMessagesPage";
 import ServerUnavailablePage from "@/pages/ServerUnavailablePage/ServerUnavailablePage";
 
 function ProtectedRoute({ children }) {
@@ -103,6 +105,14 @@ export const routes = [
       {
         path: "settings",
         element: <SettingsPage />,
+      },
+      {
+        path: "admin/news",
+        element: <AdminNewsPage />,
+      },
+      {
+        path: "admin/messages",
+        element: <AdminImportantMessagesPage />,
       },
     ],
   },

@@ -1,17 +1,20 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import "./BranchesHeader.css";
 import { Plus } from "lucide-react";
+import { BRANCHES_NAMESPACE } from "@/i18n/namespaces";
 import AddBranchModal from "./components/AddBranchModal";
 
 export default function BranchesHeader({ onRefresh }) {
+  const { t } = useTranslation(BRANCHES_NAMESPACE);
   const [openModal, setOpenModal] = useState(false);
 
   return (
     <>
       <div className="branches-header">
         <div className="branches-header-left">
-          <h1>Filiallar</h1>
-          <p>Barcha filiallarni boshqaring</p>
+          <h1>{t("title")}</h1>
+          <p>{t("subtitle")}</p>
         </div>
 
         <button
@@ -20,7 +23,7 @@ export default function BranchesHeader({ onRefresh }) {
           onClick={() => setOpenModal(true)}
         >
           <Plus size={18} />
-          <span>Yangi filial</span>
+          <span>{t("buttons.add")}</span>
         </button>
       </div>
 

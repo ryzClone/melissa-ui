@@ -1,0 +1,184 @@
+{
+  "title": "Catalog",
+  "subtitle": "Manage products ({{count}})",
+  "tabs": {
+    "products": "Products",
+    "categories": "Categories"
+  },
+  "search": {
+    "placeholder": "Name, description, category, modifier..."
+  },
+  "filters": {
+    "category": "Category",
+    "status": "Status",
+    "branch": "Branch",
+    "organization": "Organization",
+    "allCategories": "All categories",
+    "minPrice": "Min price",
+    "maxPrice": "Max price",
+    "modifierAll": "All",
+    "modifierWith": "With modifier",
+    "modifierWithout": "Without modifier"
+  },
+  "table": {
+    "image": "Image",
+    "name": "Name",
+    "description": "Description",
+    "category": "Category",
+    "price": "Price",
+    "measure": "Measure",
+    "preparation": "Preparation",
+    "modifier": "Modifier",
+    "status": "Status",
+    "show": "Show",
+    "openForSale": "Open for sale",
+    "createdAt": "Created at",
+    "actions": "Actions",
+    "noImage": "No image",
+    "noModifier": "None",
+    "minutes": "{{count}} min",
+    "modifierCount": "{{count}} modifier(s)",
+    "currency": "UZS"
+  },
+  "buttons": {
+    "addProduct": "New product",
+    "addCategory": "New category",
+    "edit": "Edit",
+    "view": "View",
+    "delete": "Delete",
+    "save": "Save",
+    "cancel": "Cancel",
+    "close": "Close",
+    "upload": "Upload",
+    "changeImage": "Change image",
+    "removeImage": "Remove",
+    "selectImage": "Select image",
+    "apply": "Apply",
+    "clear": "Clear",
+    "createProduct": "Create product"
+  },
+  "modal": {
+    "kicker": "CATALOG",
+    "createProduct": "New product",
+    "editProduct": "Edit product",
+    "viewProduct": "Product details",
+    "deleteProduct": "Delete product",
+    "createCategory": "New category",
+    "editCategory": "Edit category",
+    "deleteCategory": "Delete category"
+  },
+  "form": {
+    "name": "Name",
+    "nameUz": "Name (UZ)",
+    "nameRu": "Name (RU)",
+    "nameEn": "Name (EN)",
+    "description": "Description",
+    "descriptionUz": "Description (UZ)",
+    "descriptionRu": "Description (RU)",
+    "descriptionEn": "Description (EN)",
+    "price": "Price",
+    "category": "Category",
+    "image": "Image",
+    "productImage": "Product image",
+    "status": "Status",
+    "show": "Show",
+    "openForSale": "Open for sale",
+    "basicInfo": "Basic information",
+    "descriptions": "Descriptions",
+    "attributes": "Product attributes",
+    "branches": "Branches",
+    "branchesHint": "Select branches where this product is available",
+    "visibilityAndSale": "Visibility and sale",
+    "showHint": "Show product in the app",
+    "openForSaleHint": "Allow ordering",
+    "defaultCategory": "Category",
+    "defaultBranch": "Branch"
+  },
+  "placeholders": {
+    "name": "Product name",
+    "nameRu": "Название",
+    "nameEn": "Name",
+    "description": "Description",
+    "price": "0",
+    "category": "Select category",
+    "measureUnit": "kg, g, ml..."
+  },
+  "attributes": {
+    "measure": "Measure",
+    "measureUnit": "Measure Unit",
+    "calories": "Calories",
+    "carbohydrates": "Carbohydrates",
+    "fat": "Fat",
+    "proteins": "Proteins",
+    "mxikCode": "MXIK Code (UZ)",
+    "packageCode": "Package Code (UZ)",
+    "vat": "VAT",
+    "weightQuantum": "Weight Quantum",
+    "catchWeight": "Catch Weight",
+    "needMarking": "Need Marking",
+    "deactivated": "Deactivated"
+  },
+  "status": {
+    "active": "Active",
+    "inactive": "Inactive",
+    "visible": "Visible",
+    "hidden": "Hidden",
+    "available": "Open for sale",
+    "unavailable": "Sale closed"
+  },
+  "validation": {
+    "required": "Please fill in the required field",
+    "invalidPrice": "Enter a valid price",
+    "selectCategory": "Select a category",
+    "uploadImage": "Upload an image",
+    "nameUzRequired": "Enter the name in Uzbek",
+    "waitForUpload": "Wait for the image upload to finish",
+    "imageOnly": "Only image files can be uploaded",
+    "imageUploadError": "Failed to upload image",
+    "attachmentIdMissing": "Image uploaded, but backend did not return attachment ID"
+  },
+  "toast": {
+    "productCreated": "Product created successfully",
+    "productUpdated": "Product updated successfully",
+    "productDeleted": "Product deleted successfully",
+    "categoryCreated": "Category created successfully",
+    "categoryUpdated": "Category updated successfully",
+    "categoryDeleted": "Category deleted successfully"
+  },
+  "states": {
+    "loading": "Loading...",
+    "saving": "Saving...",
+    "noData": "No products found",
+    "error": "Something went wrong",
+    "loadError": "Failed to load products",
+    "productLoadError": "Failed to load product details",
+    "productNotFound": "Product not found",
+    "noCategories": "No categories found",
+    "noBranches": "No branches found",
+    "branchesLoading": "Loading branches...",
+    "partnerSelect": "Please select a partner"
+  },
+  "confirm": {
+    "deleteProductTitle": "Delete product",
+    "deleteProductMessage": "Are you sure you want to delete this product?",
+    "deleteCategoryTitle": "Delete category",
+    "deleteCategoryMessage": "Are you sure you want to delete this category?",
+    "yes": "Yes, delete",
+    "no": "No"
+  },
+  "pagination": {
+    "total": "Total: {{count}}",
+    "previous": "Previous",
+    "next": "Next",
+    "page": "Page",
+    "rowsPerPage": "Rows per page"
+  },
+  "tooltips": {
+    "superAdminNoPermission": "No permission for Super Admin"
+  },
+  "image": {
+    "hint": "Upload an image in PNG, JPG, or WEBP format",
+    "alt": "Product",
+    "noImage": "No image"
+  }
+}

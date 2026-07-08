@@ -1,7 +1,6 @@
 .addbranch-modal-overlay {
   position: fixed;
   inset: 0;
-  z-index: 999;
   background: rgba(4, 2, 10, 0.82);
   backdrop-filter: blur(12px);
   display: flex;

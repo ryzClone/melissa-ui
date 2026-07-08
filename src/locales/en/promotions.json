@@ -1,0 +1,212 @@
+{
+  "title": "Promotions",
+  "subtitle": "Manage coupons and discounts",
+  "tabs": {
+    "promotions": "Promotions",
+    "discounts": "Discounts",
+    "promoCodes": "Promo code"
+  },
+  "search": {
+    "placeholder": "Search..."
+  },
+  "filters": {
+    "status": "Status",
+    "type": "Type",
+    "dateFrom": "Start date",
+    "dateTo": "End date",
+    "organization": "Organization"
+  },
+  "table": {
+    "listTitle": "Promotion list",
+    "promoCodesListTitle": "Promo code list",
+    "name": "Name",
+    "description": "Description",
+    "code": "Code",
+    "type": "Type",
+    "discount": "Discount",
+    "startDate": "Start",
+    "endDate": "End",
+    "status": "Status",
+    "createdAt": "Created at",
+    "actions": "Actions",
+    "id": "ID",
+    "minOrder": "Min. order",
+    "orderCount": "Order count",
+    "usageCount": "Used",
+    "product": "Product"
+  },
+  "buttons": {
+    "add": "Add promotion",
+    "addPromoCode": "New promo code",
+    "edit": "Edit",
+    "view": "View",
+    "delete": "Delete",
+    "save": "Save",
+    "cancel": "Cancel",
+    "close": "Close",
+    "search": "Search",
+    "apply": "Apply",
+    "clear": "Clear",
+    "download": "Download",
+    "create": "Create promotion",
+    "createPromoCode": "Create promo code",
+    "generate": "Generate"
+  },
+  "modal": {
+    "create": "New promotion",
+    "createSubtitle": "Create a new promotion",
+    "edit": "Edit promotion",
+    "editSubtitle": "Update promotion details",
+    "view": "Promotion details",
+    "viewSubtitle": "Selected promotion information",
+    "delete": "Delete promotion",
+    "createPromoCode": "New promo code",
+    "createPromoCodeSubtitle": "Create a new promo code",
+    "editPromoCode": "Edit promo code",
+    "editPromoCodeSubtitle": "Update promo code details",
+    "viewPromoCode": "Promo code details",
+    "viewPromoCodeSubtitle": "Selected promo code information",
+    "labelPromotions": "PROMOTIONS",
+    "labelPromoCode": "PROMO CODES",
+    "labelPromotion": "Promotion",
+    "labelPromoCodeSingle": "Promo code"
+  },
+  "form": {
+    "name": "Promotion name",
+    "promoCodeName": "Promo code name",
+    "promoCodeCode": "Promo code",
+    "description": "Comment",
+    "discount": "Discount",
+    "discountType": "Type",
+    "startDate": "Start",
+    "endDate": "End",
+    "status": "Status",
+    "image": "Image",
+    "products": "Product",
+    "branches": "Branches",
+    "productSearch": "Search product...",
+    "basicInfo": "Basic information",
+    "validityPeriod": "Validity period",
+    "additional": "Additional",
+    "conditions": "Conditions",
+    "valuePercent": "Value (%)",
+    "percentValue": "Percentage (%)",
+    "fixedAmount": "Discount amount (UZS)",
+    "orderCount": "Order count",
+    "minOrder": "Minimum order",
+    "activateNow": "Activate immediately",
+    "activateNowHint": "Promotion will be active right after creation",
+    "activatePromoNowHint": "Promo code will be active right after creation",
+    "selectDate": "Select date",
+    "typeReadonly": "Percentage (%)",
+    "typePercentage": "Percentage (%)",
+    "typeFixed": "Amount (UZS)",
+    "preview": "PREVIEW",
+    "previewPlaceholder": "PROMOCODE",
+    "placeholders": {
+      "name": "e.g. Autumn sale",
+      "promoCodeName": "e.g. New Year discount",
+      "promoCodeCode": "e.g. WELCOME10",
+      "value": "e.g. 20",
+      "percent": "e.g. 10",
+      "fixedAmount": "e.g. 50000",
+      "orderCount": "e.g. 1",
+      "minOrder": "e.g. 100000",
+      "description": "Brief description of the promotion"
+    }
+  },
+  "types": {
+    "percentage": "Percentage",
+    "fixed": "Amount",
+    "percentageFull": "Percentage (%)",
+    "fixedFull": "Amount (UZS)"
+  },
+  "status": {
+    "active": "Active",
+    "inactive": "Inactive",
+    "expired": "Expired",
+    "draft": "Draft",
+    "pending": "Pending"
+  },
+  "validation": {
+    "required": "This field is required",
+    "invalidDate": "Invalid date",
+    "endDateAfterStart": "End date must be after start date",
+    "invalidDiscount": "Invalid discount value",
+    "promoNameRequired": "Promo code name is required",
+    "promoCodeRequired": "Promo code is required",
+    "startDateRequired": "Start date is required",
+    "endDateRequired": "End date is required",
+    "percentRequired": "Enter percentage value",
+    "fixedAmountRequired": "Enter discount amount"
+  },
+  "toast": {
+    "created": "Created successfully",
+    "updated": "Updated successfully",
+    "deleted": "Deleted successfully"
+  },
+  "states": {
+    "loading": "Loading...",
+    "noData": "No data",
+    "error": "Something went wrong",
+    "noProducts": "No products found",
+    "partnerSelect": "Please select a partner"
+  },
+  "confirm": {
+    "deleteTitle": "Delete promotion",
+    "deleteMessage": "Are you sure you want to delete?",
+    "yes": "Yes, delete",
+    "no": "No"
+  },
+  "pagination": {
+    "total": "Total: {{count}}",
+    "previous": "Previous",
+    "next": "Next",
+    "page": "Page",
+    "rowsPerPage": "Per page"
+  },
+  "stats": {
+    "totalPromotions": "Total promotions",
+    "totalPromotionsDesc": "All promotions",
+    "activePromotions": "Active promotions",
+    "activePromotionsDesc": "Currently active",
+    "pendingPromotions": "Pending",
+    "pendingPromotionsDesc": "Not started yet",
+    "avgDiscount": "Average discount",
+    "activeCoupons": "Active coupons",
+    "totalSavings": "Total savings",
+    "expiringSoon": "Expiring soon",
+    "countUnit": "{{count}}"
+  },
+  "preview": {
+    "discountPercent": "{{value}}% discount",
+    "discountFixed": "{{value}} UZS discount",
+    "discountZeroPercent": "0% discount",
+    "discountZeroFixed": "0 UZS discount"
+  },
+  "calendar": {
+    "months": {
+      "0": "January",
+      "1": "February",
+      "2": "March",
+      "3": "April",
+      "4": "May",
+      "5": "June",
+      "6": "July",
+      "7": "August",
+      "8": "September",
+      "9": "October",
+      "10": "November",
+      "11": "December"
+    },
+    "weekdays": {
+      "0": "Mo",
+      "1": "Tu",
+      "2": "We",
+      "3": "Th",
+      "4": "Fr",
+      "5": "Sa",
+      "6": "Su"
+    }
+  }
+}

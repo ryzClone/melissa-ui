@@ -1,0 +1,13 @@
+{
+  "title": "Kirish",
+  "subtitle": "Tizimga kirish uchun login va parolingizni kiriting",
+  "username": "Login",
+  "usernamePlaceholder": "Loginni kiriting",
+  "password": "Parol",
+  "passwordPlaceholder": "Parolni kiriting",
+  "button": "Kirish",
+  "loading": "Kirish...",
+  "usernameRequired": "Loginni kiriting",
+  "passwordRequired": "Parolni kiriting",
+  "error": "Login yoki parol noto'g'ri"
+}

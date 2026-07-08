@@ -1,7 +1,9 @@
 import { useState, useRef, useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import { MapContainer, TileLayer, Marker, useMapEvents } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
+import { BRANCHES_NAMESPACE } from "@/i18n/namespaces";
 import "./AddBranchMapModal.css";
 
 // Default marker icon fix for CRA/Vite/Vite
@@ -91,6 +93,7 @@ function isDefaultTashkent(coords) {
 }
 
 export default function AddBranchMapModal({ value, onSelect, onClose }) {
+  const { t } = useTranslation(BRANCHES_NAMESPACE);
   const initialCoords = parseInitialCoords(value);
   const [marker, setMarker] = useState(initialCoords);
   const [address, setAddress] = useState("");
@@ -149,7 +152,7 @@ export default function AddBranchMapModal({ value, onSelect, onClose }) {
       },
       () => {
         setLoading(false);
-        alert("Geolokatsiya olishda xatolik.");
+        alert(t("map.geolocationError"));
       },
       { enableHighAccuracy: true, timeout: 10000 }
     );
@@ -179,7 +182,7 @@ export default function AddBranchMapModal({ value, onSelect, onClose }) {
           className="addbranch-map-gps-btn"
           onClick={handleGPS}
         >
-          Mening joylashuvim
+          {t("map.myLocation")}
         </button>
       </div>
       <MapContainer
@@ -198,8 +201,12 @@ export default function AddBranchMapModal({ value, onSelect, onClose }) {
         {marker && <Marker position={marker} />}
       </MapContainer>
       <div className="addbranch-map-location-info">
-        <strong>Tanlangan joy:</strong>{" "}
-        {loading ? "Manzil aniqlanmoqda..." : address || (marker && `${marker.lat.toFixed(6)}, ${marker.lng.toFixed(6)}`) || "Xaritadan manzilni tanlang."}
+        <strong>{t("map.selectedLocation")}</strong>{" "}
+        {loading
+          ? t("map.resolvingAddress")
+          : address ||
+            (marker && `${marker.lat.toFixed(6)}, ${marker.lng.toFixed(6)}`) ||
+            t("map.selectFromMap")}
       </div>
       <div className="addbranch-map-actions">
         <button
@@ -207,7 +214,7 @@ export default function AddBranchMapModal({ value, onSelect, onClose }) {
           className="addbranch-map-cancel-btn"
           onClick={handleCancel}
         >
-          Bekor qilish
+          {t("buttons.cancel")}
         </button>
         <button
           type="button"
@@ -215,7 +222,7 @@ export default function AddBranchMapModal({ value, onSelect, onClose }) {
           onClick={handleConfirm}
           disabled={!marker || !address || loading}
         >
-          Tasdiqlash
+          {t("buttons.confirm")}
         </button>
       </div>
     </div>

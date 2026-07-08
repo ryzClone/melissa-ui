@@ -1,0 +1,132 @@
+{
+  "title": "Филиалы",
+  "subtitle": "Управляйте всеми филиалами",
+  "search": {
+    "placeholder": "Поиск..."
+  },
+  "filters": {
+    "city": "Город",
+    "region": "Регион",
+    "status": "Статус"
+  },
+  "table": {
+    "listTitle": "Список филиалов",
+    "name": "Название филиала",
+    "phone": "Телефон",
+    "address": "Адрес",
+    "status": "Статус",
+    "createdAt": "Дата создания",
+    "actions": "Действия"
+  },
+  "buttons": {
+    "add": "Новый филиал",
+    "edit": "Редактировать",
+    "view": "Просмотр",
+    "delete": "Удалить",
+    "save": "Сохранить",
+    "cancel": "Отмена",
+    "close": "Закрыть",
+    "search": "Поиск",
+    "create": "Создать",
+    "download": "Скачать",
+    "confirm": "Подтвердить"
+  },
+  "modal": {
+    "create": "Добавить новый филиал",
+    "createSubtitle": "Введите данные нового филиала",
+    "edit": "Редактировать филиал",
+    "editSubtitle": "Обновите данные филиала",
+    "view": "Данные филиала",
+    "viewSubtitle": "Полная информация о филиале",
+    "delete": "Удалить филиал",
+    "deleteSubtitle": "Это действие нельзя отменить"
+  },
+  "form": {
+    "name": "Название филиала",
+    "phone": "Номер телефона",
+    "address": "Адрес",
+    "fullAddress": "Полный адрес",
+    "latitude": "Широта",
+    "longitude": "Долгота",
+    "status": "Статус",
+    "city": "Город",
+    "region": "Область / Регион",
+    "country": "Страна",
+    "district": "Район",
+    "street": "Улица",
+    "house": "Дом",
+    "entrance": "Подъезд",
+    "floor": "Этаж",
+    "apartment": "Квартира",
+    "comment": "Комментарий",
+    "placeId": "Place ID",
+    "title": "Заголовок",
+    "id": "ID",
+    "sectionAddress": "Адрес",
+    "selectPlaceholder": "Выберите",
+    "selectRegionFirst": "Сначала выберите регион",
+    "selectCityFirst": "Сначала выберите город",
+    "noOptions": "Нет вариантов",
+    "mapPick": "Выбрать на карте",
+    "placeholders": {
+      "name": "Например: Melissa Chilonzor",
+      "phone": "+998",
+      "fullAddress": "Например: Ташкент, Чилanzar, улица Bunyodkor",
+      "latitude": "Широта",
+      "longitude": "Долгота",
+      "country": "Uzbekistan",
+      "street": "Bunyodkor",
+      "house": "12",
+      "entrance": "1",
+      "floor": "1",
+      "apartment": "101",
+      "placeId": "Google place id",
+      "comment": "Дополнительная информация о филиале..."
+    }
+  },
+  "validation": {
+    "required": "Введите название филиала",
+    "invalidPhone": "Введите корректный номер телефона (+998 99 999 99 99)"
+  },
+  "toast": {
+    "created": "Филиал успешно создан",
+    "updated": "Филиал успешно обновлён",
+    "deleted": "Филиал успешно удалён"
+  },
+  "states": {
+    "loading": "Загрузка...",
+    "saving": "Сохранение...",
+    "creating": "Создание...",
+    "noData": "Данные не найдены",
+    "error": "Произошла ошибка",
+    "partnerSelect": "Пожалуйста, выберите партнёра"
+  },
+  "confirm": {
+    "deleteTitle": "Удалить филиал",
+    "deleteMessage": "Вы действительно хотите удалить филиал {{name}}?",
+    "deleteWarning": "После удаления эти данные нельзя будет восстановить.",
+    "yes": "Да, удалить",
+    "no": "Нет"
+  },
+  "status": {
+    "active": "Активен",
+    "inactive": "Неактивен",
+    "label": "Статус: {{status}}"
+  },
+  "pagination": {
+    "total": "Всего: {{count}}",
+    "perPage": "На странице",
+    "previous": "Назад",
+    "next": "Далее"
+  },
+  "map": {
+    "myLocation": "Моё местоположение",
+    "selectedLocation": "Выбранное место:",
+    "resolvingAddress": "Определение адреса...",
+    "selectFromMap": "Выберите адрес на карте.",
+    "geolocationError": "Ошибка при получении геолокации."
+  },
+  "tooltips": {
+    "superAdminNoPermission": "Недоступно для Super Admin"
+  }
+}

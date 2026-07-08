@@ -1,0 +1,123 @@
+{
+  "title": "Orders",
+  "subtitle": "Manage orders by status",
+  "search": {
+    "placeholder": "Search orders..."
+  },
+  "filters": {
+    "status": "Status",
+    "branch": "Branch",
+    "organization": "Organization",
+    "date": "Date",
+    "customer": "Customer",
+    "allStatuses": "All statuses",
+    "dateFrom": "From",
+    "dateTo": "To"
+  },
+  "tabs": {
+    "active": "Active orders",
+    "history": "History"
+  },
+  "cards": {
+    "newOrders": "New",
+    "acceptedOrders": "Accepted",
+    "cookingOrders": "In progress",
+    "completedOrders": "Completed"
+  },
+  "table": {
+    "orderNumber": "Order",
+    "customer": "Customer",
+    "phone": "Phone",
+    "branch": "Branch",
+    "products": "Products",
+    "totalPrice": "Total",
+    "createdAt": "Time",
+    "status": "Status",
+    "actions": "Actions",
+    "itemsCount": "{{count}} items"
+  },
+  "buttons": {
+    "accept": "Accept",
+    "startCooking": "Start cooking",
+    "complete": "Complete",
+    "view": "View",
+    "close": "Close",
+    "cancel": "Cancel",
+    "search": "Search",
+    "refresh": "Refresh",
+    "apply": "Apply",
+    "clear": "Clear"
+  },
+  "modal": {
+    "details": "Order Details",
+    "confirm": "Confirm",
+    "kicker": "ORDER"
+  },
+  "status": {
+    "new": "New",
+    "accepted": "Accepted",
+    "cooking": "Cooking",
+    "completed": "Completed",
+    "cancelled": "Cancelled",
+    "ready": "Ready",
+    "delivering": "Delivering",
+    "delivered": "Delivered",
+    "rejected": "Rejected"
+  },
+  "timer": {
+    "remaining": "{{time}} left",
+    "expired": "Time expired"
+  },
+  "details": {
+    "customer": "Customer",
+    "phone": "Phone",
+    "branch": "Branch",
+    "address": "Address",
+    "comment": "Comment",
+    "products": "Products",
+    "quantity": "Quantity",
+    "price": "Price",
+    "total": "Total",
+    "totalAmount": "Total amount",
+    "discount": "Discount",
+    "itemsMore": "+{{count}} more"
+  },
+  "validation": {
+    "required": "Please fill in the required field"
+  },
+  "toast": {
+    "accepted": "{{order}} accepted",
+    "cookingStarted": "{{order}} moved to cooking",
+    "completed": "{{order}} completed",
+    "updated": "Order updated"
+  },
+  "notifications": {
+    "newOrder": "New order",
+    "accepted": "Accepted",
+    "cooking": "In progress",
+    "statusUpdated": "Order updated"
+  },
+  "states": {
+    "loading": "Loading...",
+    "noData": "No data",
+    "error": "Something went wrong",
+    "columnEmpty": "No orders",
+    "historyEmpty": "No orders in history",
+    "partnerSelect": "Please select a partner"
+  },
+  "confirm": {
+    "acceptTitle": "Accept order",
+    "acceptMessage": "Are you sure you want to accept this order?",
+    "completeTitle": "Complete order",
+    "completeMessage": "Mark this order as completed?",
+    "yes": "Yes",
+    "no": "No"
+  },
+  "pagination": {
+    "total": "Total: {{count}}",
+    "previous": "Previous",
+    "next": "Next",
+    "page": "Page",
+    "rowsPerPage": "Rows per page"
+  }
+}

@@ -1,0 +1,149 @@
+{
+  "title": "Users",
+  "subtitle": "Manage users and permissions",
+  "tabs": {
+    "users": "Users",
+    "roles": "Roles & permissions"
+  },
+  "search": {
+    "placeholder": "Search..."
+  },
+  "filters": {
+    "role": "Role",
+    "status": "Status",
+    "organization": "Organization",
+    "branch": "Branch"
+  },
+  "table": {
+    "listTitle": "User list",
+    "fullName": "Name",
+    "name": "First name",
+    "surname": "Last name",
+    "username": "Username",
+    "usernamePhone": "Username / Phone",
+    "phone": "Phone",
+    "role": "Role",
+    "branch": "Branch",
+    "status": "Status",
+    "createdAt": "Created at",
+    "actions": "Actions"
+  },
+  "buttons": {
+    "add": "New user",
+    "addUser": "New user",
+    "addRole": "New role",
+    "edit": "Edit",
+    "view": "View",
+    "delete": "Delete",
+    "save": "Save",
+    "cancel": "Cancel",
+    "close": "Close",
+    "search": "Search",
+    "assignRole": "Assign role",
+    "removeRole": "Remove role",
+    "download": "Download",
+    "createUser": "Create user"
+  },
+  "modal": {
+    "create": "New user",
+    "createSubtitle": "Add a new user to the system",
+    "edit": "Edit user",
+    "view": "User details",
+    "viewSubtitle": "Selected user information",
+    "delete": "Delete user",
+    "assignRole": "Assign role"
+  },
+  "form": {
+    "name": "First name",
+    "surname": "Last name",
+    "fullName": "Full name",
+    "username": "Username",
+    "password": "Password",
+    "phone": "Phone number",
+    "role": "Role",
+    "roles": "Roles",
+    "branch": "Branch",
+    "organization": "Organization",
+    "status": "Status",
+    "profileId": "Profile ID",
+    "profilePhoto": "Profile photo",
+    "profilePhotoHint": "Upload an image in PNG, JPG, or WEBP format. If not uploaded, attachmentId will be null.",
+    "placeholders": {
+      "username": "Username",
+      "password": "Password",
+      "name": "First name",
+      "surname": "Last name",
+      "phone": "+998 99 123 45 67"
+    },
+    "avatar": {
+      "noImage": "No image",
+      "select": "Choose image",
+      "replace": "Replace image",
+      "remove": "Remove",
+      "previewAlt": "Avatar preview"
+    },
+    "branch": {
+      "selectPartnerFirst": "Select a partner first",
+      "loading": "Loading...",
+      "notFound": "No branches found",
+      "select": "Select branch"
+    }
+  },
+  "roles": {
+    "title": "Role",
+    "selectRole": "Select role",
+    "noRoles": "No roles found",
+    "assignedRoles": "Assigned roles",
+    "availableRoles": "Available roles",
+    "loading": "Loading..."
+  },
+  "status": {
+    "active": "Active",
+    "inactive": "Inactive",
+    "blocked": "Blocked"
+  },
+  "validation": {
+    "required": "This field is required",
+    "fillRequired": "Fill in all required fields",
+    "invalidPhone": "Enter the full phone number",
+    "invalidUsername": "Enter username",
+    "passwordMin": "Enter password",
+    "nameRequired": "Enter first name",
+    "surnameRequired": "Enter last name",
+    "roleRequired": "Select a role",
+    "branchRequired": "Select a branch",
+    "imageOnly": "Only image files are allowed",
+    "imageUploadError": "Failed to upload image",
+    "attachmentIdMissing": "Attachment ID is missing"
+  },
+  "toast": {
+    "created": "User created successfully",
+    "updated": "User updated successfully",
+    "deleted": "User deleted successfully",
+    "roleAssigned": "Role assigned successfully",
+    "roleRemoved": "Role removed successfully"
+  },
+  "states": {
+    "loading": "Loading...",
+    "creating": "Creating...",
+    "noData": "No data found",
+    "error": "An error occurred",
+    "noRoles": "No roles found",
+    "noUsers": "No users found",
+    "partnerSelect": "Please select a partner",
+    "rolesLoadError": "Failed to load roles"
+  },
+  "confirm": {
+    "deleteTitle": "Delete user",
+    "deleteMessage": "Are you sure you want to delete this user?",
+    "yes": "Yes, delete",
+    "no": "No"
+  },
+  "pagination": {
+    "total": "Total: {{count}}",
+    "previous": "Previous",
+    "next": "Next",
+    "page": "Page",
+    "rowsPerPage": "Per page"
+  }
+}

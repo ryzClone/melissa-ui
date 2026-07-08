@@ -1,0 +1,149 @@
+{
+  "title": "Foydalanuvchilar",
+  "subtitle": "Foydalanuvchilar va ruxsatlarni boshqarish",
+  "tabs": {
+    "users": "Foydalanuvchilar",
+    "roles": "Rollar va ruxsatlar"
+  },
+  "search": {
+    "placeholder": "Qidiruv..."
+  },
+  "filters": {
+    "role": "Rol",
+    "status": "Holat",
+    "organization": "Tashkilot",
+    "branch": "Filial"
+  },
+  "table": {
+    "listTitle": "Foydalanuvchilar ro'yxati",
+    "fullName": "Ism",
+    "name": "Ism",
+    "surname": "Familiya",
+    "username": "Username",
+    "usernamePhone": "Username / Telefon",
+    "phone": "Telefon",
+    "role": "Rol",
+    "branch": "Filial",
+    "status": "Holat",
+    "createdAt": "Yaratilgan sana",
+    "actions": "Amallar"
+  },
+  "buttons": {
+    "add": "Yangi foydalanuvchi",
+    "addUser": "Yangi foydalanuvchi",
+    "addRole": "Yangi rol",
+    "edit": "Tahrirlash",
+    "view": "Ko'rish",
+    "delete": "O'chirish",
+    "save": "Saqlash",
+    "cancel": "Bekor qilish",
+    "close": "Yopish",
+    "search": "Qidirish",
+    "assignRole": "Rol biriktirish",
+    "removeRole": "Rolni olib tashlash",
+    "download": "Yuklab olish",
+    "createUser": "Foydalanuvchi yaratish"
+  },
+  "modal": {
+    "create": "Yangi foydalanuvchi",
+    "createSubtitle": "Tizimga yangi foydalanuvchi qo'shing",
+    "edit": "Foydalanuvchini tahrirlash",
+    "view": "Foydalanuvchi ma'lumotlari",
+    "viewSubtitle": "Tanlangan foydalanuvchi tafsilotlari",
+    "delete": "Foydalanuvchini o'chirish",
+    "assignRole": "Rol biriktirish"
+  },
+  "form": {
+    "name": "Ism",
+    "surname": "Familiya",
+    "fullName": "Ism va familiya",
+    "username": "Username",
+    "password": "Parol",
+    "phone": "Telefon raqam",
+    "role": "Rol",
+    "roles": "Rollar",
+    "branch": "Filial",
+    "organization": "Tashkilot",
+    "status": "Holat",
+    "profileId": "Profile ID",
+    "profilePhoto": "Profil rasmi",
+    "profilePhotoHint": "PNG, JPG yoki WEBP formatda rasm yuklang. Yuklanmasa attachmentId null bo'lib ketadi.",
+    "placeholders": {
+      "username": "Username",
+      "password": "Parol",
+      "name": "Ism",
+      "surname": "Familiya",
+      "phone": "+998 99 123 45 67"
+    },
+    "avatar": {
+      "noImage": "Rasm yo'q",
+      "select": "Rasm tanlash",
+      "replace": "Rasmni almashtirish",
+      "remove": "O'chirish",
+      "previewAlt": "Avatar preview"
+    },
+    "branch": {
+      "selectPartnerFirst": "Avval partner tanlang",
+      "loading": "Yuklanmoqda...",
+      "notFound": "Filiallar topilmadi",
+      "select": "Filial tanlang"
+    }
+  },
+  "roles": {
+    "title": "Rol",
+    "selectRole": "Rol tanlang",
+    "noRoles": "Rollar topilmadi",
+    "assignedRoles": "Biriktirilgan rollar",
+    "availableRoles": "Mavjud rollar",
+    "loading": "Yuklanmoqda..."
+  },
+  "status": {
+    "active": "Aktiv",
+    "inactive": "Nofaol",
+    "blocked": "Bloklangan"
+  },
+  "validation": {
+    "required": "Majburiy maydonni to'ldiring",
+    "fillRequired": "Barcha majburiy maydonlarni to'ldiring",
+    "invalidPhone": "Telefon raqamni to'liq kiriting",
+    "invalidUsername": "Username kiriting",
+    "passwordMin": "Parol kiriting",
+    "nameRequired": "Ism kiriting",
+    "surnameRequired": "Familiya kiriting",
+    "roleRequired": "Rol tanlang",
+    "branchRequired": "Filial tanlang",
+    "imageOnly": "Faqat rasm fayllar yuklash mumkin",
+    "imageUploadError": "Rasm yuklashda xatolik",
+    "attachmentIdMissing": "Attachment ID yo'q"
+  },
+  "toast": {
+    "created": "Foydalanuvchi muvaffaqiyatli yaratildi",
+    "updated": "Foydalanuvchi muvaffaqiyatli yangilandi",
+    "deleted": "Foydalanuvchi muvaffaqiyatli o'chirildi",
+    "roleAssigned": "Rol muvaffaqiyatli biriktirildi",
+    "roleRemoved": "Rol muvaffaqiyatli olib tashlandi"
+  },
+  "states": {
+    "loading": "Yuklanmoqda...",
+    "creating": "Yaratilmoqda...",
+    "noData": "Ma'lumot topilmadi",
+    "error": "Xatolik yuz berdi",
+    "noRoles": "Rollar topilmadi",
+    "noUsers": "Foydalanuvchilar topilmadi",
+    "partnerSelect": "Iltimos, hamkorni tanlang",
+    "rolesLoadError": "Rollarni yuklashda xatolik"
+  },
+  "confirm": {
+    "deleteTitle": "Foydalanuvchini o'chirish",
+    "deleteMessage": "Foydalanuvchini o'chirmoqchimisiz?",
+    "yes": "Ha, o'chirish",
+    "no": "Yo'q"
+  },
+  "pagination": {
+    "total": "Jami: {{count}} ta",
+    "previous": "Oldingi",
+    "next": "Keyingi",
+    "page": "Sahifa",
+    "rowsPerPage": "Sahifada"
+  }
+}

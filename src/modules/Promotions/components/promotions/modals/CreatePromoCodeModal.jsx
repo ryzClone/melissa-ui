@@ -6,6 +6,8 @@ import {
   Sparkles,
   X,
 } from "lucide-react";
+import { useTranslation } from "react-i18next";
+import { PROMOTIONS_NAMESPACE } from "@/i18n/namespaces";
 import "./CreatePromoCodeModal.css";
 import "./PromotionModals.css";
 
@@ -21,23 +23,6 @@ const initialForm = {
   endDate: "",
   active: true,
 };
-
-const months = [
-  "Yanvar",
-  "Fevral",
-  "Mart",
-  "Aprel",
-  "May",
-  "Iyun",
-  "Iyul",
-  "Avgust",
-  "Sentabr",
-  "Oktabr",
-  "Noyabr",
-  "Dekabr",
-];
-
-const weekDays = ["Du", "Se", "Ch", "Pa", "Ju", "Sh", "Ya"];
 
 const generatePromoCode = () => {
   const prefixes = ["WELCOME", "PROMO", "SAVE", "DEAL", "BONUS"];
@@ -95,6 +80,7 @@ function CustomDatePicker({
   onClose,
   onChange,
 }) {
+  const { t } = useTranslation(PROMOTIONS_NAMESPACE);
   const today = new Date();
   const selectedDate = parseDate(value);
   const [monthOpen, setMonthOpen] = useState(false);
@@ -138,7 +124,7 @@ function CustomDatePicker({
         onClick={() => onOpen(pickerName)}
       >
         <CalendarDays size={14} />
-        <span>{value || "Muddat tanlang"}</span>
+        <span>{value || t("form.selectDate")}</span>
       </button>
 
       {isOpen && (
@@ -179,13 +165,13 @@ function CustomDatePicker({
                       setYearOpen(false);
                     }}
                   >
-                    {months[viewMonth]}
+                    {t(`calendar.months.${viewMonth}`)}
                   </button>
                   {monthOpen && (
                     <div className="promo-dd-list">
-                      {months.map((m, i) => (
+                      {Array.from({ length: 12 }).map((_, i) => (
                         <button
-                          key={m}
+                          key={i}
                           type="button"
                           className={`promo-dd-item ${
                             i === viewMonth ? "active" : ""
@@ -195,7 +181,7 @@ function CustomDatePicker({
                             setMonthOpen(false);
                           }}
                         >
-                          {m}
+                          {t(`calendar.months.${i}`)}
                         </button>
                       ))}
                     </div>
@@ -254,8 +240,8 @@ function CustomDatePicker({
             </div>
 
             <div className="promo-calendar-weekdays">
-              {weekDays.map((day) => (
-                <span key={day}>{day}</span>
+              {Array.from({ length: 7 }).map((_, index) => (
+                <span key={index}>{t(`calendar.weekdays.${index}`)}</span>
               ))}
             </div>
 
@@ -297,6 +283,7 @@ export default function CreatePromoCodeModal({
   onSave,
   editData,
 }) {
+  const { t } = useTranslation(PROMOTIONS_NAMESPACE);
   const [form, setForm] = useState(initialForm);
   const [activePicker, setActivePicker] = useState(null);
   const [formError, setFormError] = useState("");
@@ -329,13 +316,15 @@ export default function CreatePromoCodeModal({
 
   const previewDiscount = useMemo(() => {
     if (form.type === "PERCENTAGE") {
-      if (!form.percentageValue) return "0% chegirma";
-      return `${form.percentageValue}% chegirma`;
+      if (!form.percentageValue) return t("preview.discountZeroPercent");
+      return t("preview.discountPercent", { value: form.percentageValue });
     }
 
-    if (!form.fixedAmount) return "0 UZS chegirma";
-    return `${Number(form.fixedAmount).toLocaleString("uz-UZ")} UZS chegirma`;
-  }, [form.type, form.percentageValue, form.fixedAmount]);
+    if (!form.fixedAmount) return t("preview.discountZeroFixed");
+    return t("preview.discountFixed", {
+      value: Number(form.fixedAmount).toLocaleString("uz-UZ"),
+    });
+  }, [form.type, form.percentageValue, form.fixedAmount, t]);
 
   if (!open) return null;
 
@@ -408,17 +397,17 @@ export default function CreatePromoCodeModal({
   };
 
   const validateForm = () => {
-    if (!form.name.trim()) return "Promokod nomi majburiy";
-    if (!form.code.trim()) return "Promokod kodi majburiy";
-    if (!form.startDate.trim()) return "Boshlanish sanasi majburiy";
-    if (!form.endDate.trim()) return "Tugash sanasi majburiy";
+    if (!form.name.trim()) return t("validation.promoNameRequired");
+    if (!form.code.trim()) return t("validation.promoCodeRequired");
+    if (!form.startDate.trim()) return t("validation.startDateRequired");
+    if (!form.endDate.trim()) return t("validation.endDateRequired");
 
     if (form.type === "PERCENTAGE" && form.percentageValue === "") {
-      return "Foiz qiymatini kiriting";
+      return t("validation.percentRequired");
     }
 
     if (form.type === "FIXED_AMOUNT" && form.fixedAmount === "") {
-      return "Chegirma summasini kiriting";
+      return t("validation.fixedAmountRequired");
     }
 
     return "";
@@ -463,92 +452,92 @@ export default function CreatePromoCodeModal({
           type="button"
           className="promo-code-close"
           onClick={onClose}
-          aria-label="Yopish"
+          aria-label={t("buttons.close")}
         >
           <X size={16} />
         </button>
 
         <div className="promo-code-head">
-          <span>PROMOKODLAR</span>
-          <h2>{editData ? "Promokodni tahrirlash" : "Yangi promokod"}</h2>
+          <span>{t("modal.labelPromoCode")}</span>
+          <h2>{editData ? t("modal.editPromoCode") : t("modal.createPromoCode")}</h2>
           <p>
             {editData
-              ? "Promokod ma'lumotlarini o'zgartiring"
-              : "Yangi promokod yarating"}
+              ? t("modal.editPromoCodeSubtitle")
+              : t("modal.createPromoCodeSubtitle")}
           </p>
         </div>
 
         <div className="promo-preview-card">
           <div className="promo-preview-top">
-            <span>PREVIEW</span>
+            <span>{t("form.preview")}</span>
             <button type="button" aria-hidden="true" tabIndex={-1}>
               <Sparkles size={14} />
             </button>
           </div>
           <div className="promo-preview-code">
             <span />
-            {form.code.trim().toUpperCase() || "PROMOKOD"}
+            {form.code.trim().toUpperCase() || t("form.previewPlaceholder")}
           </div>
           <p>{previewDiscount}</p>
         </div>
 
         <div className="promo-section">
-          <div className="promo-section-title">Asosiy ma'lumotlar</div>
+          <div className="promo-section-title">{t("form.basicInfo")}</div>
 
           <div className="promo-field">
-            <label>Promokod nomi</label>
+            <label>{t("form.promoCodeName")}</label>
             <input
               type="text"
-              placeholder="Masalan: Yangi yil chegirmasi"
+              placeholder={t("form.placeholders.promoCodeName")}
               value={form.name}
               onChange={(e) => handleChange("name", e.target.value)}
             />
           </div>
 
           <div className="promo-field">
-            <label>Promokod kodi</label>
+            <label>{t("form.promoCodeCode")}</label>
             <div className="promo-code-row">
               <input
                 type="text"
-                placeholder="Masalan: WELCOME10"
+                placeholder={t("form.placeholders.promoCodeCode")}
                 value={form.code}
                 onChange={(e) =>
                   handleChange("code", e.target.value.toUpperCase())
                 }
               />
               <button type="button" onClick={handleGenerateCode}>
-                Generate
+                {t("buttons.generate")}
               </button>
             </div>
           </div>
 
           <div className="promo-field">
-            <label>Turi</label>
+            <label>{t("form.discountType")}</label>
             <div className="promo-type-tabs">
               <button
                 type="button"
                 className={form.type === "PERCENTAGE" ? "active" : ""}
                 onClick={() => handleTypeChange("PERCENTAGE")}
               >
-                Foiz (%)
+                {t("form.typePercentage")}
               </button>
               <button
                 type="button"
                 className={form.type === "FIXED_AMOUNT" ? "active" : ""}
                 onClick={() => handleTypeChange("FIXED_AMOUNT")}
               >
-                Qiymat (UZS)
+                {t("form.typeFixed")}
               </button>
             </div>
           </div>
 
           {form.type === "PERCENTAGE" ? (
             <div className="promo-field">
-              <label>Foiz qiymati (%)</label>
+              <label>{t("form.percentValue")}</label>
               <input
                 type="text"
                 inputMode="numeric"
-                placeholder="Masalan: 10"
+                placeholder={t("form.placeholders.percent")}
                 value={form.percentageValue}
                 onChange={(e) => handlePercentageChange(e.target.value)}
                 onBlur={normalizePercentageValue}
@@ -556,11 +545,11 @@ export default function CreatePromoCodeModal({
             </div>
           ) : (
             <div className="promo-field">
-              <label>Chegirma summasi (UZS)</label>
+              <label>{t("form.fixedAmount")}</label>
               <input
                 type="text"
                 inputMode="numeric"
-                placeholder="Masalan: 50000"
+                placeholder={t("form.placeholders.fixedAmount")}
                 value={form.fixedAmount}
                 onChange={(e) => handleFixedAmountChange(e.target.value)}
                 onBlur={normalizeFixedAmount}
@@ -570,11 +559,11 @@ export default function CreatePromoCodeModal({
 
           <div className="promo-two-grid">
             <div className="promo-field">
-              <label>Buyurtmalar soni</label>
+              <label>{t("form.orderCount")}</label>
               <input
                 type="text"
                 inputMode="numeric"
-                placeholder="Masalan: 1"
+                placeholder={t("form.placeholders.orderCount")}
                 value={form.numberOfOrder}
                 onChange={(e) =>
                   handleChange(
@@ -586,11 +575,11 @@ export default function CreatePromoCodeModal({
             </div>
 
             <div className="promo-field">
-              <label>Minimal buyurtma</label>
+              <label>{t("form.minOrder")}</label>
               <input
                 type="text"
                 inputMode="numeric"
-                placeholder="Masalan: 100000"
+                placeholder={t("form.placeholders.minOrder")}
                 value={form.minimumOrderAmount}
                 onChange={(e) =>
                   handleChange(
@@ -605,10 +594,10 @@ export default function CreatePromoCodeModal({
         </div>
 
         <div className="promo-section">
-          <div className="promo-section-title">Amal qilish muddati</div>
+          <div className="promo-section-title">{t("form.validityPeriod")}</div>
           <div className="promo-two-grid">
             <CustomDatePicker
-              label="Boshlanish"
+              label={t("form.startDate")}
               value={form.startDate}
               pickerName="startDate"
               activePicker={activePicker}
@@ -617,7 +606,7 @@ export default function CreatePromoCodeModal({
               onChange={(value) => handleChange("startDate", value)}
             />
             <CustomDatePicker
-              label="Tugashi"
+              label={t("form.endDate")}
               value={form.endDate}
               pickerName="endDate"
               activePicker={activePicker}
@@ -631,8 +620,8 @@ export default function CreatePromoCodeModal({
         <div className="promo-section">
           <div className="promo-status-row">
             <div>
-              <h4>Darhol faollashtirish</h4>
-              <p>Promokod yaratilgandan so'ng darhol ishlaydi</p>
+              <h4>{t("form.activateNow")}</h4>
+              <p>{t("form.activatePromoNowHint")}</p>
             </div>
             <label className="promo-switch">
               <input
@@ -660,10 +649,10 @@ export default function CreatePromoCodeModal({
 
         <div className="promo-footer">
           <button type="button" className="promo-cancel" onClick={onClose}>
-            Bekor qilish
+            {t("buttons.cancel")}
           </button>
           <button type="button" className="promo-submit" onClick={handleSubmit}>
-            {editData ? "Saqlash" : "Promokod yaratish"}
+            {editData ? t("buttons.save") : t("buttons.createPromoCode")}
           </button>
         </div>
       </div>

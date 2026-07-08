@@ -1,4 +1,6 @@
+import { useTranslation } from "react-i18next";
 import { Clock, Phone, MapPin, Building2, Timer, AlertTriangle, Eye } from "lucide-react";
+import { ORDERS_NAMESPACE } from "@/i18n/namespaces";
 import {
   formatSom,
   formatRemainingTime,
@@ -21,6 +23,7 @@ import {
 const WARN_THRESHOLD_MS = 30000;
 
 function SlaBadge({ order, now }) {
+  const { t } = useTranslation(ORDERS_NAMESPACE);
   const remaining = getRemainingMs(order, now);
   if (remaining == null) return null;
 
@@ -31,7 +34,9 @@ function SlaBadge({ order, now }) {
   return (
     <span className={`orders-sla-badge ${tone}`}>
       {overdue ? <AlertTriangle size={12} /> : <Timer size={12} />}
-      {overdue ? "Vaqt tugadi" : `${formatRemainingTime(remaining)} qoldi`}
+      {overdue
+        ? t("timer.expired")
+        : t("timer.remaining", { time: formatRemainingTime(remaining) })}
     </span>
   );
 }
@@ -62,6 +67,7 @@ function CustomerAvatar({ name, avatar }) {
 }
 
 export default function OrderCard({ order, now, readOnly = false, onOpenDetails, onAction }) {
+  const { t } = useTranslation(ORDERS_NAMESPACE);
   const status = getOrderStatus(order);
   const isNew = status === "NEW";
   const isAccepted = status === "ACCEPTED";
@@ -127,7 +133,9 @@ export default function OrderCard({ order, now, readOnly = false, onOpenDetails,
           </li>
         ))}
         {hiddenCount > 0 && (
-          <li className="orders-card-items-more">+{hiddenCount} ta</li>
+          <li className="orders-card-items-more">
+            {t("details.itemsMore", { count: hiddenCount })}
+          </li>
         )}
       </ul>
 
@@ -147,7 +155,7 @@ export default function OrderCard({ order, now, readOnly = false, onOpenDetails,
 
       <footer className="orders-card-footer">
         <div className="orders-card-total">
-          <span>Jami</span>
+          <span>{t("details.total")}</span>
           <strong>{formatSom(getOrderTotalAmount(order))}</strong>
         </div>
 
@@ -159,7 +167,7 @@ export default function OrderCard({ order, now, readOnly = false, onOpenDetails,
               onClick={(e) => stop(e, () => onOpenDetails?.(order))}
             >
               <Eye size={14} />
-              Ko'rish
+              {t("buttons.view")}
             </button>
           ) : (
             <>
@@ -169,7 +177,7 @@ export default function OrderCard({ order, now, readOnly = false, onOpenDetails,
                   className="orders-btn primary full"
                   onClick={(e) => stop(e, () => onAction?.("accept", order))}
                 >
-                  Qabul qilish
+                  {t("buttons.accept")}
                 </button>
               )}
 
@@ -179,7 +187,7 @@ export default function OrderCard({ order, now, readOnly = false, onOpenDetails,
                   className="orders-btn primary full"
                   onClick={(e) => stop(e, () => onAction?.("process", order))}
                 >
-                  Jarayonga o'tkazish
+                  {t("buttons.startCooking")}
                 </button>
               )}
 
@@ -189,7 +197,7 @@ export default function OrderCard({ order, now, readOnly = false, onOpenDetails,
                   className="orders-btn success full"
                   onClick={(e) => stop(e, () => onAction?.("complete", order))}
                 >
-                  Bajarildi
+                  {t("buttons.complete")}
                 </button>
               )}
             </>

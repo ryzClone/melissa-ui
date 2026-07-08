@@ -1,4 +1,6 @@
 import { X } from "lucide-react";
+import { useTranslation } from "react-i18next";
+import { BRANCHES_NAMESPACE } from "@/i18n/namespaces";
 import "./BranchModal.css";
 
 export default function DeleteBranchModal({
@@ -7,6 +9,8 @@ export default function DeleteBranchModal({
   onClose,
   onConfirm,
 }) {
+  const { t } = useTranslation(BRANCHES_NAMESPACE);
+
   if (!isOpen || !branch) return null;
 
   return (
@@ -17,8 +21,8 @@ export default function DeleteBranchModal({
       >
         <div className="branch-modal-header">
           <div>
-            <h3>Filialni o‘chirish</h3>
-            <p>Bu amalni ortga qaytarib bo‘lmaydi</p>
+            <h3>{t("modal.delete")}</h3>
+            <p>{t("modal.deleteSubtitle")}</p>
           </div>
 
           <button
@@ -31,14 +35,9 @@ export default function DeleteBranchModal({
         </div>
 
         <div className="branch-delete-content">
-          <p>
-            Haqiqatan ham <strong>{branch.name}</strong> filialini
-            o‘chirmoqchimisiz?
-          </p>
+          <p>{t("confirm.deleteMessage", { name: branch.name })}</p>
 
-          <p className="branch-delete-warning">
-            O‘chirsangiz, ushbu ma’lumotlar qayta tiklanmaydi.
-          </p>
+          <p className="branch-delete-warning">{t("confirm.deleteWarning")}</p>
         </div>
 
         <div className="branch-modal-actions">
@@ -47,7 +46,7 @@ export default function DeleteBranchModal({
             className="branch-secondary-btn"
             onClick={onClose}
           >
-            Yo‘q
+            {t("confirm.no")}
           </button>
 
           <button
@@ -55,7 +54,7 @@ export default function DeleteBranchModal({
             className="branch-danger-btn"
             onClick={onConfirm}
           >
-            Ha, o‘chirish
+            {t("confirm.yes")}
           </button>
         </div>
       </div>

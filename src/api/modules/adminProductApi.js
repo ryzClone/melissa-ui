@@ -1,11 +1,11 @@
 import apiClient from "../apiClient";
 import { buildListParams } from "@/utils/buildListParams";
 
-const BASE_URL = "/catalog/api/v1/product";
+const BASE_URL = "/api/v1/product";
 
 /** Super Admin product list: GET /api/v1/product/by-organization/{organizationId} */
 export const adminProductApi = {
-  getByOrganization: (organizationId, params = {}) => {
+  getByOrganization: (organizationId, filters = {}) => {
     const id = Number(organizationId);
 
     if (!Number.isFinite(id)) {
@@ -13,7 +13,7 @@ export const adminProductApi = {
     }
 
     return apiClient.get(`${BASE_URL}/by-organization/${id}`, {
-      params: buildListParams(params),
+      params: buildListParams(filters),
     });
   },
 };
