@@ -11,7 +11,7 @@ import { AUTH_SESSION_CLEARED_EVENT } from "@/utils/authSession";
 import { profileApi, extractProfileData } from "@/api/modules/profileApi";
 import ProfileModal from "@/components/ProfileModal/ProfileModal";
 
-const API_ORIGIN = "https://dev-api.mtechdynamics.uz";
+const API_ORIGIN = "https://api.mtechdynamics.uz";
 
 export const ProfileContext = createContext(null);
 

@@ -6,7 +6,7 @@ import {
 } from "@/api/setupAxiosInterceptors";
 
 const apiClient = axios.create({
-  baseURL: "https://dev-api.mtechdynamics.uz",
+  baseURL: "https://api.mtechdynamics.uz",
   headers: {
     "Content-Type": "application/json",
   },

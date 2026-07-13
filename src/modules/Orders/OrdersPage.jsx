@@ -65,7 +65,7 @@ function OrdersPageContent() {
     useOrderNotification();
   const [orders, setOrders] = useState([]);
   const [historyOrders, setHistoryOrders] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const [, setLoading] = useState(false);
   const [historyLoading, setHistoryLoading] = useState(false);
   const [activeTab, setActiveTab] = useState(TAB.ACTIVE);
   const [now, setNow] = useState(() => Date.now());
@@ -82,7 +82,7 @@ function OrdersPageContent() {
   } = useLatestRequest();
   const [statusFilter, setStatusFilter] = useState("");
   const [search, setSearch] = useState("");
-  const debouncedSearch = useDebouncedValue(search, 3000);
+  const debouncedSearch = useDebouncedValue(search, 1000);
   const [historyFromDate, setHistoryFromDate] = useState(
     () => getDefaultHistoryDateRange().fromDate
   );

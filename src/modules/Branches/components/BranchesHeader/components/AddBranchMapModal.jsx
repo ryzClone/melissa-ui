@@ -55,7 +55,7 @@ async function reverseGeocode(lat, lng) {
     if (!manzil)
       manzil = `${lat.toFixed(6)}, ${lng.toFixed(6)}`;
     return manzil;
-  } catch (e) {
+  } catch {
     return `${lat.toFixed(6)}, ${lng.toFixed(6)}`;
   }
 }
@@ -147,7 +147,9 @@ export default function AddBranchMapModal({ value, onSelect, onClose }) {
         if (mapRef.current) {
           try {
             mapRef.current.setView([lat, lng]);
-          } catch {}
+          } catch {
+            /* map view update failed */
+          }
         }
       },
       () => {

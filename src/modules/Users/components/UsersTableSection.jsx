@@ -46,7 +46,7 @@ export default function UsersTableSection({ refreshToken = 0 }) {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
-  const debouncedSearch = useDebouncedValue(search, 3000);
+  const debouncedSearch = useDebouncedValue(search, 1000);
   const { canFetch, getParams, getOrganizationParams } = useScopedPartnerParams();
   const { beginRequest, isLatestRequest } = useLatestRequest();
   const [page, setPage] = useState(1);
@@ -294,6 +294,7 @@ export default function UsersTableSection({ refreshToken = 0 }) {
       if (editingId === id) handleCancel();
       await fetchUsers();
     } catch {
+      /* request failed */
     }
   };
 

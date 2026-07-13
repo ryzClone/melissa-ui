@@ -386,6 +386,7 @@ export default function AddBranchModal({ open, onClose, onRefresh }) {
       onClose();
       if (onRefresh) await onRefresh();
     } catch {
+      /* request failed */
     } finally {
       setLoading(false);
     }

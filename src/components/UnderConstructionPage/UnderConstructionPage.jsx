@@ -3,13 +3,16 @@ import PageWrapper from "@/components/PageWrapper/PageWrapper";
 import "./UnderConstructionPage.css";
 
 export default function UnderConstructionPage({
-  icon: Icon = Settings,
-  badgeIcon: BadgeIcon = Construction,
+  icon = Settings,
+  badgeIcon = Construction,
   title = "Bo‘lim ishlab chiqilmoqda",
   text = "Hozirda ishlar olib borilmoqda",
   subtext = "Ushbu bo‘lim tez orada ishga tushiriladi",
   showProgress = true,
 }) {
+  const Icon = icon;
+  const BadgeIcon = badgeIcon;
+
   return (
     <PageWrapper>
       <div className="under-construction-page">

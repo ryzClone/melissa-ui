@@ -30,7 +30,7 @@ export default function BranchesPage() {
   const [branches, setBranches] = useState([]);
   const [loading, setLoading] = useState(false);
   const [search, setSearch] = useState("");
-  const debouncedSearch = useDebouncedValue(search, 3000);
+  const debouncedSearch = useDebouncedValue(search, 1000);
   const { isSuperAdmin } = useAuth();
   const { canFetch, getOrganizationBranchParams } = useScopedPartnerParams();
   const { beginRequest, isLatestRequest } = useLatestRequest();

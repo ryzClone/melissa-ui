@@ -106,10 +106,10 @@ export const routes = [
         path: "settings",
         element: <SettingsPage />,
       },
-      {
-        path: "admin/news",
-        element: <AdminNewsPage />,
-      },
+      // {
+      //   path: "admin/news",
+      //   element: <AdminNewsPage />,
+      // },
       {
         path: "admin/messages",
         element: <AdminImportantMessagesPage />,

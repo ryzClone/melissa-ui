@@ -52,7 +52,7 @@ export default function PromotionsPage() {
   const { canFetch, getParams, getOrganizationParams } = useScopedPartnerParams();
   const { beginRequest, isLatestRequest } = useLatestRequest();
   const [promoSearch, setPromoSearch] = useState("");
-  const debouncedPromoSearch = useDebouncedValue(promoSearch, 3000);
+  const debouncedPromoSearch = useDebouncedValue(promoSearch, 1000);
 
   const toApiDate = (value = "") => {
     if (!value) return "";
@@ -263,6 +263,7 @@ export default function PromotionsPage() {
       await discountApi.deleteDiscount(id);
       await loadDiscounts();
     } catch {
+      /* request failed */
     }
   };
 
@@ -273,6 +274,7 @@ export default function PromotionsPage() {
       await promoApi.deletePromo(id);
       await loadPromos();
     } catch {
+      /* request failed */
     }
   };
 
@@ -290,6 +292,7 @@ export default function PromotionsPage() {
       setSelectedPromotion(null);
       setOpenPromotionModal(false);
     } catch {
+      /* request failed */
     }
   };
 
@@ -306,6 +309,7 @@ export default function PromotionsPage() {
       setSelectedPromoCode(null);
       setOpenPromoCodeModal(false);
     } catch {
+      /* request failed */
     }
   };
 

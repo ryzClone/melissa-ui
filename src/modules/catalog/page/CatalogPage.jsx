@@ -257,11 +257,11 @@ export default function CatalogPage() {
 
 
 
-  const debouncedSearch = useDebouncedValue(search, 3000);
+  const debouncedSearch = useDebouncedValue(search, 1000);
 
-  const debouncedMinPrice = useDebouncedValue(minPrice, 3000);
+  const debouncedMinPrice = useDebouncedValue(minPrice, 1000);
 
-  const debouncedMaxPrice = useDebouncedValue(maxPrice, 3000);
+  const debouncedMaxPrice = useDebouncedValue(maxPrice, 1000);
 
   const { beginRequest, isLatestRequest } = useLatestRequest();
 
@@ -510,30 +510,6 @@ export default function CatalogPage() {
 
 
 
-  const handleViewProduct = useCallback(
-
-    (row) => {
-
-      if (!row) return;
-
-
-
-      setSelectedProductId(row.id ?? null);
-
-      setSelectedProduct(isSuperAdmin ? row : null);
-
-      setModalMode("view");
-
-      setIsProductModalOpen(true);
-
-    },
-
-    [isSuperAdmin]
-
-  );
-
-
-
   const handleEditProduct = useCallback(
 
     (row) => {
@@ -592,7 +568,7 @@ export default function CatalogPage() {
 
         await fetchProducts();
       } catch {
-
+        /* request failed */
       }
 
     },

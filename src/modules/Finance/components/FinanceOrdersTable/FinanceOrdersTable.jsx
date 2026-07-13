@@ -108,7 +108,6 @@ const fallbackOrders = [
 export default function FinanceOrdersTable({
   orders,
   title = "Tasdiqlanmagan naqd buyurtmalar",
-  totalCount,
   onApprove,
   onDownload,
 }) {
@@ -117,7 +116,7 @@ export default function FinanceOrdersTable({
 
   const [search, setSearch] = useState("");
   const [activeFilter, setActiveFilter] = useState("all");
-  const debouncedSearch = useDebouncedValue(search, 3000);
+  const debouncedSearch = useDebouncedValue(search, 1000);
 
   const filteredOrders = useMemo(() => {
     return tableOrders.filter((order) => {

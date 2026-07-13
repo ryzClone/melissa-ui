@@ -7,7 +7,7 @@ import {
 import { buildHttpRequestKey, dedupeRequest } from "@/utils/dedupeRequest";
 
 const apiClient = axios.create({
-  baseURL: "https://dev-api.mtechdynamics.uz",
+  baseURL: "https://api.mtechdynamics.uz",
   timeout: 30000,
   headers: {
     "Content-Type": "application/json",
