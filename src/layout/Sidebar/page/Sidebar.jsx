@@ -1,4 +1,5 @@
-import { NavLink } from "react-router-dom";
+import { useCallback, useEffect, useState } from "react";
+import { NavLink, useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import {
   Home,
@@ -70,7 +71,7 @@ export default function Sidebar() {
       key={item.to}
       to={item.to}
       end={item.to === "/"}
-      // onClick={closeAdminMenu}
+      onClick={closeAdminMenu}
       className={({ isActive }) =>
         isActive ? "sidebar-item active" : "sidebar-item"
       }
@@ -94,7 +95,6 @@ export default function Sidebar() {
         <nav className="sidebar-menu">
           {topMenu.map(renderItem)}
 
-          Admin panel — vaqtincha yashirilgan
           <div
             className={`sidebar-accordion ${adminOpen ? "open" : ""} ${
               onAdminRoute ? "active-group" : ""
@@ -132,7 +132,6 @@ export default function Sidebar() {
               </div>
             </div>
           </div>
-         
         </nav>
       </div>
 
